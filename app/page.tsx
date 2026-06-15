@@ -25,8 +25,14 @@ function adaptPortfolioBehavior(source: string) {
       var heroObserver = null;
       var introTween = null;
       var refreshFrame = null;
-      var cardVideoFallbackController = null;
-      var cardAutoplayBlocked = false;
+      var preparedVideos = new WeakSet();
+      var videoLoadPromises = new WeakMap();
+      var videoPlayPromises = new WeakMap();
+      var videosThatShouldPlay = new WeakSet();
+      var savedMainVideoTimes = new WeakMap();
+      var defaultMainSources = new WeakMap();
+      var interactionTimers = [];
+      var isDisposed = false;
 
       function listen(target, type, handler, options) {
         var listenerOptions = typeof options === "boolean"
@@ -34,12 +40,21 @@ function adaptPortfolioBehavior(source: string) {
           : Object.assign({}, options || {}, { signal: cleanupController.signal });
 
         target.addEventListener(type, handler, listenerOptions);
+      }
+
+      function scheduleInteraction(callback, delay) {
+        var timer = window.setTimeout(callback, delay);
+        interactionTimers.push(timer);
       }`,
   );
   script = replaceRequired(
     script,
     /      function prepareVideo\(video\) \{[\s\S]*?\n      function setChoiceCardsInteractive/,
     `      function prepareVideo(video) {
+        if (video.classList.contains("linka-main-video") && !defaultMainSources.has(video)) {
+          defaultMainSources.set(video, video.getAttribute("data-src") || video.getAttribute("src"));
+        }
+
         video.muted = true;
         video.defaultMuted = true;
         video.loop = true;
@@ -54,12 +69,15 @@ function adaptPortfolioBehavior(source: string) {
         video.setAttribute("controlslist", "nodownload noplaybackrate nofullscreen");
         video.removeAttribute("controls");
 
-        if (!video._linkaReadyBound) {
-          video._linkaReadyBound = true;
+        if (!preparedVideos.has(video)) {
+          preparedVideos.add(video);
           listen(video, "loadeddata", function () { setVideoReady(video); });
-          listen(video, "playing", function () {
-            video._linkaPlayPending = false;
-            setVideoReady(video);
+          listen(video, "playing", function () { setVideoReady(video); });
+          listen(video, "canplay", function () {
+            if (videosThatShouldPlay.has(video) && !document.hidden) playVideo(video);
+          });
+          listen(video, "seeked", function () {
+            if (videosThatShouldPlay.has(video) && !document.hidden) playVideo(video);
           });
         }
 
@@ -72,6 +90,10 @@ function adaptPortfolioBehavior(source: string) {
         if (video.parentElement) video.parentElement.classList.add("is-video-ready");
       }
 
+      function getDefaultMainSource(video) {
+        return video ? defaultMainSources.get(video) || "" : "";
+      }
+
       function loadVideo(video) {
         if (!video) return Promise.resolve(null);
 
@@ -82,9 +104,9 @@ function adaptPortfolioBehavior(source: string) {
           return Promise.resolve(video);
         }
 
-        if (video._linkaLoadPromise) return video._linkaLoadPromise;
+        if (videoLoadPromises.has(video)) return videoLoadPromises.get(video);
 
-        video._linkaLoadPromise = new Promise(function (resolve) {
+        var loadPromise = new Promise(function (resolve) {
           var source = video.getAttribute("data-src");
           var settled = false;
 
@@ -99,6 +121,7 @@ function adaptPortfolioBehavior(source: string) {
             settled = true;
             cleanupReadyListeners();
             setVideoReady(video);
+            videoLoadPromises.delete(video);
             resolve(video);
           }
 
@@ -106,63 +129,58 @@ function adaptPortfolioBehavior(source: string) {
             if (settled) return;
             settled = true;
             cleanupReadyListeners();
-            video._linkaLoadPromise = null;
+            videoLoadPromises.delete(video);
             resolve(null);
           }
 
-          video.addEventListener("loadeddata", finish);
-          video.addEventListener("canplay", finish);
-          video.addEventListener("error", fail);
+          listen(video, "loadeddata", finish);
+          listen(video, "canplay", finish);
+          listen(video, "error", fail);
 
-          if (!video.getAttribute("src") && source) {
-            video.setAttribute("src", source);
-            video.load();
-          }
+          if (!video.getAttribute("src") && source) video.setAttribute("src", source);
+          else if (!video.getAttribute("src")) fail();
         });
 
-        return video._linkaLoadPromise;
+        videoLoadPromises.set(video, loadPromise);
+        return loadPromise;
       }
 
       function unloadVideo(video) {
-        if (!video || !video.getAttribute("src")) return;
-
         pauseVideo(video);
-        video.removeAttribute("src");
-        video.preload = "none";
-        video._linkaLoadPromise = null;
-        video.classList.remove("is-ready");
-        if (video.parentElement) video.parentElement.classList.remove("is-video-ready");
-        video.load();
       }
 
       function playVideo(video) {
-        if (!video) return Promise.resolve(false);
-        video._linkaShouldPlay = true;
+        if (!video || isDisposed) return Promise.resolve(false);
+        videosThatShouldPlay.add(video);
+        prepareVideo(video);
+        loadVideo(video);
 
-        return loadVideo(video).then(function (loadedVideo) {
-          if (!loadedVideo || !loadedVideo._linkaShouldPlay || document.hidden || !heroIsVisible) return false;
-          if (!loadedVideo.paused) return true;
-          if (loadedVideo._linkaPlayPending && loadedVideo._linkaPlayPromise) {
-            return loadedVideo._linkaPlayPromise;
-          }
+        if (isDisposed || !video.getAttribute("src") || document.hidden) return Promise.resolve(false);
+        if (!video.paused) return Promise.resolve(true);
+        if (videoPlayPromises.has(video)) return videoPlayPromises.get(video);
 
-          loadedVideo._linkaPlayPending = true;
-          var promise = loadedVideo.play();
-          loadedVideo._linkaPlayPromise = Promise.resolve(promise).then(function () {
-            loadedVideo._linkaPlayPending = false;
-            return true;
-          }).catch(function () {
-              loadedVideo._linkaPlayPending = false;
-              return false;
-          });
-          return loadedVideo._linkaPlayPromise;
+        var playPromise;
+        try {
+          playPromise = video.play();
+        } catch (error) {
+          return Promise.resolve(false);
+        }
+
+        var trackedPromise = Promise.resolve(playPromise).then(function () {
+          videoPlayPromises.delete(video);
+          return true;
+        }).catch(function () {
+          videoPlayPromises.delete(video);
+          return false;
         });
+        videoPlayPromises.set(video, trackedPromise);
+        return trackedPromise;
       }
 
       function pauseVideo(video) {
         if (!video) return;
-        video._linkaShouldPlay = false;
-        video._linkaPlayPending = false;
+        videosThatShouldPlay.delete(video);
+        videoPlayPromises.delete(video);
         if (!video.paused) video.pause();
       }
 
@@ -172,48 +190,13 @@ function adaptPortfolioBehavior(source: string) {
         return Boolean(video.closest(".linka-phone-device, .linka-card-mobile"));
       }
 
-      function clearCardVideoFallback() {
-        if (!cardVideoFallbackController) return;
-        cardVideoFallbackController.abort();
-        cardVideoFallbackController = null;
-      }
-
-      function armCardVideoFallback() {
-        if (cardVideoFallbackController || !activeCardVideos.length) return;
-
-        cardVideoFallbackController = new AbortController();
-        var fallbackOptions = { once: true, passive: true, signal: cardVideoFallbackController.signal };
-        var retry = function () { startActiveCardVideos(true); };
-        window.addEventListener("pointerdown", retry, fallbackOptions);
-        window.addEventListener("touchstart", retry, fallbackOptions);
-        window.addEventListener("scroll", retry, fallbackOptions);
-      }
-
-      function startActiveCardVideos(forceRetry) {
-        if (!heroIsVisible || document.hidden || !activeCardVideos.length) {
-          return Promise.resolve(false);
-        }
-        if (cardAutoplayBlocked && forceRetry !== true) {
-          armCardVideoFallback();
-          return Promise.resolve(false);
-        }
-
-        return Promise.all(activeCardVideos.map(function (video) {
-          return playVideo(video);
-        })).then(function () {
-          var allPlaying = activeCardVideos.every(function (video) { return !video.paused; });
-          cardAutoplayBlocked = !allPlaying;
-          if (allPlaying) clearCardVideoFallback();
-          else armCardVideoFallback();
-          return allPlaying;
-        });
+      function startActiveCardVideos() {
+        if (isDisposed || document.hidden || !activeCardVideos.length) return Promise.resolve(false);
+        return Promise.all(activeCardVideos.map(function (video) { return playVideo(video); }));
       }
 
       function updateActiveVideos() {
         var useMobile = mobileQuery.matches;
-
-        clearCardVideoFallback();
-        cardAutoplayBlocked = false;
 
         activeMainVideos = mainVideos.filter(function (video) {
           return isMobileVideo(video) === useMobile;
@@ -227,7 +210,6 @@ function adaptPortfolioBehavior(source: string) {
           if (!isActive) unloadVideo(video);
         });
 
-        activeCardVideos.forEach(function (video) { loadVideo(video); });
         startActiveCardVideos();
         activeMainVideos.forEach(function (video) {
           loadVideo(video).then(function () {
@@ -241,9 +223,11 @@ function adaptPortfolioBehavior(source: string) {
       }
 
       function playVisibleVideos() {
-        if (!heroIsVisible || document.hidden) return;
+        if (document.hidden) return;
 
         startActiveCardVideos();
+
+        if (!heroIsVisible) return;
 
         if (portfolioState === "scroll") {
           activeMainVideos.forEach(function (video) { playVideo(video); });
@@ -265,6 +249,10 @@ function adaptPortfolioBehavior(source: string) {
         activeMainVideos.forEach(function (video) { pauseVideo(video); });
       }
 
+      function pauseAllActiveVideos() {
+        activeMainVideos.concat(activeCardVideos).forEach(function (video) { pauseVideo(video); });
+      }
+
       function pauseAndResetActiveMainVideos() {
         activeMainVideos.forEach(function (video) { pauseVideo(video); });
       }
@@ -281,12 +269,20 @@ function adaptPortfolioBehavior(source: string) {
         prepareVideo(mainVideo);
 
         if (mainVideo.getAttribute("src") !== source) {
-          mainVideo._linkaLoadPromise = null;
+          videoLoadPromises.delete(mainVideo);
+          videoPlayPromises.delete(mainVideo);
           mainVideo.classList.remove("is-ready");
           if (mainVideo.parentElement) mainVideo.parentElement.classList.remove("is-video-ready");
           mainVideo.setAttribute("data-src", source);
           mainVideo.setAttribute("src", source);
-          mainVideo.load();
+
+          var defaultSource = getDefaultMainSource(mainVideo);
+          var savedTime = savedMainVideoTimes.get(mainVideo);
+          if (source === defaultSource && typeof savedTime === "number" && savedTime > 0) {
+            listen(mainVideo, "loadedmetadata", function () {
+              if (mainVideo.duration && savedTime < mainVideo.duration) mainVideo.currentTime = savedTime;
+            }, { once: true });
+          }
         }
 
         loadVideo(mainVideo).then(function (loadedVideo) {
@@ -306,6 +302,16 @@ function adaptPortfolioBehavior(source: string) {
         });
       }`,
     "",
+  );
+  script = replaceRequired(
+    script,
+    `        var defaultSource = openedVideo ? openedVideo.getAttribute("data-default-src") : "";`,
+    `        var defaultSource = getDefaultMainSource(openedVideo);`,
+  );
+  script = replaceRequired(
+    script,
+    `        var defaultSource = selectedDeviceVideo.getAttribute("data-default-src");`,
+    `        var defaultSource = getDefaultMainSource(selectedDeviceVideo);`,
   );
   script = replaceRequired(
     script,
@@ -350,6 +356,26 @@ function adaptPortfolioBehavior(source: string) {
   );
   script = replaceRequired(
     script,
+    `          window.setTimeout(function () {
+            cardToFocus.focus({ preventScroll: true });
+          }, 620);`,
+    `          scheduleInteraction(function () {
+            cardToFocus.focus({ preventScroll: true });
+          }, 620);`,
+  );
+  script = replaceRequired(
+    script,
+    `        window.setTimeout(function () {
+          var visibleReturn = hero.querySelector(".linka-device-return.is-visible");
+          if (visibleReturn) visibleReturn.focus({ preventScroll: true });
+        }, 640);`,
+    `        scheduleInteraction(function () {
+          var visibleReturn = hero.querySelector(".linka-device-return.is-visible");
+          if (visibleReturn) visibleReturn.focus({ preventScroll: true });
+        }, 640);`,
+  );
+  script = replaceRequired(
+    script,
     `      Array.prototype.forEach.call(deviceReturnButtons, function (button) {
         button.addEventListener("click", restoreDeviceProject);
       });
@@ -384,8 +410,17 @@ function adaptPortfolioBehavior(source: string) {
   );
   script = replaceRequired(script, "      var heroObserver = new IntersectionObserver", "      heroObserver = new IntersectionObserver");
   script = replaceRequired(script, "      document.addEventListener(\"visibilitychange\", function () {", "      listen(document, \"visibilitychange\", function () {");
-  script = replaceRequired(script, "      window.addEventListener(\"pagehide\", pauseActiveVideos);", "      listen(window, \"pagehide\", pauseMainVideos);");
+  script = replaceRequired(script, "      window.addEventListener(\"pagehide\", pauseActiveVideos);", "      listen(window, \"pagehide\", pauseAllActiveVideos);");
   script = script.replace(/\bpauseActiveVideos\b/g, "pauseMainVideos");
+  script = replaceRequired(
+    script,
+    `        if (document.hidden) {
+          pauseMainVideos();
+        } else {`,
+    `        if (document.hidden) {
+          pauseAllActiveVideos();
+        } else {`,
+  );
   script = replaceRequired(script, "        window.addEventListener(\"pointerdown\", playVisibleVideos, { once: true, passive: true });", "        listen(window, \"pointerdown\", playVisibleVideos, { once: true, passive: true });");
   script = replaceRequired(script, "      window.addEventListener(\"orientationchange\", function () {", "      listen(window, \"orientationchange\", function () {");
   script = script.replace(/        gsap\.to\(stage, \{/g, "        introTween = gsap.to(stage, {");
@@ -412,6 +447,16 @@ function adaptPortfolioBehavior(source: string) {
   script = replaceRequired(script, "                pauseVideo(video, true);", "");
   script = replaceRequired(
     script,
+    `        selectedDeviceVideo = targetDevice;
+        selectedCard = card;
+        portfolioState = "open";`,
+    `        selectedDeviceVideo = targetDevice;
+        selectedCard = card;
+        portfolioState = "open";
+        savedMainVideoTimes.set(targetDevice, targetDevice.currentTime);`,
+  );
+  script = replaceRequired(
+    script,
     `            onStart: function () {
               card.element.dataset.revealed = "true";
               playVideo(card.video, false);
@@ -434,6 +479,11 @@ function adaptPortfolioBehavior(source: string) {
   );
   script = replaceRequired(
     script,
+    "        var choiceActivationTime = choiceStart + 0.66;",
+    "        var choiceActivationTime = choiceStart + 0.72;",
+  );
+  script = replaceRequired(
+    script,
     `      window.requestAnimationFrame(function () {
         ScrollTrigger.refresh();
       });
@@ -443,10 +493,11 @@ function adaptPortfolioBehavior(source: string) {
       });
 
       return function cleanupLinkaHero() {
+        isDisposed = true;
         cleanupController.abort();
-        clearCardVideoFallback();
         if (heroObserver) heroObserver.disconnect();
         if (orientationRefreshTimer) window.clearTimeout(orientationRefreshTimer);
+        interactionTimers.forEach(function (timer) { window.clearTimeout(timer); });
         if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
         if (introTween) introTween.kill();
         media.revert();
