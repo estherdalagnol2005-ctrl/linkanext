@@ -1282,6 +1282,7 @@
   }
 
   .linka-choice-content {
+    --linka-choice-beam-angle: 0deg;
     position: relative;
     z-index: 2;
     display: grid;
@@ -1290,44 +1291,67 @@
     gap: 8px;
     padding: 20px 22px 18px;
     overflow: hidden;
-    border: 1px solid rgba(88, 166, 255, 0.36);
+    border: 2px solid rgba(82, 169, 255, 0.62);
     border-radius: 28px;
     background:
-      linear-gradient(145deg, rgba(10, 30, 60, 0.42), rgba(2, 9, 21, 0.74)),
-      rgba(3, 10, 22, 0.54);
+      radial-gradient(circle at 50% -18%, rgba(55, 137, 226, 0.24), transparent 48%),
+      linear-gradient(145deg, rgba(7, 24, 49, 0.97), rgba(1, 7, 17, 0.98) 68%),
+      #020915;
     box-shadow:
-      0 22px 56px rgba(0, 0, 0, 0.38),
-      0 0 26px rgba(88, 166, 255, 0.14),
-      inset 0 1px rgba(255, 255, 255, 0.075),
-      inset 0 0 32px rgba(63, 149, 255, 0.035);
-    -webkit-backdrop-filter: blur(16px) saturate(120%);
-    backdrop-filter: blur(16px) saturate(120%);
+      0 26px 70px rgba(0, 0, 0, 0.58),
+      0 0 32px rgba(60, 151, 255, 0.28),
+      0 0 68px rgba(36, 116, 214, 0.14),
+      inset 0 1px rgba(205, 233, 255, 0.16),
+      inset 0 -1px rgba(39, 123, 218, 0.16),
+      inset 0 0 42px rgba(43, 132, 230, 0.10);
+    -webkit-backdrop-filter: blur(18px) saturate(126%);
+    backdrop-filter: blur(18px) saturate(126%);
     transform: translateY(clamp(8px, 1.5vh, 18px));
   }
 
   .linka-choice-content::before {
     content: "";
     position: absolute;
-    inset: 0;
-    z-index: 0;
+    inset: -1px;
+    z-index: 1;
+    padding: 2px;
     border-radius: inherit;
-    background:
-      linear-gradient(110deg, rgba(119, 195, 255, 0.12), transparent 24% 76%, rgba(68, 151, 255, 0.07)),
-      radial-gradient(circle at 50% 0%, rgba(88, 166, 255, 0.12), transparent 42%);
-    opacity: 0.72;
+    background: conic-gradient(
+      from var(--linka-choice-beam-angle),
+      transparent 0deg 250deg,
+      rgba(69, 160, 255, 0.10) 268deg,
+      rgba(111, 194, 255, 0.72) 290deg,
+      rgba(207, 239, 255, 0.98) 304deg,
+      rgba(91, 183, 255, 0.82) 318deg,
+      rgba(54, 143, 241, 0.14) 340deg,
+      transparent 360deg
+    );
+    filter: drop-shadow(0 0 5px rgba(91, 181, 255, 0.62));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
     pointer-events: none;
+    animation: linka-choice-border-beam 5s linear infinite;
   }
 
   .linka-choice-content::after {
     content: "";
     position: absolute;
-    top: -1px;
-    left: 18%;
-    z-index: 1;
-    width: 34%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(139, 207, 255, 0.82), transparent);
-    box-shadow: 0 0 12px rgba(88, 166, 255, 0.38);
+    inset: 2px;
+    z-index: 0;
+    border-radius: calc(28px - 3px);
+    background:
+      linear-gradient(115deg, rgba(137, 205, 255, 0.10), transparent 28% 72%, rgba(51, 139, 235, 0.08)),
+      radial-gradient(circle at 50% 0%, rgba(111, 190, 255, 0.19), transparent 48%),
+      radial-gradient(circle at 50% 112%, rgba(29, 100, 187, 0.12), transparent 52%);
+    box-shadow:
+      inset 0 1px rgba(225, 242, 255, 0.08),
+      inset 0 0 28px rgba(60, 151, 255, 0.055);
     pointer-events: none;
   }
 
@@ -1506,6 +1530,17 @@
     height: 38%;
     background: rgba(120, 189, 255, 0.82);
     animation: linka-scroll 1.7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @property --linka-choice-beam-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  @keyframes linka-choice-border-beam {
+    from { --linka-choice-beam-angle: 0deg; }
+    to { --linka-choice-beam-angle: 360deg; }
   }
 
   @keyframes linka-scroll {
@@ -1991,6 +2026,7 @@
     .linka-orbit,
     .linka-tech-orbit,
     .linka-tech-node,
+    .linka-choice-content::before,
     .linka-choice-contact::before {
       animation: none;
     }
