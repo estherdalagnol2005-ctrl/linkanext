@@ -26,6 +26,72 @@
         <span class="linka-tech-node linka-tech-node-right"></span>
       </div>
 
+      <svg class="linka-choice-orbits" viewBox="0 0 1000 700" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="linka-choice-orbit-beam-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#56b8ff" stop-opacity="0"></stop>
+            <stop offset="35%" stop-color="#7dccff" stop-opacity="0.86"></stop>
+            <stop offset="52%" stop-color="#f1fbff" stop-opacity="1"></stop>
+            <stop offset="70%" stop-color="#6bc4ff" stop-opacity="0.78"></stop>
+            <stop offset="100%" stop-color="#56b8ff" stop-opacity="0"></stop>
+          </linearGradient>
+
+          <filter id="linka-choice-orbit-base-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.1" result="orbitBaseBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="orbitBaseBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+
+          <filter id="linka-choice-orbit-beam-glow" x="-28%" y="-28%" width="156%" height="156%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="orbitBeamBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="orbitBeamBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g class="linka-choice-orbits-layer linka-choice-orbits-desktop">
+          <g class="linka-choice-orbit linka-choice-orbit-tl">
+            <path class="linka-choice-orbit-base" d="M 424 292 A 340 340 0 0 0 96 128" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 424 292 A 340 340 0 0 0 96 128" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-tr">
+            <path class="linka-choice-orbit-base" d="M 576 292 A 340 340 0 0 1 904 128" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 576 292 A 340 340 0 0 1 904 128" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-bl">
+            <path class="linka-choice-orbit-base" d="M 424 408 A 340 340 0 0 1 96 572" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 424 408 A 340 340 0 0 1 96 572" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-br">
+            <path class="linka-choice-orbit-base" d="M 576 408 A 340 340 0 0 0 904 572" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 576 408 A 340 340 0 0 0 904 572" pathLength="100"></path>
+          </g>
+        </g>
+
+        <g class="linka-choice-orbits-layer linka-choice-orbits-mobile">
+          <g class="linka-choice-orbit linka-choice-orbit-tl">
+            <path class="linka-choice-orbit-base" d="M 232 318 A 210 210 0 0 0 286 154" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 232 318 A 210 210 0 0 0 286 154" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-tr">
+            <path class="linka-choice-orbit-base" d="M 768 318 A 210 210 0 0 1 714 154" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 768 318 A 210 210 0 0 1 714 154" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-bl">
+            <path class="linka-choice-orbit-base" d="M 232 382 A 210 210 0 0 1 286 546" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 232 382 A 210 210 0 0 1 286 546" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-orbit linka-choice-orbit-br">
+            <path class="linka-choice-orbit-base" d="M 768 382 A 210 210 0 0 0 714 546" pathLength="100"></path>
+            <path class="linka-choice-orbit-beam" d="M 768 382 A 210 210 0 0 0 714 546" pathLength="100"></path>
+          </g>
+        </g>
+      </svg>
+
       <div class="linka-device-wrap">
         <!-- NOTEBOOK -->
         <div class="linka-laptop">
@@ -166,44 +232,6 @@
     </div>
 
     <div class="linka-choice-prompt" aria-hidden="true">
-      <svg class="linka-choice-lines" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="linka-choice-line-beam-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#56b8ff" stop-opacity="0"></stop>
-            <stop offset="35%" stop-color="#7dccff" stop-opacity="0.88"></stop>
-            <stop offset="52%" stop-color="#f1fbff" stop-opacity="1"></stop>
-            <stop offset="70%" stop-color="#6bc4ff" stop-opacity="0.80"></stop>
-            <stop offset="100%" stop-color="#56b8ff" stop-opacity="0"></stop>
-          </linearGradient>
-
-          <filter id="linka-choice-line-base-glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.1" result="lineBaseBlur"></feGaussianBlur>
-            <feMerge>
-              <feMergeNode in="lineBaseBlur"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-          </filter>
-
-          <filter id="linka-choice-line-beam-glow" x="-28%" y="-28%" width="156%" height="156%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="lineBeamBlur"></feGaussianBlur>
-            <feMerge>
-              <feMergeNode in="lineBeamBlur"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g class="linka-choice-lines-layer">
-          <path class="linka-choice-line-base linka-choice-line-tl" data-choice-line="tl" data-choice-line-layer="base" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-beam linka-choice-line-tl" data-choice-line="tl" data-choice-line-layer="beam" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-base linka-choice-line-tr" data-choice-line="tr" data-choice-line-layer="base" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-beam linka-choice-line-tr" data-choice-line="tr" data-choice-line-layer="beam" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-base linka-choice-line-bl" data-choice-line="bl" data-choice-line-layer="base" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-beam linka-choice-line-bl" data-choice-line="bl" data-choice-line-layer="beam" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-base linka-choice-line-br" data-choice-line="br" data-choice-line-layer="base" pathLength="100" stroke-linecap="round"></path>
-          <path class="linka-choice-line-beam linka-choice-line-br" data-choice-line="br" data-choice-line-layer="beam" pathLength="100" stroke-linecap="round"></path>
-        </g>
-      </svg>
       <div class="linka-choice-content linka-choice-panel">
         <span class="escolha-projeto">ESCOLHA O PROJETO</span>
         <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
@@ -611,6 +639,84 @@
     right: 11%;
     bottom: 27%;
     animation-delay: -2.9s;
+  }
+
+  .linka-choice-orbits {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 18;
+    display: block;
+    width: min(1120px, 96vw);
+    height: min(760px, 84vh);
+    overflow: visible;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(-50%, -48%, 0);
+    transition:
+      opacity 460ms ease 80ms,
+      visibility 0s linear 540ms;
+  }
+
+  .linka-stage.is-choice-menu:not(.is-project-open) .linka-choice-orbits {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 140ms, 0s;
+  }
+
+  .linka-choice-orbits-layer,
+  .linka-choice-orbit-base,
+  .linka-choice-orbit-beam {
+    pointer-events: none;
+  }
+
+  .linka-choice-orbits-mobile {
+    display: none;
+  }
+
+  .linka-choice-orbit-base,
+  .linka-choice-orbit-beam {
+    fill: none;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .linka-choice-orbit-base {
+    stroke: rgba(99, 188, 255, 0.52);
+    stroke-width: 1.25px;
+    filter: url(#linka-choice-orbit-base-glow);
+  }
+
+  .linka-choice-orbit-beam {
+    stroke: url(#linka-choice-orbit-beam-gradient);
+    stroke-width: 2px;
+    stroke-dasharray: 12 88;
+    stroke-dashoffset: 100;
+    opacity: 0.98;
+    filter: url(#linka-choice-orbit-beam-glow);
+    animation: linka-choice-orbit-flow 5.6s linear infinite;
+  }
+
+  .linka-choice-orbit-tr .linka-choice-orbit-beam {
+    animation-duration: 6.2s;
+    animation-delay: -1.35s;
+  }
+
+  .linka-choice-orbit-bl .linka-choice-orbit-beam {
+    animation-duration: 6.7s;
+    animation-delay: -2.8s;
+  }
+
+  .linka-choice-orbit-br .linka-choice-orbit-beam {
+    animation-duration: 5.1s;
+    animation-delay: -3.65s;
+  }
+
+  @media (min-width: 768px) {
+    .linka-choice-orbits {
+      z-index: 40;
+    }
   }
 
   .linka-device-wrap {
@@ -1319,73 +1425,6 @@
       visibility 0s linear 420ms;
   }
 
-  .linka-choice-lines {
-    position: absolute;
-    inset: 0 auto 0 50%;
-    z-index: 3;
-    display: block;
-    width: 100vw;
-    height: 100%;
-    overflow: visible;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateX(-50%);
-    transition:
-      opacity 360ms ease,
-      visibility 0s linear 360ms;
-  }
-
-  .linka-choice-prompt.is-choice-lines-ready .linka-choice-lines {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s, 0s;
-  }
-
-  .linka-choice-lines-layer,
-  .linka-choice-line-base,
-  .linka-choice-line-beam {
-    pointer-events: none;
-  }
-
-  .linka-choice-line-base,
-  .linka-choice-line-beam {
-    fill: none;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .linka-choice-line-base {
-    stroke: rgba(99, 188, 255, 0.58);
-    stroke-width: 1.35px;
-    filter: url(#linka-choice-line-base-glow);
-  }
-
-  .linka-choice-line-beam {
-    stroke: url(#linka-choice-line-beam-gradient);
-    stroke-width: 2.1px;
-    stroke-dasharray: 12 88;
-    stroke-dashoffset: 100;
-    opacity: 0.98;
-    filter: url(#linka-choice-line-beam-glow);
-    animation: linka-choice-line-flow 5.6s linear infinite;
-  }
-
-  .linka-choice-line-tr {
-    animation-duration: 6.2s;
-    animation-delay: -1.35s;
-  }
-
-  .linka-choice-line-bl {
-    animation-duration: 6.7s;
-    animation-delay: -2.8s;
-  }
-
-  .linka-choice-line-br {
-    animation-duration: 5.1s;
-    animation-delay: -3.65s;
-  }
-
   .linka-choice-content {
     --linka-choice-beam-angle: 0deg;
     --linka-choice-entry-y: 0px;
@@ -1696,7 +1735,7 @@
     48%, 100% { background-position: -110% 50%; }
   }
 
-  @keyframes linka-choice-line-flow {
+  @keyframes linka-choice-orbit-flow {
     from { stroke-dashoffset: 100; }
     to { stroke-dashoffset: 0; }
   }
@@ -1955,12 +1994,27 @@
       opacity: 0.56;
     }
 
-    .linka-choice-line-base {
+    .linka-choice-orbits {
+      width: min(360px, 100vw);
+      height: min(470px, 76vh);
+      overflow: visible;
+      transform: translate3d(-50%, -47%, 0);
+    }
+
+    .linka-choice-orbits-desktop {
+      display: none;
+    }
+
+    .linka-choice-orbits-mobile {
+      display: block;
+    }
+
+    .linka-choice-orbit-base {
       stroke-width: 1.15px;
       stroke: rgba(103, 193, 255, 0.56);
     }
 
-    .linka-choice-line-beam {
+    .linka-choice-orbit-beam {
       stroke-width: 1.85px;
       stroke-dasharray: 14 86;
     }
@@ -2197,13 +2251,13 @@
     .linka-tech-orbit,
     .linka-tech-node,
     .linka-choice-content::before,
-    .linka-choice-line-beam,
+    .linka-choice-orbit-beam,
     .linka-choice-prompt .escolha-projeto,
     .linka-choice-contact::before {
       animation: none;
     }
 
-    .linka-choice-line-beam {
+    .linka-choice-orbit-beam {
       stroke-dashoffset: 0;
     }
   }
@@ -2233,8 +2287,6 @@
       var deviceReturnButtons = hero.querySelectorAll(".linka-device-return");
       var stage = hero.querySelector(".linka-stage");
       var choicePrompt = hero.querySelector(".linka-choice-prompt");
-      var choiceContent = hero.querySelector(".linka-choice-content");
-      var choiceLines = hero.querySelector(".linka-choice-lines");
       var selectedDeviceVideo = null;
       var selectedCard = null;
       var portfolioState = "scroll";
@@ -2242,19 +2294,6 @@
       var mobileViewportOrientation = getViewportOrientation();
       var mobileViewportHeight = window.innerHeight;
       var orientationRefreshTimer = null;
-      var choiceLinesTimer = null;
-      var choiceLinesResizeTimer = null;
-      var choiceLineKeys = ["tl", "tr", "bl", "br"];
-      var choiceLinePaths = {};
-
-      if (choiceLines) {
-        choiceLineKeys.forEach(function (key) {
-          choiceLinePaths[key] = {
-            base: choiceLines.querySelector('[data-choice-line="' + key + '"][data-choice-line-layer="base"]'),
-            beam: choiceLines.querySelector('[data-choice-line="' + key + '"][data-choice-line-layer="beam"]')
-          };
-        });
-      }
 
       function getViewportOrientation() {
         return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
@@ -2525,134 +2564,6 @@
         });
       }
 
-      function hideChoiceLines() {
-        window.clearTimeout(choiceLinesTimer);
-        window.clearTimeout(choiceLinesResizeTimer);
-        if (choicePrompt) choicePrompt.classList.remove("is-choice-lines-ready");
-      }
-
-      function clampLineValue(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      function formatLineNumber(value) {
-        return Math.round(value * 10) / 10;
-      }
-
-      function getChoiceLinePoint(rect, svgRect) {
-        return {
-          x: rect.x - svgRect.left,
-          y: rect.y - svgRect.top
-        };
-      }
-
-      function buildChoiceLinePath(key, boxRect, cardRect, svgRect) {
-        var isLeft = key.charAt(1) === "l";
-        var isTop = key.charAt(0) === "t";
-        var isMobile = mobileQuery.matches;
-        var side = isLeft ? -1 : 1;
-        var verticalSide = isTop ? -1 : 1;
-        var startRatio = isMobile ? 0.25 : 0.30;
-        var endRatio = isMobile ? 0.18 : 0.32;
-        var start = getChoiceLinePoint({
-          x: (isLeft ? boxRect.left : boxRect.right) + (side * 2),
-          y: (isTop ? boxRect.top + (boxRect.height * startRatio) : boxRect.bottom - (boxRect.height * startRatio))
-        }, svgRect);
-        var end = getChoiceLinePoint({
-          x: (isLeft ? cardRect.right : cardRect.left) - (side * (isMobile ? 7 : 10)),
-          y: (isTop ? cardRect.bottom - (cardRect.height * endRatio) : cardRect.top + (cardRect.height * endRatio))
-        }, svgRect);
-        var distanceX = Math.abs(end.x - start.x);
-        var distanceY = Math.abs(end.y - start.y);
-        var horizontalBend = isMobile
-          ? clampLineValue(distanceX * 0.72, 44, 128)
-          : clampLineValue(distanceX * 0.48, 90, 240);
-        var verticalBend = isMobile
-          ? clampLineValue(distanceY * 0.34 + 34, 42, 112)
-          : clampLineValue(distanceY * 0.30 + 48, 62, 150);
-        var controlA = {
-          x: start.x + (side * horizontalBend * 0.62),
-          y: start.y + (verticalSide * verticalBend * 0.38)
-        };
-        var controlB = {
-          x: end.x - (side * horizontalBend * 0.52),
-          y: end.y - (verticalSide * verticalBend * 0.46)
-        };
-
-        return [
-          "M", formatLineNumber(start.x), formatLineNumber(start.y),
-          "C", formatLineNumber(controlA.x), formatLineNumber(controlA.y),
-          formatLineNumber(controlB.x), formatLineNumber(controlB.y),
-          formatLineNumber(end.x), formatLineNumber(end.y)
-        ].join(" ");
-      }
-
-      function getChoiceCardMap(cards) {
-        var boxRect = choiceContent ? choiceContent.getBoundingClientRect() : null;
-        var result = {};
-        if (!boxRect) return result;
-
-        (cards || currentChoiceCards).forEach(function (cardData) {
-          var card = cardData && cardData.element;
-          if (!card) return;
-
-          var style = window.getComputedStyle(card);
-          var rect = card.getBoundingClientRect();
-          if (style.display === "none" || rect.width <= 0 || rect.height <= 0) return;
-
-          var key = (rect.top + rect.height / 2 < boxRect.top + boxRect.height / 2 ? "t" : "b") +
-            (rect.left + rect.width / 2 < boxRect.left + boxRect.width / 2 ? "l" : "r");
-          result[key] = rect;
-        });
-
-        return result;
-      }
-
-      function updateChoiceLines(cards) {
-        if (!choiceLines || !choiceContent || !choicePrompt) return false;
-
-        var svgRect = choiceLines.getBoundingClientRect();
-        var boxRect = choiceContent.getBoundingClientRect();
-        var cardMap = getChoiceCardMap(cards);
-        if (svgRect.width <= 0 || svgRect.height <= 0 || boxRect.width <= 0 || boxRect.height <= 0) return false;
-
-        choiceLines.setAttribute("viewBox", "0 0 " + formatLineNumber(svgRect.width) + " " + formatLineNumber(svgRect.height));
-
-        return choiceLineKeys.every(function (key) {
-          var paths = choiceLinePaths[key];
-          var cardRect = cardMap[key];
-          if (!paths || !paths.base || !paths.beam || !cardRect) return false;
-
-          var pathData = buildChoiceLinePath(key, boxRect, cardRect, svgRect);
-          paths.base.setAttribute("d", pathData);
-          paths.beam.setAttribute("d", pathData);
-          return true;
-        });
-      }
-
-      function showChoiceLines(cards) {
-        hideChoiceLines();
-        choiceLinesTimer = window.setTimeout(function () {
-          window.requestAnimationFrame(function () {
-            if (portfolioState !== "choice" || !stage || !stage.classList.contains("is-choice-menu") || stage.classList.contains("is-project-open")) return;
-            if (cards) currentChoiceCards = cards;
-            if (updateChoiceLines(cards || currentChoiceCards) && choicePrompt) {
-              choicePrompt.classList.add("is-choice-lines-ready");
-            }
-          });
-        }, 130);
-      }
-
-      function refreshChoiceLines() {
-        if (portfolioState !== "choice" || !stage || stage.classList.contains("is-project-open")) return;
-        window.clearTimeout(choiceLinesResizeTimer);
-        choiceLinesResizeTimer = window.setTimeout(function () {
-          if (updateChoiceLines(currentChoiceCards) && choicePrompt) {
-            choicePrompt.classList.add("is-choice-lines-ready");
-          }
-        }, 120);
-      }
-
       function enterChoiceState(cards) {
         if (portfolioState === "open") return;
         if (portfolioState === "choice" && (!cards || currentChoiceCards === cards)) return;
@@ -2676,7 +2587,6 @@
         setChoiceCardsInteractive(true);
         pauseAndResetChoiceVideos();
         pauseAndResetActiveMainVideos();
-        showChoiceLines(currentChoiceCards);
       }
 
       function leaveChoiceState() {
@@ -2684,7 +2594,6 @@
         var openedVideo = selectedDeviceVideo;
         var defaultSource = openedVideo ? openedVideo.getAttribute("data-default-src") : "";
 
-        hideChoiceLines();
         portfolioState = "scroll";
 
         Array.prototype.forEach.call(deviceReturnButtons, function (button) {
@@ -2742,7 +2651,6 @@
         setChoiceCardsInteractive(true);
         pauseAndResetChoiceVideos();
         pauseAndResetActiveMainVideos();
-        showChoiceLines(currentChoiceCards);
 
         if (cardToFocus) {
           window.setTimeout(function () {
@@ -2765,7 +2673,6 @@
         selectedDeviceVideo = targetDevice;
         selectedCard = card;
         portfolioState = "open";
-        hideChoiceLines();
         activeCardVideos.forEach(function (video) {
           pauseVideo(video, true);
         });
@@ -2818,8 +2725,6 @@
           playVisibleVideos();
         });
       }
-
-      window.addEventListener("resize", refreshChoiceLines, { passive: true });
 
       var heroObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
