@@ -940,19 +940,21 @@
   /* CARDS 3D */
   .linka-card {
     --linka-card-radius: 24px;
+    --linka-card-beam-angle: 0deg;
+    --linka-card-beam-delay: 0s;
 
     position: absolute;
     top: 50%;
     left: 50%;
     z-index: 20;
     overflow: hidden;
-    border: 1px solid rgba(104, 176, 255, 0.22);
+    border: 1.5px solid rgba(88, 177, 255, 0.50);
     border-radius: var(--linka-card-radius);
     background: #030a14;
     box-shadow:
-      0 22px 58px rgba(0, 4, 14, 0.46),
-      0 0 22px rgba(72, 153, 255, 0.055),
-      inset 0 0 0 1px rgba(178, 219, 255, 0.035);
+      0 22px 58px rgba(0, 4, 14, 0.48),
+      0 0 26px rgba(72, 153, 255, 0.14),
+      inset 0 0 0 1px rgba(178, 219, 255, 0.055);
     opacity: 0;
     transform-style: preserve-3d;
     transform-origin: center;
@@ -984,18 +986,39 @@
   }
 
   .linka-card.is-choice-ready {
-    border-color: rgba(102, 179, 255, 0.38);
+    border-color: rgba(102, 184, 255, 0.62);
     background: linear-gradient(145deg, rgba(10, 28, 52, 0.96), rgba(2, 8, 18, 0.98));
     box-shadow:
       0 24px 64px rgba(0, 5, 18, 0.56),
-      0 0 26px rgba(63, 149, 255, 0.075),
-      inset 0 0 0 1px rgba(187, 224, 255, 0.07),
+      0 0 31px rgba(63, 149, 255, 0.20),
+      0 0 54px rgba(34, 116, 218, 0.08),
+      inset 0 0 0 1px rgba(187, 224, 255, 0.09),
       inset 0 1px rgba(205, 232, 255, 0.12);
     animation: linka-card-breathe 5.6s ease-in-out infinite;
   }
 
   .linka-card.is-choice-ready:nth-of-type(even) {
     animation-delay: -2.4s;
+  }
+
+  .linka-desktop-card-1,
+  .linka-mobile-card-1 {
+    --linka-card-beam-delay: -0.8s;
+  }
+
+  .linka-desktop-card-2,
+  .linka-mobile-card-2 {
+    --linka-card-beam-delay: -2.15s;
+  }
+
+  .linka-desktop-card-3,
+  .linka-mobile-card-3 {
+    --linka-card-beam-delay: -3.35s;
+  }
+
+  .linka-desktop-card-4,
+  .linka-mobile-card-4 {
+    --linka-card-beam-delay: -4.55s;
   }
 
   .linka-card-ui {
@@ -1172,14 +1195,15 @@
 
   @media (hover: hover) {
     .linka-stage.is-choice-menu:not(.is-project-open) .linka-card.is-interactive:hover {
-      border-color: rgba(112, 190, 255, 0.58);
+      border-color: rgba(132, 207, 255, 0.84);
       box-shadow:
         0 30px 76px rgba(0, 4, 16, 0.64),
-        0 0 34px rgba(65, 157, 255, 0.13),
-        inset 0 0 0 1px rgba(190, 226, 255, 0.10),
-        inset 0 1px rgba(190, 226, 255, 0.17);
+        0 0 42px rgba(65, 157, 255, 0.30),
+        0 0 72px rgba(31, 113, 219, 0.13),
+        inset 0 0 0 1px rgba(190, 226, 255, 0.14),
+        inset 0 1px rgba(190, 226, 255, 0.20);
       translate: 0 -4px 16px;
-      scale: 1.025;
+      scale: 1.02;
       animation: none;
     }
 
@@ -1205,12 +1229,29 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    z-index: 3;
+    z-index: 4;
     pointer-events: none;
-    border: 1px solid rgba(186, 224, 255, 0.055);
-    background: linear-gradient(130deg, rgba(152, 210, 255, 0.10), transparent 30%, transparent 74%, rgba(72, 154, 255, 0.055));
+    border: 2px solid transparent;
+    background:
+      linear-gradient(130deg, rgba(174, 225, 255, 0.13), transparent 24%, transparent 72%, rgba(72, 164, 255, 0.08)) padding-box,
+      conic-gradient(
+        from var(--linka-card-beam-angle),
+        transparent 0deg 248deg,
+        rgba(69, 160, 255, 0.08) 266deg,
+        rgba(111, 194, 255, 0.62) 288deg,
+        rgba(221, 246, 255, 0.94) 302deg,
+        rgba(91, 183, 255, 0.72) 318deg,
+        rgba(54, 143, 241, 0.10) 338deg,
+        transparent 360deg
+      ) border-box;
+    background-clip: padding-box, border-box;
+    box-shadow:
+      inset 0 1px rgba(225, 242, 255, 0.10),
+      inset 0 0 22px rgba(72, 164, 255, 0.065);
     mix-blend-mode: screen;
-    opacity: 0.58;
+    opacity: 0.82;
+    animation: linka-card-border-beam 5.8s linear infinite;
+    animation-delay: var(--linka-card-beam-delay);
   }
 
   .linka-device-return {
@@ -1581,9 +1622,20 @@
     initial-value: 0deg;
   }
 
+  @property --linka-card-beam-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
   @keyframes linka-choice-border-beam {
     from { --linka-choice-beam-angle: 0deg; }
     to { --linka-choice-beam-angle: 360deg; }
+  }
+
+  @keyframes linka-card-border-beam {
+    from { --linka-card-beam-angle: 0deg; }
+    to { --linka-card-beam-angle: 360deg; }
   }
 
   @keyframes linka-choice-title-shine {
@@ -1944,16 +1996,15 @@
 
     .linka-stage.is-choice-menu:not(.is-project-open) .linka-card.is-interactive:active {
       border-color: rgba(125, 198, 255, 0.62);
-      translate: 0 -3px 12px;
-      scale: 1.015;
-      animation: none;
+      translate: 0 0 0;
+      scale: 1;
     }
 
     .linka-stage.is-choice-menu:not(.is-project-open) .linka-card.is-interactive:active .linka-card-action {
       border-color: rgba(125, 198, 255, 0.54);
       background: rgba(8, 31, 61, 0.82);
       box-shadow: 0 0 15px rgba(67, 156, 255, 0.09), inset 0 1px rgba(255, 255, 255, 0.08);
-      transform: scale(1.02);
+      transform: none;
     }
 
     .linka-choice-prompt {
@@ -2071,6 +2122,7 @@
     .linka-laptop-screen::after,
     .linka-phone-screen::after,
     .linka-card::before,
+    .linka-card::after,
     .linka-ambient::before,
     .linka-ambient::after,
     .linka-orbit,
