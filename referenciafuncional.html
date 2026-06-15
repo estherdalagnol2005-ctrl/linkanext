@@ -2552,8 +2552,8 @@
         var isMobile = mobileQuery.matches;
         var side = isLeft ? -1 : 1;
         var verticalSide = isTop ? -1 : 1;
-        var startRatio = isMobile ? 0.26 : 0.28;
-        var endRatio = isMobile ? 0.22 : 0.30;
+        var startRatio = isMobile ? 0.25 : 0.30;
+        var endRatio = isMobile ? 0.18 : 0.32;
         var start = getChoiceLinePoint({
           x: (isLeft ? boxRect.left : boxRect.right) + (side * 2),
           y: (isTop ? boxRect.top + (boxRect.height * startRatio) : boxRect.bottom - (boxRect.height * startRatio))
@@ -2564,43 +2564,25 @@
         }, svgRect);
         var distanceX = Math.abs(end.x - start.x);
         var distanceY = Math.abs(end.y - start.y);
-        var outerOffset = isMobile
-          ? clampLineValue(distanceX * 0.42, 34, 92)
-          : clampLineValue(distanceX * 0.30, 70, 170);
-        var entryTangent = isMobile
-          ? clampLineValue(distanceX * 0.36, 34, 86)
-          : clampLineValue(distanceX * 0.28, 72, 150);
-        var verticalRound = isMobile
-          ? clampLineValue(distanceY * 0.48 + 28, 48, 128)
-          : clampLineValue(distanceY * 0.46 + 46, 82, 190);
-        var outerX = isLeft
-          ? Math.min(start.x, end.x) - outerOffset
-          : Math.max(start.x, end.x) + outerOffset;
-        var outerY = ((start.y + end.y) / 2) + (verticalSide * verticalRound);
+        var horizontalBend = isMobile
+          ? clampLineValue(distanceX * 0.72, 44, 128)
+          : clampLineValue(distanceX * 0.48, 90, 240);
+        var verticalBend = isMobile
+          ? clampLineValue(distanceY * 0.34 + 34, 42, 112)
+          : clampLineValue(distanceY * 0.30 + 48, 62, 150);
         var controlA = {
-          x: start.x + (side * entryTangent),
-          y: start.y + (verticalSide * verticalRound * 0.08)
+          x: start.x + (side * horizontalBend * 0.62),
+          y: start.y + (verticalSide * verticalBend * 0.38)
         };
         var controlB = {
-          x: outerX,
-          y: start.y + (verticalSide * verticalRound * 0.58)
-        };
-        var controlC = {
-          x: outerX,
-          y: end.y + (verticalSide * verticalRound * 0.58)
-        };
-        var controlD = {
-          x: end.x - (side * entryTangent * 0.72),
-          y: end.y + (verticalSide * verticalRound * 0.08)
+          x: end.x - (side * horizontalBend * 0.52),
+          y: end.y - (verticalSide * verticalBend * 0.46)
         };
 
         return [
           "M", formatLineNumber(start.x), formatLineNumber(start.y),
           "C", formatLineNumber(controlA.x), formatLineNumber(controlA.y),
           formatLineNumber(controlB.x), formatLineNumber(controlB.y),
-          formatLineNumber(outerX), formatLineNumber(outerY),
-          "C", formatLineNumber(controlC.x), formatLineNumber(controlC.y),
-          formatLineNumber(controlD.x), formatLineNumber(controlD.y),
           formatLineNumber(end.x), formatLineNumber(end.y)
         ].join(" ");
       }
