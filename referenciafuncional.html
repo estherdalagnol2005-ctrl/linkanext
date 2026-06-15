@@ -645,7 +645,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 9;
+    z-index: 18;
     display: block;
     width: min(1120px, 96vw);
     height: min(760px, 84vh);
@@ -653,7 +653,7 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translate(-50%, -48%);
+    transform: translate3d(-50%, -48%, 0);
     transition:
       opacity 460ms ease 80ms,
       visibility 0s linear 540ms;
@@ -1991,7 +1991,8 @@
     .linka-choice-orbits {
       width: min(360px, 100vw);
       height: min(470px, 76vh);
-      transform: translate(-50%, -47%);
+      overflow: visible;
+      transform: translate3d(-50%, -47%, 0);
     }
 
     .linka-choice-orbits-desktop {
@@ -1999,7 +2000,7 @@
     }
 
     .linka-choice-orbits-mobile {
-      display: block;
+      display: inline;
     }
 
     .linka-choice-orbit-base {
