@@ -33,6 +33,12 @@ function adaptPortfolioBehavior(source: string) {
       var defaultMainSources = new WeakMap();
       var interactionTimers = [];
       var isDisposed = false;
+      var choicePanel = hero.querySelector(".linka-choice-content");
+      var choiceIntroItems = choicePanel
+        ? Array.prototype.slice.call(choicePanel.querySelectorAll(".escolha-projeto, .titulo-principal, .linka-choice-contact"))
+        : [];
+      var choiceIntroTimeline = null;
+      var choiceIntroPlayed = false;
 
       function listen(target, type, handler, options) {
         var listenerOptions = typeof options === "boolean"
@@ -92,6 +98,32 @@ function adaptPortfolioBehavior(source: string) {
 
       function getDefaultMainSource(video) {
         return video ? defaultMainSources.get(video) || "" : "";
+      }
+
+      function playChoiceIntro() {
+        if (choiceIntroPlayed || !choicePanel || !window.gsap) return;
+        choiceIntroPlayed = true;
+
+        choiceIntroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+        choiceIntroTimeline.fromTo(choicePanel, {
+          autoAlpha: 0,
+          "--linka-choice-entry-y": "18px",
+          "--linka-choice-entry-scale": 0.97
+        }, {
+          autoAlpha: 1,
+          "--linka-choice-entry-y": "0px",
+          "--linka-choice-entry-scale": 1,
+          duration: 0.9
+        }, 0);
+        choiceIntroTimeline.fromTo(choiceIntroItems, {
+          autoAlpha: 0,
+          y: 10
+        }, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.82,
+          stagger: 0.1
+        }, 0.08);
       }
 
       function loadVideo(video) {
@@ -316,12 +348,12 @@ function adaptPortfolioBehavior(source: string) {
   script = replaceRequired(
     script,
     "        setChoiceCardsInteractive(true);\n        pauseAndResetChoiceVideos();\n        pauseAndResetActiveMainVideos();",
-    "        setChoiceCardsInteractive(true);\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
+    "        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
   );
   script = replaceRequired(
     script,
     "        setChoiceCardsInteractive(true);\n        pauseAndResetChoiceVideos();\n        pauseAndResetActiveMainVideos();",
-    "        setChoiceCardsInteractive(true);\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
+    "        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
   );
   script = replaceRequired(
     script,
@@ -500,6 +532,7 @@ function adaptPortfolioBehavior(source: string) {
         interactionTimers.forEach(function (timer) { window.clearTimeout(timer); });
         if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
         if (introTween) introTween.kill();
+        if (choiceIntroTimeline) choiceIntroTimeline.kill();
         media.revert();
         activeMainVideos.forEach(function (video) { pauseVideo(video); });
         activeCardVideos.forEach(function (video) { pauseVideo(video); });
