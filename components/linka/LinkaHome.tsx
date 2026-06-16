@@ -1,9 +1,9 @@
-import ExperienceSection from "./ExperienceSection";
 import Footer from "./Footer";
 import GlobalBackground from "./GlobalBackground";
 import Header from "./Header";
 import Hero from "./Hero";
 import LinkaSiteEffects from "./LinkaSiteEffects";
+import PortfolioSection from "./PortfolioSection";
 import PromoSection from "./PromoSection";
 import TechStackStrip from "./TechStackStrip";
 import TransitionCta from "./TransitionCta";
@@ -15,7 +15,7 @@ export default function LinkaHome() {
       <Header />
       <main className="linka-site-content">
         <Hero />
-        <ExperienceSection />
+        <PortfolioSection />
         <TechStackStrip />
         <PromoSection />
         <TransitionCta />
