@@ -6,7 +6,7 @@
   color: #fff;
   position: relative;
   isolation: isolate;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 
@@ -52,7 +52,7 @@ body {
   margin: 0 !important;
   min-height: 100% !important;
   background: #050609 !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
 }
 
 body {
@@ -1787,7 +1787,7 @@ body {
 
 
 
-html,body{max-width:100%!important;overflow-x:hidden!important}
+html,body{max-width:100%!important;overflow-x:clip!important}
 
 .linka-copy-v64,
 .linka-copy-v64 *{box-sizing:border-box}
@@ -4560,4 +4560,3 @@ html,body{max-width:100%!important;overflow-x:hidden!important}
     grid-template-columns:10px 13px 1fr 3px 1fr!important;
   }
 }
-
