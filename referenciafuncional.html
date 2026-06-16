@@ -26,72 +26,6 @@
         <span class="linka-tech-node linka-tech-node-right"></span>
       </div>
 
-      <svg class="linka-choice-orbits" viewBox="0 0 1000 700" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="linka-choice-orbit-beam-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#56b8ff" stop-opacity="0"></stop>
-            <stop offset="35%" stop-color="#7dccff" stop-opacity="0.86"></stop>
-            <stop offset="52%" stop-color="#f1fbff" stop-opacity="1"></stop>
-            <stop offset="70%" stop-color="#6bc4ff" stop-opacity="0.78"></stop>
-            <stop offset="100%" stop-color="#56b8ff" stop-opacity="0"></stop>
-          </linearGradient>
-
-          <filter id="linka-choice-orbit-base-glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="1.1" result="orbitBaseBlur"></feGaussianBlur>
-            <feMerge>
-              <feMergeNode in="orbitBaseBlur"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-          </filter>
-
-          <filter id="linka-choice-orbit-beam-glow" x="-28%" y="-28%" width="156%" height="156%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="orbitBeamBlur"></feGaussianBlur>
-            <feMerge>
-              <feMergeNode in="orbitBeamBlur"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g class="linka-choice-orbits-layer linka-choice-orbits-desktop">
-          <g class="linka-choice-orbit linka-choice-orbit-tl">
-            <path class="linka-choice-orbit-base" d="M 424 292 A 340 340 0 0 0 96 128" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 424 292 A 340 340 0 0 0 96 128" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-tr">
-            <path class="linka-choice-orbit-base" d="M 576 292 A 340 340 0 0 1 904 128" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 576 292 A 340 340 0 0 1 904 128" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-bl">
-            <path class="linka-choice-orbit-base" d="M 424 408 A 340 340 0 0 1 96 572" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 424 408 A 340 340 0 0 1 96 572" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-br">
-            <path class="linka-choice-orbit-base" d="M 576 408 A 340 340 0 0 0 904 572" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 576 408 A 340 340 0 0 0 904 572" pathLength="100"></path>
-          </g>
-        </g>
-
-        <g class="linka-choice-orbits-layer linka-choice-orbits-mobile">
-          <g class="linka-choice-orbit linka-choice-orbit-tl">
-            <path class="linka-choice-orbit-base" d="M 232 318 A 210 210 0 0 0 286 154" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 232 318 A 210 210 0 0 0 286 154" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-tr">
-            <path class="linka-choice-orbit-base" d="M 768 318 A 210 210 0 0 1 714 154" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 768 318 A 210 210 0 0 1 714 154" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-bl">
-            <path class="linka-choice-orbit-base" d="M 232 382 A 210 210 0 0 1 286 546" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 232 382 A 210 210 0 0 1 286 546" pathLength="100"></path>
-          </g>
-          <g class="linka-choice-orbit linka-choice-orbit-br">
-            <path class="linka-choice-orbit-base" d="M 768 382 A 210 210 0 0 0 714 546" pathLength="100"></path>
-            <path class="linka-choice-orbit-beam" d="M 768 382 A 210 210 0 0 0 714 546" pathLength="100"></path>
-          </g>
-        </g>
-      </svg>
-
       <div class="linka-device-wrap">
         <!-- NOTEBOOK -->
         <div class="linka-laptop">
@@ -232,6 +166,100 @@
     </div>
 
     <div class="linka-choice-prompt" aria-hidden="true">
+      <svg class="linka-choice-lines linka-choice-lines-desktop" viewBox="0 0 780 700" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="linka-choice-line-beam-desktop" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4aaeff" stop-opacity="0"></stop>
+            <stop offset="36%" stop-color="#69c3ff" stop-opacity="0.70"></stop>
+            <stop offset="54%" stop-color="#b7e7ff" stop-opacity="0.92"></stop>
+            <stop offset="72%" stop-color="#65c2ff" stop-opacity="0.66"></stop>
+            <stop offset="100%" stop-color="#4aaeff" stop-opacity="0"></stop>
+          </linearGradient>
+
+          <filter id="linka-choice-line-base-glow-desktop" x="-22%" y="-22%" width="144%" height="144%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.15" result="lineBaseBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="lineBaseBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+
+          <filter id="linka-choice-line-beam-glow-desktop" x="-26%" y="-26%" width="152%" height="152%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.9" result="lineBeamBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="lineBeamBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g class="linka-choice-lines-layer">
+          <g class="linka-choice-line linka-choice-line-tl">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-desktop)" d="M 190 282 C 102 282 108 154 34 154" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-desktop)" filter="url(#linka-choice-line-beam-glow-desktop)" d="M 190 282 C 102 282 108 154 34 154" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-tr">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-desktop)" d="M 590 282 C 678 282 672 154 746 154" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-desktop)" filter="url(#linka-choice-line-beam-glow-desktop)" d="M 590 282 C 678 282 672 154 746 154" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-bl">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-desktop)" d="M 190 418 C 102 418 108 546 34 546" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-desktop)" filter="url(#linka-choice-line-beam-glow-desktop)" d="M 190 418 C 102 418 108 546 34 546" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-br">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-desktop)" d="M 590 418 C 678 418 672 546 746 546" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-desktop)" filter="url(#linka-choice-line-beam-glow-desktop)" d="M 590 418 C 678 418 672 546 746 546" pathLength="100"></path>
+          </g>
+        </g>
+      </svg>
+
+      <svg class="linka-choice-lines linka-choice-lines-mobile" viewBox="0 0 390 760" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="linka-choice-line-beam-mobile" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4aaeff" stop-opacity="0"></stop>
+            <stop offset="36%" stop-color="#69c3ff" stop-opacity="0.70"></stop>
+            <stop offset="54%" stop-color="#b7e7ff" stop-opacity="0.92"></stop>
+            <stop offset="72%" stop-color="#65c2ff" stop-opacity="0.66"></stop>
+            <stop offset="100%" stop-color="#4aaeff" stop-opacity="0"></stop>
+          </linearGradient>
+
+          <filter id="linka-choice-line-base-glow-mobile" x="-26%" y="-26%" width="152%" height="152%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="lineMobileBaseBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="lineMobileBaseBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+
+          <filter id="linka-choice-line-beam-glow-mobile" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.65" result="lineMobileBeamBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="lineMobileBeamBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g class="linka-choice-lines-layer">
+          <g class="linka-choice-line linka-choice-line-tl">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-mobile)" d="M 98 354 C 54 354 58 260 88 260" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-mobile)" filter="url(#linka-choice-line-beam-glow-mobile)" d="M 98 354 C 54 354 58 260 88 260" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-tr">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-mobile)" d="M 292 354 C 336 354 332 260 302 260" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-mobile)" filter="url(#linka-choice-line-beam-glow-mobile)" d="M 292 354 C 336 354 332 260 302 260" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-bl">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-mobile)" d="M 98 446 C 54 446 58 552 88 552" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-mobile)" filter="url(#linka-choice-line-beam-glow-mobile)" d="M 98 446 C 54 446 58 552 88 552" pathLength="100"></path>
+          </g>
+          <g class="linka-choice-line linka-choice-line-br">
+            <path class="linka-choice-line-base" filter="url(#linka-choice-line-base-glow-mobile)" d="M 292 446 C 336 446 332 552 302 552" pathLength="100"></path>
+            <path class="linka-choice-line-beam" stroke="url(#linka-choice-line-beam-mobile)" filter="url(#linka-choice-line-beam-glow-mobile)" d="M 292 446 C 336 446 332 552 302 552" pathLength="100"></path>
+          </g>
+        </g>
+      </svg>
+
       <div class="linka-choice-content linka-choice-panel">
         <span class="escolha-projeto">ESCOLHA O PROJETO</span>
         <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
@@ -641,82 +669,73 @@
     animation-delay: -2.9s;
   }
 
-  .linka-choice-orbits {
+  .linka-choice-lines {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 18;
+    inset: 0;
+    z-index: 3;
     display: block;
-    width: min(1120px, 96vw);
-    height: min(760px, 84vh);
+    width: 100%;
+    height: 100%;
     overflow: visible;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translate3d(-50%, -48%, 0);
+    transform: translateZ(0);
     transition:
-      opacity 460ms ease 80ms,
-      visibility 0s linear 540ms;
+      opacity 360ms ease,
+      visibility 0s linear 360ms;
   }
 
-  .linka-stage.is-choice-menu:not(.is-project-open) .linka-choice-orbits {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 140ms, 0s;
-  }
-
-  .linka-choice-orbits-layer,
-  .linka-choice-orbit-base,
-  .linka-choice-orbit-beam {
-    pointer-events: none;
-  }
-
-  .linka-choice-orbits-mobile {
+  .linka-choice-lines-mobile {
     display: none;
   }
 
-  .linka-choice-orbit-base,
-  .linka-choice-orbit-beam {
+  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-lines {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 240ms, 0s;
+  }
+
+  .linka-choice-lines-layer,
+  .linka-choice-line,
+  .linka-choice-line-base,
+  .linka-choice-line-beam {
+    pointer-events: none;
+  }
+
+  .linka-choice-line-base,
+  .linka-choice-line-beam {
     fill: none;
     stroke-linecap: round;
     vector-effect: non-scaling-stroke;
   }
 
-  .linka-choice-orbit-base {
-    stroke: rgba(99, 188, 255, 0.52);
-    stroke-width: 1.25px;
-    filter: url(#linka-choice-orbit-base-glow);
+  .linka-choice-line-base {
+    stroke: rgba(92, 181, 255, 0.60);
+    stroke-width: 1.5px;
   }
 
-  .linka-choice-orbit-beam {
-    stroke: url(#linka-choice-orbit-beam-gradient);
-    stroke-width: 2px;
-    stroke-dasharray: 12 88;
+  .linka-choice-line-beam {
+    stroke-width: 2.05px;
+    stroke-dasharray: 13 87;
     stroke-dashoffset: 100;
-    opacity: 0.98;
-    filter: url(#linka-choice-orbit-beam-glow);
-    animation: linka-choice-orbit-flow 5.6s linear infinite;
+    opacity: 0.9;
+    animation: linka-choice-line-flow 5.8s linear infinite;
   }
 
-  .linka-choice-orbit-tr .linka-choice-orbit-beam {
-    animation-duration: 6.2s;
-    animation-delay: -1.35s;
+  .linka-choice-line-tr .linka-choice-line-beam {
+    animation-duration: 6.3s;
+    animation-delay: -1.45s;
   }
 
-  .linka-choice-orbit-bl .linka-choice-orbit-beam {
+  .linka-choice-line-bl .linka-choice-line-beam {
     animation-duration: 6.7s;
-    animation-delay: -2.8s;
+    animation-delay: -2.85s;
   }
 
-  .linka-choice-orbit-br .linka-choice-orbit-beam {
-    animation-duration: 5.1s;
-    animation-delay: -3.65s;
-  }
-
-  @media (min-width: 768px) {
-    .linka-choice-orbits {
-      z-index: 40;
-    }
+  .linka-choice-line-br .linka-choice-line-beam {
+    animation-duration: 5.3s;
+    animation-delay: -3.7s;
   }
 
   .linka-device-wrap {
@@ -1735,7 +1754,7 @@
     48%, 100% { background-position: -110% 50%; }
   }
 
-  @keyframes linka-choice-orbit-flow {
+  @keyframes linka-choice-line-flow {
     from { stroke-dashoffset: 100; }
     to { stroke-dashoffset: 0; }
   }
@@ -1994,28 +2013,21 @@
       opacity: 0.56;
     }
 
-    .linka-choice-orbits {
-      width: min(360px, 100vw);
-      height: min(470px, 76vh);
-      overflow: visible;
-      transform: translate3d(-50%, -47%, 0);
-    }
-
-    .linka-choice-orbits-desktop {
+    .linka-choice-lines-desktop {
       display: none;
     }
 
-    .linka-choice-orbits-mobile {
+    .linka-choice-lines-mobile {
       display: block;
     }
 
-    .linka-choice-orbit-base {
-      stroke-width: 1.15px;
-      stroke: rgba(103, 193, 255, 0.56);
+    .linka-choice-line-base {
+      stroke-width: 1.5px;
+      stroke: rgba(95, 188, 255, 0.62);
     }
 
-    .linka-choice-orbit-beam {
-      stroke-width: 1.85px;
+    .linka-choice-line-beam {
+      stroke-width: 1.95px;
       stroke-dasharray: 14 86;
     }
 
@@ -2251,13 +2263,13 @@
     .linka-tech-orbit,
     .linka-tech-node,
     .linka-choice-content::before,
-    .linka-choice-orbit-beam,
+    .linka-choice-line-beam,
     .linka-choice-prompt .escolha-projeto,
     .linka-choice-contact::before {
       animation: none;
     }
 
-    .linka-choice-orbit-beam {
+    .linka-choice-line-beam {
       stroke-dashoffset: 0;
     }
   }
