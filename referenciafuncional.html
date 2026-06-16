@@ -1,13 +1,6 @@
 <!-- LINKA HERO - PORTFOLIO 3D REFINADO -->
 <section class="linka-hero" id="inicio" aria-label="Portfolio Linka Digital">
   <div class="linka-sticky">
-    <header class="linka-header">
-      <nav class="linka-nav" aria-label="Navegacao principal">
-        <a href="#projetos">Projetos</a>
-        <a href="#servicos">Servicos</a>
-      </nav>
-    </header>
-
     <div class="linka-stage">
       <div class="linka-orbit" aria-hidden="true"></div>
       <div class="linka-tech-field" aria-hidden="true">
@@ -334,44 +327,7 @@
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
-    background:
-      radial-gradient(ellipse at 50% 48%, rgba(45, 124, 220, 0.17), transparent 31%),
-      radial-gradient(ellipse at 50% 51%, rgba(15, 74, 151, 0.08), transparent 48%),
-      radial-gradient(ellipse at 18% 72%, rgba(34, 117, 225, 0.055), transparent 27%),
-      radial-gradient(ellipse at 82% 24%, rgba(88, 166, 255, 0.045), transparent 25%),
-      linear-gradient(180deg, #01040a 0%, #030914 52%, #01040a 100%);
-  }
-
-  .linka-ambient::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: min(980px, 92vw);
-    aspect-ratio: 1.72;
-    border-radius: 50%;
-    border: 1px solid rgba(101, 174, 255, 0.13);
-    box-shadow:
-      0 0 20px rgba(65, 151, 255, 0.065),
-      0 0 72px rgba(45, 133, 235, 0.055),
-      inset 0 0 42px rgba(45, 133, 235, 0.03);
-    opacity: 0.58;
-    transform: translate(-50%, -47%) rotate(-9deg);
-    animation: linka-orbit-drift 46s linear infinite;
-  }
-
-  .linka-ambient::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.32;
-    background-image:
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2358a6ff' stroke-width='1'%3E%3Cellipse cx='600' cy='410' rx='430' ry='150' opacity='.16' transform='rotate(12 600 410)' stroke-dasharray='260 118 58 156'/%3E%3Cellipse cx='604' cy='414' rx='310' ry='96' opacity='.11' transform='rotate(-17 604 414)' stroke-dasharray='170 92 46 130'/%3E%3Cpath d='M226 560a470 190 0 0 1 750-56' opacity='.12'/%3E%3Cpath d='M832 220a180 180 0 0 1 145 130' opacity='.13'/%3E%3Ccircle cx='260' cy='260' r='58' opacity='.10' stroke-dasharray='96 70'/%3E%3Ccircle cx='940' cy='575' r='76' opacity='.09' stroke-dasharray='124 88'/%3E%3C/g%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-    background-position: center, center;
-    background-size: min(1200px, 112vw) auto, 180px 180px;
-    mix-blend-mode: screen;
-    animation: linka-ambient-breathe 12s ease-in-out infinite;
+    background: transparent;
   }
 
   .linka-sticky {
@@ -384,64 +340,6 @@
     isolation: isolate;
   }
 
-  .linka-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 90;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 26px clamp(20px, 5vw, 72px);
-    pointer-events: none;
-  }
-
-  .linka-logo,
-  .linka-nav {
-    pointer-events: auto;
-  }
-
-  .linka-logo {
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: 0.28em;
-    text-decoration: none;
-    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
-  }
-
-  .linka-nav {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    padding: 5px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(15, 14, 13, 0.58);
-    box-shadow: inset 0 1px rgba(255, 255, 255, 0.06), 0 12px 40px rgba(0, 0, 0, 0.16);
-    -webkit-backdrop-filter: blur(16px) saturate(130%);
-    backdrop-filter: blur(16px) saturate(130%);
-  }
-
-  .linka-nav a {
-    padding: 9px 13px;
-    border-radius: 999px;
-    color: rgba(226, 238, 255, 0.68);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    transition: color 220ms ease, background-color 220ms ease;
-  }
-
-  .linka-nav a:hover,
-  .linka-nav a:focus-visible {
-    color: var(--ink);
-    background: rgba(255, 255, 255, 0.08);
-    outline: none;
-  }
 
   .linka-stage {
     position: relative;
@@ -450,7 +348,7 @@
     width: 100%;
     height: 100%;
     place-items: center;
-    padding-top: 58px;
+    padding-top: 0;
     perspective: 1600px;
     transform-style: preserve-3d;
   }
@@ -1774,10 +1672,6 @@
     50% { opacity: 0.40; }
   }
 
-  @keyframes linka-ambient-breathe {
-    0%, 100% { opacity: 0.26; }
-    50% { opacity: 0.36; }
-  }
 
   @keyframes linka-tech-spin-a {
     from { transform: translate(-50%, -50%) rotate(-12deg); }
@@ -1854,50 +1748,10 @@
       min-height: var(--linka-mobile-hero-height, 500svh);
     }
 
-    .linka-ambient {
-      background:
-        radial-gradient(ellipse at 50% 48%, rgba(45, 124, 220, 0.13), transparent 27%),
-        radial-gradient(ellipse at 50% 51%, rgba(15, 74, 151, 0.07), transparent 42%),
-        linear-gradient(180deg, #01040a 0%, #030914 52%, #01040a 100%);
-    }
 
-    .linka-ambient::before {
-      width: 82vw;
-      aspect-ratio: 1.55;
-      border-color: rgba(101, 174, 255, 0.10);
-      box-shadow:
-        0 0 16px rgba(65, 151, 255, 0.045),
-        0 0 48px rgba(45, 133, 235, 0.04);
-      opacity: 0.42;
-    }
-
-    .linka-ambient::after {
-      opacity: 0.20;
-      background-size: 94vw auto, 180px 180px;
-      mix-blend-mode: soft-light;
-    }
-
-    .linka-header {
-      padding: 19px 16px;
-    }
-
-    .linka-logo {
-      font-size: 13px;
-      letter-spacing: 0.24em;
-    }
-
-    .linka-nav {
-      padding: 4px;
-    }
-
-    .linka-nav a {
-      display: inline-flex;
-      padding: 8px 11px;
-      font-size: 11px;
-    }
 
     .linka-stage {
-      padding-top: 54px;
+      padding-top: 0;
       perspective: 1250px;
     }
 
@@ -2248,8 +2102,6 @@
     .linka-laptop-screen::after,
     .linka-phone-screen::after,
     .linka-card::before,
-    .linka-ambient::before,
-    .linka-ambient::after,
     .linka-orbit,
     .linka-tech-orbit,
     .linka-tech-node,
@@ -3026,3 +2878,4 @@
     }
   })();
 </script>
+
