@@ -1689,7 +1689,7 @@ body {
   box-sizing:border-box;
   width:min(800px,100%);
   margin:0 auto;
-  padding:100px 24px 60px;
+  padding:100px 24px 22px;
   text-align:center;
   position:relative;
   z-index:3;
@@ -1734,12 +1734,12 @@ body {
 @media(min-width:768px){
   .linka-portfolio-mount .linka-sticky{
     box-sizing:border-box;
-    padding-top:clamp(104px, 12vh, 132px);
+    padding-top:clamp(84px, 9vh, 104px);
   }
 
   .linka-portfolio-mount .linka-choice-prompt{
     box-sizing:border-box;
-    padding-top:clamp(104px, 12vh, 132px);
+    padding-top:clamp(84px, 9vh, 104px);
   }
 }
 
