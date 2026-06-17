@@ -3430,9 +3430,12 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lp8-copy h2 strong{
   display:block;
   margin-top:6px;
-  color:#7dd3fc;
+  color:#8bff4f!important;
+  -webkit-text-fill-color:#8bff4f!important;
   font-weight:900;
-  text-shadow:0 0 34px rgba(125,211,252,.20);
+  text-shadow:
+    0 0 18px rgba(139,255,79,.16),
+    0 0 42px rgba(139,255,79,.06)!important;
 }
 
 .lp8-copy p{
