@@ -1778,6 +1778,11 @@ body {
     text-align:center;
   }
 
+  .linka-portfolio-intro h2 em{
+    display:inline-block;
+    white-space:nowrap;
+  }
+
   .linka-portfolio-intro p{
     width:100%;
     max-width:340px;
