@@ -14,11 +14,13 @@ type LenisSingleton = {
 declare global {
   interface Window {
     __LINKA_LENIS__?: LenisSingleton;
+    __LINKA_PRELOADER_DONE__?: boolean;
   }
 }
 
 const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const PRELOADER_DONE_EVENT = "linka:preloader:done";
 
 export default function LenisProvider() {
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function LenisProvider() {
     const finePointer = window.matchMedia(FINE_POINTER_QUERY);
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
     let refreshFrame: number | null = null;
+    let preloaderDone = window.__LINKA_PRELOADER_DONE__ === true;
 
     const shouldUseSmoothScroll = () => finePointer.matches && !reducedMotion.matches;
 
@@ -74,15 +77,24 @@ export default function LenisProvider() {
     };
 
     const sync = () => {
+      if (!preloaderDone) return;
       if (shouldUseSmoothScroll()) start();
       else stop();
     };
 
-    sync();
+    const handlePreloaderDone = () => {
+      preloaderDone = true;
+      sync();
+    };
+
+    if (preloaderDone) sync();
+    else window.addEventListener(PRELOADER_DONE_EVENT, handlePreloaderDone, { once: true });
+
     finePointer.addEventListener("change", sync);
     reducedMotion.addEventListener("change", sync);
 
     return () => {
+      window.removeEventListener(PRELOADER_DONE_EVENT, handlePreloaderDone);
       finePointer.removeEventListener("change", sync);
       reducedMotion.removeEventListener("change", sync);
       stop(false);
