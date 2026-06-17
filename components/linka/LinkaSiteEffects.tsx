@@ -57,7 +57,7 @@ const COPY = {
     footerContact: "Contato",
     footerRights: "© 2026 Linka Studio. Todos os direitos reservados.",
     footerTagline: "Conexões digitais com mais clareza, valor e presença.",
-    switchAria: "Trocar idioma para inglês",
+    switchAria: "Escolher idioma",
     headerStartAria: "Voltar para o início",
     coreAria: "Ativar núcleo Linka",
     closeAria: "Fechar desconto",
@@ -127,7 +127,7 @@ const COPY = {
     footerContact: "Contact",
     footerRights: "© 2026 Linka Studio. All rights reserved.",
     footerTagline: "Digital connections with greater clarity, value and presence.",
-    switchAria: "Switch language to Portuguese",
+    switchAria: "Choose language",
     headerStartAria: "Back to the top",
     coreAria: "Activate the Linka core",
     closeAria: "Close discount",
@@ -149,6 +149,75 @@ const COPY = {
     portfolioBrand: "Brand, clarity and conversion",
     portfolioCommunication: "Communication that converts",
   },
+  es: {
+    title: "Linka Studio | Experiencias Digitales",
+    description: "Linka crea sitios web, landing pages y experiencias digitales con presencia, claridad y valor.",
+    heroKicker: "<span></span> CONECTA HOY. CRECE MAÑANA.",
+    heroTitle: "Transformamos tu marca en una <strong>experiencia digital para tus clientes.</strong>",
+    heroBody:
+      "Linka crea sitios web, landing pages y experiencias online para que tu marca destaque con estilo, comunique con claridad y convierta visitantes en clientes.",
+    heroCta: "Agendar mi reunión",
+    heroMagic: "Toque mágico",
+    expKicker: "<span></span> LINKA EXPERIENCE",
+    expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
+    expLead:
+      "Linka crea sitios web y experiencias digitales con más presencia, más claridad y mayor valor percibido para tu marca.",
+    card1b: "CREA VALOR DIGITAL",
+    card1h: "Identidad digital con autoridad.",
+    card1p:
+      "Linka crea sitios web y experiencias digitales que hacen que tu empresa sea vista con más autoridad, más confianza y más valor por los clientes adecuados.",
+    card1s: "Autoridad digital",
+    card2b: "TOQUE MÁGICO",
+    card2h: "Tu marca será recordada.",
+    card2p:
+      "Con Linka, tu sitio se convierte en más que un sitio web. Se transforma en una experiencia online para encantar a tus clientes y fortalecer tu marca.",
+    card2s: "Experiencia premium",
+    card3b: "PRESENCIA QUE CONECTA",
+    card3h: "Más presencia. Más percepción.",
+    card3p:
+      "Una presencia digital bien construida transmite valor al instante, mejora tu imagen y acerca tu empresa a clientes más preparados para comprar.",
+    card3s: "Percepción de valor",
+    stack: "STACK PREMIUM",
+    promoOff: "OFF liberado",
+    promoHint: "Haz clic en el <b>núcleo Linka</b><br>y desbloquea tu condición especial",
+    promoProgress: "Activando presencia digital...",
+    promoBadge: "Beneficio exclusivo desbloqueado",
+    promoWon: "Liberaste <strong>25% OFF</strong>",
+    promoRewardBody: "Para crear tu sitio web o landing page con Linka.",
+    promoClaim: "Reclamar mi 25% OFF",
+    promoKicker: "<span></span> Promoción de lanzamiento",
+    promoTitle: "Aprovecha nuestra promoción especial.<strong>Y genera alto valor para tu empresa.</strong>",
+    promoBody:
+      "Contacta ahora a nuestro equipo y recibe una condición especial para iniciar tu proyecto de la forma correcta.",
+    promoCta: "Quiero mi Linka",
+    transition: "Ser igual a los demás no es nuestra filosofía. Haz que tu marca sea recordada con las creaciones de Linka.",
+    transitionCta: "WhatsApp de Linka",
+    footerBody: "Rompe el patrón. Construye una presencia digital sofisticada y con estilo junto a Linka.",
+    footerContact: "Contacto",
+    footerRights: "© 2026 Linka Studio. Todos los derechos reservados.",
+    footerTagline: "Conexiones digitales con más claridad, valor y presencia.",
+    switchAria: "Elegir idioma",
+    headerStartAria: "Volver al inicio",
+    coreAria: "Activar núcleo Linka",
+    closeAria: "Cerrar descuento",
+    techAria: "Tecnologías utilizadas por Linka",
+    platformsAria: "Plataformas de inteligencia artificial, publicidad y comunicación",
+    portfolioIntroKicker: "PORTAFOLIO SELECCIONADO",
+    portfolioIntroTitle: "Proyectos que <em>cobran vida.</em>",
+    portfolioIntroBody: "Sitios web diseñados para transformar marcas en experiencias digitales memorables.",
+    portfolioChoiceKicker: "ELIGE EL PROYECTO",
+    portfolioChoiceTitleStart: "que quieres",
+    portfolioChoiceTitleEm: "explorar",
+    portfolioViewProject: "Ver proyecto",
+    portfolioBackProjects: "Volver a proyectos",
+    portfolioExperience: "EXPERIENCIA DIGITAL",
+    portfolioBeauty: "Belleza, cuidado y bienestar",
+    portfolioProperties: "Propiedades de alto nivel",
+    portfolioLeads: "Captación de leads y posicionamiento",
+    portfolioLocalPresence: "Presencia local y autoridad",
+    portfolioBrand: "Marca, claridad y conversión",
+    portfolioCommunication: "Comunicación que convierte",
+  },
 } as const;
 
 type Language = keyof typeof COPY;
@@ -167,6 +236,7 @@ declare global {
 }
 
 type WhatsAppKind = "project" | "discount" | "identity" | "contact";
+const LANGUAGE_STORAGE_KEY = "linka-language-v2";
 
 let scrollRefreshTimer: number | undefined;
 
@@ -186,11 +256,16 @@ function cancelScrollRefresh() {
   scrollRefreshTimer = undefined;
 }
 
+function normalizeLanguage(value: string | null | undefined): Language {
+  if (value === "pt" || value === "es" || value === "en") return value;
+  return "en";
+}
+
 function storedLanguage(): Language {
   try {
-    return window.localStorage.getItem("linka-language") === "en" ? "en" : "pt";
+    return normalizeLanguage(window.localStorage.getItem(LANGUAGE_STORAGE_KEY));
   } catch {
-    return "pt";
+    return "en";
   }
 }
 
@@ -211,6 +286,14 @@ function whatsappUrl(kind: WhatsAppKind, selectedLang: Language) {
         "Hello, I unlocked the 25% OFF benefit on the Linka website and I would like to create my Website or Landing Page.",
       identity: "Hello, I found Linka through the website and I would like to build my digital identity.",
       contact: "Hello, I found Linka through the website and I would like to learn more.",
+    },
+    es: {
+      project:
+        "Hola, encontré Linka a través del sitio web y me gustaría agendar una reunión para conversar sobre mi proyecto.",
+      discount:
+        "Hola, desbloqueé el beneficio de 25% OFF en el sitio de Linka y quiero crear mi sitio web o landing page.",
+      identity: "Hola, encontré Linka a través del sitio web y quiero crear mi identidad digital.",
+      contact: "Hola, encontré Linka a través del sitio web y quiero saber más.",
     },
   };
 
@@ -239,11 +322,31 @@ function setAttributeForAll(selector: string, name: string, value: string) {
   });
 }
 
+function projectPreviewAria(project: string, lang: Language) {
+  if (lang === "pt") return `Projeto ${project}`;
+  if (lang === "es") return `Vista previa del proyecto ${project}`;
+  return `${project} project preview`;
+}
+
+function mainVideoAria(device: "laptop" | "phone", lang: Language) {
+  if (lang === "pt") {
+    return device === "laptop" ? "Projeto Marcenaria exibido em notebook" : "Projeto Marcenaria exibido em celular";
+  }
+
+  if (lang === "es") {
+    return device === "laptop"
+      ? "Proyecto Marcenaria mostrado en notebook"
+      : "Proyecto Marcenaria mostrado en celular";
+  }
+
+  return device === "laptop" ? "Marcenaria project shown on laptop" : "Marcenaria project shown on phone";
+}
+
 function applyLanguage(nextLang: Language) {
-  const lang: Language = nextLang === "en" ? "en" : "pt";
+  const lang = normalizeLanguage(nextLang);
   const copy = COPY[lang];
 
-  document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+  document.documentElement.lang = lang === "pt" ? "pt-BR" : lang;
   document.title = copy.title;
 
   const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
@@ -315,18 +418,18 @@ function applyLanguage(nextLang: Language) {
     setText(`${selector} .linka-card-copy small`, description);
 
     const video = card.querySelector<HTMLVideoElement>("video");
-    if (video) video.setAttribute("aria-label", lang === "en" ? `${project} project preview` : `Projeto ${project}`);
+    if (video) video.setAttribute("aria-label", projectPreviewAria(project, lang));
   });
 
   setAttributeForAll(
     ".linka-laptop-screen .linka-main-video",
     "aria-label",
-    lang === "en" ? "Marcenaria project shown on laptop" : "Projeto Marcenaria exibido em notebook",
+    mainVideoAria("laptop", lang),
   );
   setAttributeForAll(
     ".linka-main-video-mobile",
     "aria-label",
-    lang === "en" ? "Marcenaria project shown on phone" : "Projeto Marcenaria exibido em celular",
+    mainVideoAria("phone", lang),
   );
 
   setText(".lp8-discount small", copy.promoOff);
@@ -367,17 +470,21 @@ function applyLanguage(nextLang: Language) {
   const footerWhatsApp = document.querySelector<HTMLAnchorElement>(".lf4-whatsapp");
   if (footerWhatsApp) footerWhatsApp.href = whatsappUrl("contact", lang);
 
-  const switcher = document.querySelector<HTMLButtonElement>(".linka-language-switch");
+  const switcher = document.querySelector<HTMLElement>(".linka-language-switch");
   if (switcher) {
     switcher.setAttribute("aria-label", copy.switchAria);
     switcher.title = copy.switchAria;
   }
 
-  document.querySelector(".lls-pt")?.classList.toggle("is-active", lang === "pt");
-  document.querySelector(".lls-en")?.classList.toggle("is-active", lang === "en");
+  document.querySelectorAll<HTMLElement>(".lls-lang[data-language]").forEach((option) => {
+    const optionLanguage = normalizeLanguage(option.dataset.language);
+    const isActive = optionLanguage === lang;
+    option.classList.toggle("is-active", isActive);
+    option.setAttribute("aria-pressed", String(isActive));
+  });
 
   try {
-    window.localStorage.setItem("linka-language", lang);
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
   } catch {
     // localStorage may be unavailable in restricted browsing modes.
   }
@@ -1158,8 +1265,8 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
     ].filter((item): item is HTMLElement => Boolean(item));
 
     fadeItems.forEach((item) => item.classList.add("lp8-fade"));
-    if (rewardCta) rewardCta.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "pt");
-    if (discount) discount.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "pt");
+    if (rewardCta) rewardCta.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
+    if (discount) discount.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
 
     let running = false;
     let unlocked = false;
@@ -1179,8 +1286,8 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
       setProgress(25);
 
       if (mainCta) {
-        const currentLanguage = window.LINKA_I18N?.current() ?? "pt";
-        const label = currentLanguage === "en" ? "Claim my 25% OFF" : "Resgatar meu 25% OFF";
+        const currentLanguage = window.LINKA_I18N?.current() ?? "en";
+        const label = COPY[currentLanguage].promoClaim;
         mainCta.href = whatsappUrl("discount", currentLanguage);
         mainCta.target = "_blank";
         mainCta.innerHTML = `<span>${label}</span><i><img src="${WHATSAPP_ICON_URL}" alt=""></i>`;
@@ -1301,7 +1408,7 @@ function initLanguage(
 
   const api = {
     apply: (nextLang: Language) => {
-      lang = nextLang === "en" ? "en" : "pt";
+      lang = normalizeLanguage(nextLang);
       applyLanguage(lang);
     },
     current: () => lang,
@@ -1314,8 +1421,12 @@ function initLanguage(
   schedule(() => api.apply(lang), 250);
   schedule(() => api.apply(lang), 1000);
 
-  const switcher = document.querySelector<HTMLButtonElement>(".linka-language-switch");
-  const handleClick = () => api.apply(lang === "pt" ? "en" : "pt");
+  const switcher = document.querySelector<HTMLElement>(".linka-language-switch");
+  const handleClick = (event: MouseEvent) => {
+    const option = (event.target as HTMLElement).closest<HTMLElement>("[data-language]");
+    if (!option || !switcher?.contains(option)) return;
+    api.apply(normalizeLanguage(option.dataset.language));
+  };
   switcher?.addEventListener("click", handleClick);
 
   addCleanup(() => {
