@@ -185,10 +185,43 @@ export default function Preloader() {
     let cancelled = false;
     let progressFrame = 0;
     let finishTimer = 0;
+    let revealFallbackTimer = 0;
+    let revealFrame = 0;
+    let refreshFrame = 0;
+    let didFinishReveal = false;
     const abortController = new AbortController();
     const { signal } = abortController;
 
     document.body.classList.add("linka-preload-lock");
+
+    const finishReveal = () => {
+      if (didFinishReveal) return;
+      didFinishReveal = true;
+      cancelled = true;
+
+      window.clearTimeout(revealFallbackTimer);
+      window.cancelAnimationFrame(progressFrame);
+      completeProgressRef.current = null;
+      document.body.classList.remove("linka-preload-lock");
+      document.body.classList.add("linka-preloaded");
+
+      const root = rootRef.current;
+      if (root) {
+        root.style.opacity = "0";
+        root.style.visibility = "hidden";
+        root.style.pointerEvents = "none";
+      }
+
+      window.__LINKA_PRELOADER_DONE__ = true;
+      setIsVisible(false);
+
+      revealFrame = window.requestAnimationFrame(() => {
+        refreshFrame = window.requestAnimationFrame(() => {
+          window.dispatchEvent(new Event(PRELOADER_DONE_EVENT));
+          ScrollTrigger.refresh(true);
+        });
+      });
+    };
 
     const animateProgress = () => {
       const target = progressTargetRef.current;
@@ -222,67 +255,29 @@ export default function Preloader() {
       });
 
     const revealPage = async () => {
-      document.body.classList.remove("linka-preload-lock");
-      document.body.classList.add("linka-preloaded");
-
-      await new Promise<void>((resolve) => {
-        window.requestAnimationFrame(() => {
-          ScrollTrigger.refresh();
-          resolve();
-        });
-      });
-
       const root = rootRef.current;
       const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
-      if (root) {
-        await new Promise<void>((resolve) => {
-          if (reducedMotion) {
-            gsap.to(root, {
-              autoAlpha: 0,
-              duration: 0.22,
-              ease: "power1.out",
-              onComplete: resolve,
-            });
-            return;
-          }
-
-          const content = root.querySelector(".linka-preloader-content");
-          const timeline = gsap.timeline({ onComplete: resolve });
-
-          if (content) {
-            timeline.to(
-              content,
-              {
-                autoAlpha: 0,
-                y: -10,
-                scale: 0.985,
-                filter: "blur(8px)",
-                duration: 0.58,
-                ease: "power3.inOut",
-              },
-              0,
-            );
-          }
-
-          timeline.to(
-            root,
-            {
-              autoAlpha: 0,
-              scale: 1.015,
-              filter: "blur(10px)",
-              duration: 0.7,
-              ease: "power3.inOut",
-            },
-            0.06,
-          );
-        });
+      if (!root) {
+        finishReveal();
+        return;
       }
 
-      window.__LINKA_PRELOADER_DONE__ = true;
-      window.dispatchEvent(new Event(PRELOADER_DONE_EVENT));
-      ScrollTrigger.refresh();
-      setIsVisible(false);
+      await new Promise<void>((resolve) => {
+        const finishAnimation = () => {
+          finishReveal();
+          resolve();
+        };
+
+        revealFallbackTimer = window.setTimeout(finishAnimation, 1800);
+
+        gsap.to(root, {
+          opacity: 0,
+          duration: reducedMotion ? 0.16 : 0.42,
+          ease: reducedMotion ? "power1.out" : "power3.inOut",
+          onComplete: finishAnimation,
+        });
+      });
     };
 
     const run = async () => {
@@ -324,7 +319,10 @@ export default function Preloader() {
       cancelled = true;
       abortController.abort();
       window.cancelAnimationFrame(progressFrame);
+      window.cancelAnimationFrame(revealFrame);
+      window.cancelAnimationFrame(refreshFrame);
       window.clearTimeout(finishTimer);
+      window.clearTimeout(revealFallbackTimer);
       completeProgressRef.current = null;
       const root = rootRef.current;
       if (root) {
