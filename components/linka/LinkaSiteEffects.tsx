@@ -704,6 +704,55 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
   });
 }
 
+function initPortfolioIntro(addCleanup: (cleanup: () => void) => void) {
+  document.querySelectorAll<HTMLElement>(".linka-portfolio-intro").forEach((intro) => {
+    if (intro.dataset.linkaPortfolioIntroBooted === "true") return;
+
+    const items = [
+      intro.querySelector<HTMLElement>(".linka-portfolio-kicker"),
+      intro.querySelector<HTMLElement>(".linka-portfolio-intro h2"),
+      intro.querySelector<HTMLElement>(".linka-portfolio-intro p"),
+    ].filter(Boolean) as HTMLElement[];
+
+    if (!items.length) return;
+
+    intro.dataset.linkaPortfolioIntroBooted = "true";
+
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const context = gsap.context(() => {
+      if (prefersReduced) {
+        gsap.set(items, { autoAlpha: 1, y: 0 });
+        return;
+      }
+
+      gsap.set(items, {
+        autoAlpha: 0,
+        y: isMobile ? 18 : 26,
+        force3D: true,
+      });
+
+      gsap.to(items, {
+        autoAlpha: 1,
+        y: 0,
+        duration: isMobile ? 0.72 : 0.9,
+        stagger: isMobile ? 0.1 : 0.14,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: intro,
+          start: isMobile ? "top 90%" : "top 84%",
+          once: true,
+        },
+      });
+    }, intro);
+
+    addCleanup(() => {
+      context.revert();
+      delete intro.dataset.linkaPortfolioIntroBooted;
+    });
+  });
+}
+
 function initExperience(addCleanup: (cleanup: () => void) => void, schedule: (callback: () => void, delay: number) => void) {
   document.querySelectorAll<HTMLElement>("[data-lov64]").forEach((root) => {
     if (root.dataset.lov67Booted === "true") return;
@@ -1100,6 +1149,7 @@ export default function LinkaSiteEffects() {
     initParticles(addCleanup);
     initHeader();
     initHero(addCleanup);
+    initPortfolioIntro(addCleanup);
     initExperience(addCleanup, schedule);
     initMarquee(addCleanup);
     initPromo(addCleanup, schedule);

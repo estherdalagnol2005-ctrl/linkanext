@@ -1715,8 +1715,11 @@ body {
 }
 
 .linka-portfolio-intro h2 em{
-  color:#7dd3fc;
+  color:#8bff4f;
   font-style:normal;
+  text-shadow:
+    0 0 18px rgba(139,255,79,.16),
+    0 0 42px rgba(139,255,79,.06);
 }
 
 .linka-portfolio-intro p{
