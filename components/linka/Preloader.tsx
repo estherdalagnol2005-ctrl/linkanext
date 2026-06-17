@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { LINKA_LOGO_URL } from "./constants";
+import { LINKA_PRELOADER_LOGO_URL } from "./constants";
 
 declare global {
   interface Window {
@@ -69,7 +69,7 @@ async function decodeImage(image: HTMLImageElement, signal?: AbortSignal) {
 function decodeLogo(signal?: AbortSignal) {
   const logo = new Image();
   logo.decoding = "async";
-  logo.src = LINKA_LOGO_URL;
+  logo.src = LINKA_PRELOADER_LOGO_URL;
   return decodeImage(logo, signal);
 }
 
@@ -353,7 +353,17 @@ export default function Preloader() {
         <span className="linka-preloader-star" aria-hidden="true">
           *
         </span>
-        <img alt="Linka" className="linka-preloader-logo" decoding="async" src={LINKA_LOGO_URL} />
+        <div className="linka-preloader-logo-frame">
+          <img
+            alt="Linka"
+            className="linka-preloader-logo"
+            decoding="async"
+            fetchPriority="high"
+            height={1024}
+            src={LINKA_PRELOADER_LOGO_URL}
+            width={1536}
+          />
+        </div>
         <div className="linka-preloader-progress" aria-hidden="true">
           <span style={{ transform: `scaleX(${progress / 100})` }} />
         </div>

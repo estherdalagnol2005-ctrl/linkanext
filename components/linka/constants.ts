@@ -4,6 +4,8 @@ export const WHATSAPP_ICON_URL =
 export const LINKA_LOGO_URL =
   "https://linkadigital.online/wp-content/uploads/2026/06/logo-linka-vetor-.png";
 
+export const LINKA_PRELOADER_LOGO_URL = "/images/linka-logo.png";
+
 export const LINKA_TRANSITION_LOGO_URL =
   "https://smartchoicehub.blog/wp-content/uploads/2026/05/logo-linka-vetor-.png";
 
