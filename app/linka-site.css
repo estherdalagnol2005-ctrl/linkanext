@@ -1715,8 +1715,11 @@ body {
 }
 
 .linka-portfolio-intro h2 em{
-  color:#7dd3fc;
+  color:#8bff4f;
   font-style:normal;
+  text-shadow:
+    0 0 18px rgba(139,255,79,.16),
+    0 0 42px rgba(139,255,79,.06);
 }
 
 .linka-portfolio-intro p{
@@ -2695,45 +2698,16 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   overflow:hidden!important;
   padding:clamp(54px,5vw,76px) 0!important;
   background:transparent!important;
+  border-top:0!important;
+  border-bottom:0!important;
+  box-shadow:none!important;
   color:#fff;
   font-family:Manrope,Arial,sans-serif;
 }
 
-.lkss3-bg{
-  position:absolute;
-  inset:-20%;
-  z-index:-2;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 14% 22%,rgba(125,211,252,.14),transparent 28%),
-    radial-gradient(circle at 72% 24%,rgba(99,102,241,.14),transparent 30%),
-    radial-gradient(circle at 92% 56%,rgba(236,72,153,.09),transparent 28%),
-    radial-gradient(circle at 46% 88%,rgba(139,255,79,.045),transparent 30%);
-  filter:blur(54px);
-  opacity:.72;
-  animation:lkss3BgMove 12s ease-in-out infinite alternate;
-}
-
+.lkss3-bg,
 .linka-stack-strip-v3::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(3,4,10,.92),
-      transparent 17%,
-      transparent 83%,
-      rgba(3,4,10,.92)
-    ),
-    linear-gradient(
-      180deg,
-      transparent,
-      rgba(255,255,255,.018),
-      transparent
-    );
+  display:none!important;
 }
 
 .lkss3-head{
@@ -2814,10 +2788,6 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 .lkss3-row-b .lkss3-track{
   animation:lkss3MoveRight 35s linear infinite;
-}
-
-.linka-stack-strip-v3:hover .lkss3-track{
-  animation-play-state:paused;
 }
 
 .lkss3-item{
@@ -3460,9 +3430,12 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lp8-copy h2 strong{
   display:block;
   margin-top:6px;
-  color:#7dd3fc;
+  color:#8bff4f!important;
+  -webkit-text-fill-color:#8bff4f!important;
   font-weight:900;
-  text-shadow:0 0 34px rgba(125,211,252,.20);
+  text-shadow:
+    0 0 18px rgba(139,255,79,.16),
+    0 0 42px rgba(139,255,79,.06)!important;
 }
 
 .lp8-copy p{
