@@ -14,7 +14,7 @@ const COPY = {
     heroTitle: "Transformamos sua marca em uma <strong>experiência digital para o cliente.</strong>",
     heroBody:
       "A Linka cria sites, landing pages e experiências online para sua marca aparecer com estilo, conectar com mais clareza e transformar visitantes em clientes.",
-    heroCta: "Quero minha Linka",
+    heroCta: "Agendar minha reuni\u00e3o",
     heroMagic: "Toque de mágica",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
@@ -87,7 +87,7 @@ const COPY = {
     heroTitle: "We transform your brand into a <strong>digital experience for your customers.</strong>",
     heroBody:
       "Linka creates websites, landing pages and online experiences that help your brand stand out with style, communicate clearly and turn visitors into customers.",
-    heroCta: "Build my Linka",
+    heroCta: "Schedule my meeting",
     heroMagic: "Magic touch",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
@@ -179,7 +179,8 @@ function storedLanguage(): Language {
 function whatsappUrl(kind: WhatsAppKind, selectedLang: Language) {
   const messages = {
     pt: {
-      project: "Olá, vim pelo site da Linka e quero criar meu Site ou Landing Page.",
+      project:
+        "Ol\u00e1, vim pelo site da Linka e quero agendar uma reuni\u00e3o para conversar sobre meu projeto.",
       discount:
         "Olá, desbloqueei o benefício de 25% OFF no site da Linka e quero criar meu Site ou Landing Page.",
       identity: "Olá, vim pelo site da Linka e quero criar minha identidade digital.",
@@ -187,7 +188,7 @@ function whatsappUrl(kind: WhatsAppKind, selectedLang: Language) {
     },
     en: {
       project:
-        "Hello, I found Linka through the website and I would like to create my Website or Landing Page.",
+        "Hello, I found Linka through the website and I would like to schedule a meeting to discuss my project.",
       discount:
         "Hello, I unlocked the 25% OFF benefit on the Linka website and I would like to create my Website or Landing Page.",
       identity: "Hello, I found Linka through the website and I would like to build my digital identity.",
