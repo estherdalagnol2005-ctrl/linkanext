@@ -51,28 +51,6 @@ function adaptPortfolioBehavior(source: string) {
       function scheduleInteraction(callback, delay) {
         var timer = window.setTimeout(callback, delay);
         interactionTimers.push(timer);
-      }
-
-      function lockChoiceCardsLayout() {
-        currentChoiceCards.forEach(function (cardData) {
-          if (!cardData.element) return;
-
-          cardData.element.dataset.revealed = "true";
-          cardData.element.classList.add("is-choice-ready");
-
-          if (!window.gsap) return;
-
-          gsap.set(cardData.element, {
-            x: cardData.choiceX,
-            y: cardData.choiceY,
-            z: cardData.choiceZ,
-            scale: cardData.choiceScale,
-            rotateX: 0,
-            rotateY: 0,
-            rotateZ: 0,
-            autoAlpha: 1
-          });
-        });
       }`,
   );
   script = replaceRequired(
@@ -370,12 +348,12 @@ function adaptPortfolioBehavior(source: string) {
   script = replaceRequired(
     script,
     "        setChoiceCardsInteractive(true);\n        pauseAndResetChoiceVideos();\n        pauseAndResetActiveMainVideos();",
-    "        lockChoiceCardsLayout();\n        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
+    "        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
   );
   script = replaceRequired(
     script,
     "        setChoiceCardsInteractive(true);\n        pauseAndResetChoiceVideos();\n        pauseAndResetActiveMainVideos();",
-    "        lockChoiceCardsLayout();\n        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
+    "        setChoiceCardsInteractive(true);\n        playChoiceIntro();\n        playChoiceVideos();\n        pauseAndResetActiveMainVideos();",
   );
   script = replaceRequired(
     script,
@@ -495,47 +473,10 @@ function adaptPortfolioBehavior(source: string) {
               }
             },`,
     `            onEnterBack: function () {
-              if (portfolioState !== "open" && timeline.time() >= choiceActivationTime) enterChoiceState(cards);
+              if (timeline.time() >= choiceActivationTime) enterChoiceState(cards);
             },`,
   );
-  script = replaceRequired(
-    script,
-    `            onLeave: function () {
-              enterChoiceState(cards);
-            },`,
-    `            onLeave: function () {
-              if (portfolioState !== "open") enterChoiceState(cards);
-            },`,
-  );
-  script = replaceRequired(
-    script,
-    `            onLeaveBack: function () {
-              leaveChoiceState();
-              activeCardVideos.forEach(function (video) {
-                var card = video.closest(".linka-card");
-                if (card) {
-                  card.dataset.revealed = "false";
-                  card.classList.remove("is-interactive", "is-choice-ready");
-                  card.setAttribute("tabindex", "-1");
-                }
-                pauseVideo(video, true);
-              });
-            }`,
-    `            onLeaveBack: function () {
-              if (portfolioState === "open") return;
-
-              leaveChoiceState();
-              activeCardVideos.forEach(function (video) {
-                var card = video.closest(".linka-card");
-                if (card) {
-                  card.dataset.revealed = "false";
-                  card.classList.remove("is-interactive", "is-choice-ready");
-                  card.setAttribute("tabindex", "-1");
-                }
-                pauseVideo(video);
-              });
-            }`,
-  );
+  script = replaceRequired(script, "                pauseVideo(video, true);", "");
   script = replaceRequired(
     script,
     `        selectedDeviceVideo = targetDevice;
@@ -566,22 +507,12 @@ function adaptPortfolioBehavior(source: string) {
           else enterChoiceState(cards);
         }, null, choiceActivationTime);
 
-        timeline.to(scrollCue, { autoAlpha: 0, duration: 0.9 }, choiceStart + 0.72);
-        timeline.to({}, { duration: choiceHoldDuration }, choiceStart + 0.96);`,
+        timeline.to(scrollCue, { autoAlpha: 0, duration: 0.9 }, choiceStart + 0.72);`,
   );
   script = replaceRequired(
     script,
     "        var choiceActivationTime = choiceStart + 0.66;",
-    "        var choiceActivationTime = choiceStart + 0.72;\n        var choiceHoldDuration = config.choiceHoldDuration || 1.08;",
-  );
-  script = replaceRequired(
-    script,
-    `          scrub: 0.72,
-          animateDevice: false,`,
-    `          scrub: 0.48,
-          choiceStart: 2.42,
-          choiceHoldDuration: 1.36,
-          animateDevice: false,`,
+    "        var choiceActivationTime = choiceStart + 0.72;",
   );
   script = replaceRequired(
     script,
@@ -590,7 +521,7 @@ function adaptPortfolioBehavior(source: string) {
       });
     }`,
     `      refreshFrame = window.requestAnimationFrame(function () {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
       });
 
       return function cleanupLinkaHero() {
