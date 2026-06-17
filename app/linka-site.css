@@ -1306,12 +1306,13 @@ body {
 
 .lv10-cta{
   min-height:58px;
-  padding:0 9px 0 27px;
+  padding-left:28px;
+  padding-right:28px;
   border-radius:999px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:18px;
+  gap:0;
   position:relative;
   overflow:hidden;
   background:
@@ -1612,7 +1613,12 @@ body {
 
   .lv10-cta{
     min-height:56px;
-    padding-left:22px;
+    padding-left:28px;
+    padding-right:28px;
+    box-shadow:
+      0 12px 28px rgba(0,0,0,.24),
+      inset 0 -8px 16px rgba(0,0,0,.13),
+      inset 0 1px 0 rgba(255,255,255,.42);
   }
 
   .lv10-link{

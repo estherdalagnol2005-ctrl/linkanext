@@ -14,7 +14,7 @@ const COPY = {
     heroTitle: "Transformamos sua marca em uma <strong>experiência digital para o cliente.</strong>",
     heroBody:
       "A Linka cria sites, landing pages e experiências online para sua marca aparecer com estilo, conectar com mais clareza e transformar visitantes em clientes.",
-    heroCta: "Quero minha Linka",
+    heroCta: "Agendar minha reuni\u00e3o",
     heroMagic: "Toque de mágica",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
@@ -87,7 +87,7 @@ const COPY = {
     heroTitle: "We transform your brand into a <strong>digital experience for your customers.</strong>",
     heroBody:
       "Linka creates websites, landing pages and online experiences that help your brand stand out with style, communicate clearly and turn visitors into customers.",
-    heroCta: "Build my Linka",
+    heroCta: "Schedule my meeting",
     heroMagic: "Magic touch",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
@@ -179,7 +179,8 @@ function storedLanguage(): Language {
 function whatsappUrl(kind: WhatsAppKind, selectedLang: Language) {
   const messages = {
     pt: {
-      project: "Olá, vim pelo site da Linka e quero criar meu Site ou Landing Page.",
+      project:
+        "Ol\u00e1, vim pelo site da Linka e quero agendar uma reuni\u00e3o para conversar sobre meu projeto.",
       discount:
         "Olá, desbloqueei o benefício de 25% OFF no site da Linka e quero criar meu Site ou Landing Page.",
       identity: "Olá, vim pelo site da Linka e quero criar minha identidade digital.",
@@ -187,7 +188,7 @@ function whatsappUrl(kind: WhatsAppKind, selectedLang: Language) {
     },
     en: {
       project:
-        "Hello, I found Linka through the website and I would like to create my Website or Landing Page.",
+        "Hello, I found Linka through the website and I would like to schedule a meeting to discuss my project.",
       discount:
         "Hello, I unlocked the 25% OFF benefit on the Linka website and I would like to create my Website or Landing Page.",
       identity: "Hello, I found Linka through the website and I would like to build my digital identity.",
@@ -501,10 +502,40 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     if (!stage || !lines || !core || !logo || !glow) return;
 
     const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let logoFloatTween: gsap.core.Tween | null = null;
+    let preloaderDoneFrame: number | null = null;
+
+    function startLogoFloat() {
+      if (logoFloatTween) return;
+
+      gsap.set(logo, { y: 0 });
+
+      if (prefersReduced) return;
+
+      logoFloatTween = gsap.to(logo, {
+        y: isMobile ? -4 : -7,
+        duration: 3.8,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: 0.8,
+      });
+    }
+
+    function handlePreloaderDone() {
+      gsap.set(logo, { y: 0 });
+      startLogoFloat();
+    }
+
     const context = gsap.context(() => {
       gsap.set(lines, { opacity: 0 });
       gsap.set(core, { opacity: 0, scale: 0.92, xPercent: -50, yPercent: -50 });
-      gsap.set(logo, { opacity: 0, y: 18, scale: 0.9 });
+      gsap.set(logo, {
+        opacity: 0,
+        y: 0,
+        scale: 0.9,
+      });
       gsap.set(imgs, { opacity: 0, y: 18, scale: 0.94, filter: "blur(3px)" });
       gsap.set(copyItems, { opacity: 0, y: 26, filter: "blur(4px)" });
       gsap.set(stars, { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.28, rotate: 0 });
@@ -521,7 +552,17 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       timeline
         .to(lines, { opacity: isMobile ? 0.54 : 0.82, duration: 0.9, ease: "power2.out" }, 0)
         .to(core, { opacity: 1, scale: 1, duration: 1.05, ease: "expo.out" }, 0.04)
-        .to(logo, { opacity: 1, y: 0, scale: 1, duration: 1.05, ease: "expo.out" }, 0.22)
+        .to(
+          logo,
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.05,
+            ease: "expo.out",
+          },
+          0.22,
+        )
         .to(
           copyItems,
           {
@@ -560,15 +601,6 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.78, stagger: 0.16, ease: "expo.out" },
           1.02,
         );
-
-      gsap.to(logo, {
-        y: isMobile ? -4 : -7,
-        duration: 3.8,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        delay: 1.2,
-      });
 
       gsap.to(imgs, {
         y: (index) => (index % 2 === 0 ? -5 : -7),
@@ -625,6 +657,14 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       });
     }, hero);
 
+    window.addEventListener("linka:preloader:done", handlePreloaderDone, {
+      once: true,
+    });
+
+    if (window.__LINKA_PRELOADER_DONE__) {
+      preloaderDoneFrame = window.requestAnimationFrame(handlePreloaderDone);
+    }
+
     function handleMouseMove(event: MouseEvent) {
       if (isMobile) return;
 
@@ -654,6 +694,10 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     addCleanup(() => {
       hero.removeEventListener("mousemove", handleMouseMove);
       hero.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("linka:preloader:done", handlePreloaderDone);
+      if (preloaderDoneFrame !== null) window.cancelAnimationFrame(preloaderDoneFrame);
+      logoFloatTween?.kill();
+      logoFloatTween = null;
       context.revert();
       delete hero.dataset.lv10Booted;
     });
