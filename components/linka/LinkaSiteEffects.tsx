@@ -762,15 +762,26 @@ function initPortfolioIntro(addCleanup: (cleanup: () => void) => void) {
         force3D: true,
       });
 
-      gsap.to(items, {
+      let introTween: gsap.core.Tween | undefined;
+      let revealedImmediately = false;
+      const revealImmediatelyOnFastScroll = (self: ScrollTrigger) => {
+        if (!isMobile || revealedImmediately || Math.abs(self.getVelocity()) < 1600) return;
+        revealedImmediately = true;
+        gsap.set(items, { autoAlpha: 1, y: 0 });
+        introTween?.progress(1);
+      };
+
+      introTween = gsap.to(items, {
         autoAlpha: 1,
         y: 0,
-        duration: isMobile ? 0.72 : 0.9,
-        stagger: isMobile ? 0.1 : 0.14,
+        duration: isMobile ? 0.32 : 0.9,
+        stagger: isMobile ? 0.03 : 0.14,
         ease: "power3.out",
         scrollTrigger: {
           trigger: intro,
-          start: isMobile ? "top 90%" : "top 84%",
+          start: isMobile ? "top 110%" : "top 84%",
+          onEnter: revealImmediatelyOnFastScroll,
+          onUpdate: revealImmediatelyOnFastScroll,
           once: true,
         },
       });
@@ -981,9 +992,12 @@ function initMarquee(addCleanup: (cleanup: () => void) => void) {
 function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   const allVideos = Array.from(document.querySelectorAll<HTMLVideoElement>("video"));
   const portfolioVideos = allVideos.filter((video) => video.closest(".linka-portfolio-mount"));
+  const firstPortfolioVideo = portfolioVideos[0];
+  const remainingPortfolioVideos = portfolioVideos.slice(1);
   const managedVideos = allVideos.filter((video) => !video.closest(".linka-portfolio-mount"));
   const portfolioMount = document.querySelector<HTMLElement>(".linka-portfolio-mount");
   const pausedVideos = new WeakSet<HTMLVideoElement>();
+  let preloaderDoneFrame: number | undefined;
 
   function resumeVideo(video: HTMLVideoElement) {
     if (document.hidden || !pausedVideos.has(video)) return;
@@ -1016,27 +1030,42 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   }
 
   let portfolioPreloadObserver: IntersectionObserver | undefined;
-  function preloadPortfolioVideos() {
-    portfolioVideos.forEach((video) => {
-      video.preload = "auto";
-      video.setAttribute("preload", "auto");
-      if (video.readyState === 0) video.load();
-    });
+  function preloadPortfolioVideo(video: HTMLVideoElement | undefined) {
+    if (!video) return;
+    video.preload = "auto";
+    video.setAttribute("preload", "auto");
+    if (video.readyState === 0) video.load();
+  }
+
+  function preloadFirstPortfolioVideo() {
+    preloadPortfolioVideo(firstPortfolioVideo);
+  }
+
+  function preloadRemainingPortfolioVideos() {
+    remainingPortfolioVideos.forEach(preloadPortfolioVideo);
     portfolioPreloadObserver?.disconnect();
     portfolioPreloadObserver = undefined;
   }
 
-  if (portfolioMount && portfolioVideos.length) {
+  if (firstPortfolioVideo) {
+    if (window.__LINKA_PRELOADER_DONE__) {
+      preloaderDoneFrame = window.requestAnimationFrame(preloadFirstPortfolioVideo);
+    } else {
+      window.addEventListener("linka:preloader:done", preloadFirstPortfolioVideo, { once: true });
+    }
+  }
+
+  if (portfolioMount && remainingPortfolioVideos.length) {
     if ("IntersectionObserver" in window) {
       portfolioPreloadObserver = new IntersectionObserver(
         (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) preloadPortfolioVideos();
+          if (entries.some((entry) => entry.isIntersecting)) preloadRemainingPortfolioVideos();
         },
-        { root: null, rootMargin: "1200px 0px", threshold: 0 },
+        { root: null, rootMargin: "3000px 0px", threshold: 0 },
       );
       portfolioPreloadObserver.observe(portfolioMount);
     } else {
-      preloadPortfolioVideos();
+      preloadRemainingPortfolioVideos();
     }
   }
 
@@ -1098,6 +1127,8 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   addCleanup(() => {
     videoObserver?.disconnect();
     portfolioPreloadObserver?.disconnect();
+    window.removeEventListener("linka:preloader:done", preloadFirstPortfolioVideo);
+    if (preloaderDoneFrame) window.cancelAnimationFrame(preloaderDoneFrame);
     rootObserver?.disconnect();
     document.removeEventListener("visibilitychange", handleVisibilityChange);
     document.documentElement.classList.remove("linka-doc-paused");
