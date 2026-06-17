@@ -465,34 +465,10 @@ function initParticles(addCleanup: (cleanup: () => void) => void) {
   });
 }
 
-function initHeader(addCleanup: (cleanup: () => void) => void) {
+function initHeader() {
   const header = document.querySelector<HTMLElement>("[data-linka-header-v11]");
   if (!header) return;
-  const currentHeader = header;
-
-  function updateHeaderState() {
-    currentHeader.classList.toggle("is-scrolled", window.scrollY > 18);
-  }
-
-  let ticking = false;
-
-  function handleScroll() {
-    if (ticking) return;
-
-    window.requestAnimationFrame(() => {
-      updateHeaderState();
-      ticking = false;
-    });
-
-    ticking = true;
-  }
-
-  updateHeaderState();
-  window.addEventListener("scroll", handleScroll, { passive: true });
-
-  addCleanup(() => {
-    window.removeEventListener("scroll", handleScroll);
-  });
+  header.classList.remove("is-scrolled");
 }
 
 function initHero(addCleanup: (cleanup: () => void) => void) {
@@ -1068,7 +1044,7 @@ export default function LinkaSiteEffects() {
     };
 
     initParticles(addCleanup);
-    initHeader(addCleanup);
+    initHeader();
     initHero(addCleanup);
     initExperience(addCleanup, schedule);
     initMarquee(addCleanup);
