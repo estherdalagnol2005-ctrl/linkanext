@@ -1679,6 +1679,7 @@ body {
 }
 
 .linka-portfolio-intro{
+  box-sizing:border-box;
   width:min(800px,100%);
   margin:0 auto;
   padding:100px 24px 60px;
@@ -1723,10 +1724,26 @@ body {
   line-height:.98!important;
 }
 
+@media(min-width:768px){
+  .linka-portfolio-mount .linka-sticky{
+    box-sizing:border-box;
+    padding-top:clamp(104px, 12vh, 132px);
+  }
+
+  .linka-portfolio-mount .linka-choice-prompt{
+    box-sizing:border-box;
+    padding-top:clamp(104px, 12vh, 132px);
+  }
+}
+
 @media(max-width:767px){
   .linka-portfolio-intro{
+    box-sizing:border-box;
     width:100%;
-    padding:76px 20px 44px;
+    max-width:100%;
+    margin-inline:auto;
+    padding:76px 20px 14px;
+    text-align:center;
   }
 
   .linka-portfolio-kicker{
@@ -1735,18 +1752,24 @@ body {
   }
 
   .linka-portfolio-intro h2{
+    width:100%;
     max-width:360px;
+    margin-inline:auto;
     margin-top:15px;
     font-size:39px;
     line-height:1.03;
     letter-spacing:0;
+    text-align:center;
   }
 
   .linka-portfolio-intro p{
+    width:100%;
     max-width:340px;
+    margin-inline:auto;
     margin-top:15px;
     font-size:14px;
     line-height:1.64;
+    text-align:center;
   }
 
   .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
