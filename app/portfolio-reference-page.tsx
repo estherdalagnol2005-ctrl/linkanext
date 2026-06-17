@@ -536,7 +536,6 @@ function adaptPortfolioBehavior(source: string) {
               });
             }`,
   );
-  script = replaceRequired(script, "                pauseVideo(video, true);", "");
   script = replaceRequired(
     script,
     `        selectedDeviceVideo = targetDevice;
