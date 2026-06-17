@@ -35,7 +35,7 @@ function adaptPortfolioBehavior(source: string) {
       var isDisposed = false;
       var choicePanel = hero.querySelector(".linka-choice-content");
       var choiceIntroItems = choicePanel
-        ? Array.prototype.slice.call(choicePanel.querySelectorAll(".escolha-projeto, .titulo-principal, .linka-choice-contact"))
+        ? Array.prototype.slice.call(choicePanel.querySelectorAll(".escolha-projeto, .titulo-principal"))
         : [];
       var choiceIntroTimeline = null;
       var choiceIntroPlayed = false;

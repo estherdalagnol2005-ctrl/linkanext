@@ -63,6 +63,18 @@ const COPY = {
     closeAria: "Fechar desconto",
     techAria: "Tecnologias utilizadas pela Linka",
     platformsAria: "Plataformas de inteligência artificial, tráfego e comunicação",
+    portfolioChoiceKicker: "ESCOLHA O PROJETO",
+    portfolioChoiceTitleStart: "que voc\u00ea",
+    portfolioChoiceTitleEm: "quer ver",
+    portfolioViewProject: "Ver projeto",
+    portfolioBackProjects: "Voltar aos projetos",
+    portfolioExperience: "EXPERI\u00caNCIA DIGITAL",
+    portfolioBeauty: "Beleza, cuidado e bem-estar",
+    portfolioProperties: "Im\u00f3veis de alto padr\u00e3o",
+    portfolioLeads: "Capta\u00e7\u00e3o de leads e posicionamento",
+    portfolioLocalPresence: "Presen\u00e7a local e autoridade",
+    portfolioBrand: "Marca, clareza e convers\u00e3o",
+    portfolioCommunication: "Comunica\u00e7\u00e3o que converte",
   },
   en: {
     title: "Linka Studio | Digital Experiences",
@@ -118,6 +130,18 @@ const COPY = {
     closeAria: "Close discount",
     techAria: "Technologies used by Linka",
     platformsAria: "Artificial intelligence, advertising and communication platforms",
+    portfolioChoiceKicker: "CHOOSE A PROJECT",
+    portfolioChoiceTitleStart: "you want to",
+    portfolioChoiceTitleEm: "explore",
+    portfolioViewProject: "View project",
+    portfolioBackProjects: "Back to projects",
+    portfolioExperience: "DIGITAL EXPERIENCE",
+    portfolioBeauty: "Beauty, care and well-being",
+    portfolioProperties: "High-end properties",
+    portfolioLeads: "Lead generation and positioning",
+    portfolioLocalPresence: "Local presence and authority",
+    portfolioBrand: "Brand, clarity and conversion",
+    portfolioCommunication: "Communication that converts",
   },
 } as const;
 
@@ -178,6 +202,12 @@ function setText(selector: string, value: string) {
   if (element) element.textContent = value;
 }
 
+function setTextForAll(selector: string, value: string) {
+  document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+    element.textContent = value;
+  });
+}
+
 function setAttributeForAll(selector: string, name: string, value: string) {
   document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
     element.setAttribute(name, value);
@@ -219,6 +249,56 @@ function applyLanguage(nextLang: Language) {
   setText(".lkss3-head > span", copy.stack);
   setAttributeForAll(".lkss3-row-a", "aria-label", copy.techAria);
   setAttributeForAll(".lkss3-row-b", "aria-label", copy.platformsAria);
+
+  setText(".linka-choice-prompt .escolha-projeto", copy.portfolioChoiceKicker);
+  setText(".linka-choice-prompt .titulo-principal > span", copy.portfolioChoiceTitleStart);
+  setText(".linka-choice-prompt .titulo-principal > em", copy.portfolioChoiceTitleEm);
+  setTextForAll(".linka-device-return", copy.portfolioBackProjects);
+  setAttributeForAll(".linka-device-return", "aria-label", copy.portfolioBackProjects);
+  setTextForAll(".linka-card-action", copy.portfolioViewProject);
+
+  [
+    { selector: ".linka-desktop-card-1", project: "Nutricionista", description: copy.portfolioBrand },
+    { selector: ".linka-desktop-card-2", project: "Casa Sea", description: copy.portfolioProperties },
+    { selector: ".linka-desktop-card-3", project: "Barbearia", description: copy.portfolioLeads },
+    {
+      selector: ".linka-desktop-card-4",
+      project: "Quatorze",
+      category: copy.portfolioExperience,
+      description: copy.portfolioBeauty,
+    },
+    {
+      selector: ".linka-mobile-card-1",
+      project: "Quatorze",
+      category: copy.portfolioExperience,
+      description: copy.portfolioBeauty,
+    },
+    { selector: ".linka-mobile-card-2", project: "Casa Sea", description: copy.portfolioProperties },
+    { selector: ".linka-mobile-card-3", project: "Barbearia", description: copy.portfolioLocalPresence },
+    { selector: ".linka-mobile-card-4", project: "Nutricionista", description: copy.portfolioCommunication },
+  ].forEach(({ selector, project, category, description }) => {
+    const card = document.querySelector<HTMLElement>(selector);
+    if (!card) return;
+
+    card.dataset.projectTitle = project;
+    card.setAttribute("aria-label", `${copy.portfolioViewProject} ${project}`);
+    if (category) setText(`${selector} .linka-card-copy span`, category);
+    setText(`${selector} .linka-card-copy small`, description);
+
+    const video = card.querySelector<HTMLVideoElement>("video");
+    if (video) video.setAttribute("aria-label", lang === "en" ? `${project} project preview` : `Projeto ${project}`);
+  });
+
+  setAttributeForAll(
+    ".linka-laptop-screen .linka-main-video",
+    "aria-label",
+    lang === "en" ? "Marcenaria project shown on laptop" : "Projeto Marcenaria exibido em notebook",
+  );
+  setAttributeForAll(
+    ".linka-main-video-mobile",
+    "aria-label",
+    lang === "en" ? "Marcenaria project shown on phone" : "Projeto Marcenaria exibido em celular",
+  );
 
   setText(".lp8-discount small", copy.promoOff);
   setHtml(".lp8-hint", copy.promoHint);
