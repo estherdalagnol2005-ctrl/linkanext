@@ -1269,11 +1269,11 @@ body {
 }
 
 .lv10-copy h1{
-  max-width:590px;
+  max-width:570px;
   margin:26px 0 0;
   font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(38px,4.4vw,66px);
-  line-height:.96;
+  font-size:clamp(42px, 3.8vw, 54px);
+  line-height:1.03;
   letter-spacing:-.058em;
   font-weight:900;
 }
@@ -1472,7 +1472,8 @@ body {
 
   .lv10-copy h1{
     max-width:100%;
-    font-size:44px;
+    font-size:clamp(42px, 3.8vw, 54px);
+    line-height:1.03;
   }
 
   .lv10-copy p{
@@ -1588,8 +1589,8 @@ body {
 
   .lv10-copy h1{
     margin-top:20px;
-    font-size:34px;
-    line-height:1;
+    font-size:30px!important;
+    line-height:1.04!important;
     letter-spacing:-.045em;
   }
 
@@ -1648,7 +1649,7 @@ body {
   .launch-exp{--x:-132px;--y:108px;}
   .launch-sua{--x:132px;--y:108px;}
 
-  .lv10-copy h1{font-size:31px;}
+  .lv10-copy h1{font-size:28px!important;}
   .lv10-copy p{font-size:13.6px;}
 }
 
@@ -1675,6 +1676,112 @@ body {
 
   .lv10-launch-star{
     display:none!important;
+  }
+}
+
+.linka-portfolio-intro{
+  box-sizing:border-box;
+  width:min(800px,100%);
+  margin:0 auto;
+  padding:100px 24px 60px;
+  text-align:center;
+  position:relative;
+  z-index:3;
+}
+
+.linka-portfolio-kicker{
+  display:block;
+  color:rgba(255,255,255,.66);
+  font:900 11px/1 Manrope,Arial,sans-serif;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.linka-portfolio-intro h2{
+  max-width:780px;
+  margin:18px auto 0;
+  color:#fff;
+  font-family:"Space Grotesk",Manrope,sans-serif;
+  font-size:clamp(40px, 4vw, 52px);
+  line-height:1.04;
+  letter-spacing:0;
+  font-weight:900;
+}
+
+.linka-portfolio-intro h2 em{
+  color:#7dd3fc;
+  font-style:normal;
+}
+
+.linka-portfolio-intro p{
+  max-width:620px;
+  margin:18px auto 0;
+  color:rgba(255,255,255,.72);
+  font:680 16px/1.72 Manrope,Arial,sans-serif;
+}
+
+.linka-portfolio-mount .linka-choice-prompt .titulo-principal{
+  font-size:clamp(28px, 2.3vw, 34px)!important;
+  line-height:1!important;
+}
+
+@media(min-width:768px){
+  .linka-portfolio-mount .linka-sticky{
+    box-sizing:border-box;
+    padding-top:clamp(104px, 12vh, 132px);
+  }
+
+  .linka-portfolio-mount .linka-choice-prompt{
+    box-sizing:border-box;
+    padding-top:clamp(104px, 12vh, 132px);
+  }
+}
+
+@media(max-width:767px){
+  .lv10-copy h1,
+  .lp8-copy h2{
+    font-size:30px!important;
+    line-height:1.04!important;
+  }
+
+  .linka-portfolio-intro{
+    box-sizing:border-box;
+    width:100%;
+    max-width:100%;
+    margin-inline:auto;
+    padding:76px 20px 14px;
+    text-align:center;
+  }
+
+  .linka-portfolio-kicker{
+    font-size:9.5px;
+    letter-spacing:.13em;
+  }
+
+  .linka-portfolio-intro h2{
+    width:100%;
+    max-width:360px;
+    margin-inline:auto;
+    margin-top:15px;
+    font-size:34px;
+    line-height:1.05;
+    letter-spacing:0;
+    text-align:center;
+  }
+
+  .linka-portfolio-intro p{
+    width:100%;
+    max-width:340px;
+    margin-inline:auto;
+    margin-top:15px;
+    font-size:14px;
+    line-height:1.64;
+    text-align:center;
+  }
+
+  .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
+    font-size:21px!important;
+    line-height:1!important;
   }
 }
 /* =========================================================
@@ -1776,6 +1883,18 @@ body {
 
 /* Mobile pequeno */
 @media(max-width:390px){
+  .lv10-copy h1{
+    font-size:28px!important;
+  }
+
+  .linka-portfolio-intro h2{
+    font-size:32px;
+  }
+
+  .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
+    font-size:20px!important;
+  }
+
   .lv10-img{
     width:84px!important;
     height:60px!important;
@@ -1964,16 +2083,23 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .linka-copy-v64.visible .lov64-kicker span{animation:lov64Dot 2.8s ease-in-out infinite}
 
 .lov64-shell h2{
-  max-width:590px!important;
+  max-width:570px!important;
   margin:26px 0 0!important;
   font-family:"Space Grotesk",Manrope,sans-serif!important;
-  font-size:clamp(38px,4.4vw,66px)!important;
-  line-height:.96!important;
+  font-size:clamp(42px, 3.8vw, 54px)!important;
+  line-height:1.03!important;
   letter-spacing:-.058em!important;
   font-weight:900!important;
   color:#fff!important;
   text-align:left!important;
   text-shadow:none!important;
+}
+
+@media(max-width:767px){
+  .lov64-shell h2{
+    font-size:30px!important;
+    line-height:1.04!important;
+  }
 }
 
 .lov64-shell h2 span{
@@ -1993,7 +2119,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   background-clip:initial!important;
   -webkit-text-fill-color:var(--lk-accent)!important;
   font-weight:900!important;
-  line-height:.96!important;
+  line-height:1.01!important;
   text-align:left!important;
   text-shadow:
     0 0 18px rgba(125,211,252,.16),
@@ -2401,14 +2527,14 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   .lov64-shell h2{
     max-width:100%!important;
     margin-top:20px!important;
-    font-size:34px!important;
-    line-height:1!important;
+    font-size:30px!important;
+    line-height:1.04!important;
     letter-spacing:-.045em!important;
   }
 
   .lov64-shell h2 strong{
     margin-top:5px!important;
-    line-height:1!important;
+    line-height:1.03!important;
   }
 
   .lov64-lead{
@@ -2527,7 +2653,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 @media(max-width:390px){
-  .lov64-shell h2{font-size:31px!important}
+  .lov64-shell h2{font-size:28px!important}
   .lov64-lead{font-size:13.6px!important}
   .premium-card h3{font-size:18.6px!important}
 }
@@ -3316,11 +3442,11 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lp8-copy h2{
-  max-width:640px;
+  max-width:600px;
   margin:30px 0 0;
   font-family:Space Grotesk,Manrope,sans-serif;
-  font-size:clamp(38px,4.4vw,66px);
-  line-height:.96;
+  font-size:clamp(42px, 3.8vw, 54px);
+  line-height:1.03;
   letter-spacing:-.058em;
   font-weight:900;
 }
@@ -3498,7 +3624,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lp8-copy h2{
-    font-size:44px;
+    font-size:clamp(42px, 3.8vw, 54px);
+    line-height:1.03;
   }
 }
 
@@ -3599,8 +3726,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
   .lp8-copy h2{
     margin-top:22px;
-    font-size:34px;
-    line-height:1;
+    font-size:30px!important;
+    line-height:1.04!important;
     letter-spacing:-.045em;
   }
 
@@ -3614,6 +3741,12 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     width:100%;
     justify-content:space-between;
     min-height:56px;
+  }
+}
+
+@media(max-width:390px){
+  .lp8-copy h2{
+    font-size:28px!important;
   }
 }
 
@@ -3636,7 +3769,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lp8-copy h2{
-    font-size:31px;
+    font-size:28px!important;
   }
 }
 

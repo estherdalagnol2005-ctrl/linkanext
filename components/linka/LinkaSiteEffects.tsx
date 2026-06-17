@@ -63,6 +63,9 @@ const COPY = {
     closeAria: "Fechar desconto",
     techAria: "Tecnologias utilizadas pela Linka",
     platformsAria: "Plataformas de inteligência artificial, tráfego e comunicação",
+    portfolioIntroKicker: "PORTF\u00d3LIO SELECIONADO",
+    portfolioIntroTitle: "Projetos que <em>ganham vida.</em>",
+    portfolioIntroBody: "Sites pensados para transformar marcas em experi\u00eancias digitais memor\u00e1veis.",
     portfolioChoiceKicker: "ESCOLHA O PROJETO",
     portfolioChoiceTitleStart: "que voc\u00ea",
     portfolioChoiceTitleEm: "quer ver",
@@ -130,6 +133,9 @@ const COPY = {
     closeAria: "Close discount",
     techAria: "Technologies used by Linka",
     platformsAria: "Artificial intelligence, advertising and communication platforms",
+    portfolioIntroKicker: "SELECTED WORK",
+    portfolioIntroTitle: "Projects brought <em>to life.</em>",
+    portfolioIntroBody: "Websites designed to turn brands into memorable digital experiences.",
     portfolioChoiceKicker: "CHOOSE A PROJECT",
     portfolioChoiceTitleStart: "you want to",
     portfolioChoiceTitleEm: "explore",
@@ -249,6 +255,10 @@ function applyLanguage(nextLang: Language) {
   setText(".lkss3-head > span", copy.stack);
   setAttributeForAll(".lkss3-row-a", "aria-label", copy.techAria);
   setAttributeForAll(".lkss3-row-b", "aria-label", copy.platformsAria);
+
+  setText(".linka-portfolio-kicker", copy.portfolioIntroKicker);
+  setHtml(".linka-portfolio-intro h2", copy.portfolioIntroTitle);
+  setText(".linka-portfolio-intro p", copy.portfolioIntroBody);
 
   setText(".linka-choice-prompt .escolha-projeto", copy.portfolioChoiceKicker);
   setText(".linka-choice-prompt .titulo-principal > span", copy.portfolioChoiceTitleStart);

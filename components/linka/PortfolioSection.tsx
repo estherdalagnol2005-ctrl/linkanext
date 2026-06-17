@@ -3,6 +3,20 @@ import PortfolioReferencePage from "../../app/portfolio-reference-page";
 export default function PortfolioSection() {
   return (
     <div className="linka-portfolio-mount" id="portfolio">
+      <div className="linka-portfolio-intro">
+        <span className="linka-portfolio-kicker">
+          PORTFÓLIO SELECIONADO
+        </span>
+
+        <h2>
+          Projetos que <em>ganham vida.</em>
+        </h2>
+
+        <p>
+          Sites pensados para transformar marcas em experiências digitais memoráveis.
+        </p>
+      </div>
+
       <PortfolioReferencePage />
       <style>{`
         .linka-portfolio-mount {
