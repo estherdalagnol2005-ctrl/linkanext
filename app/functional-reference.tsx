@@ -8,7 +8,6 @@ declare global {
   interface Window {
     gsap: typeof gsap;
     ScrollTrigger: typeof ScrollTrigger;
-    __LINKA_PRELOADER_DONE__?: boolean;
   }
 }
 
@@ -26,23 +25,12 @@ export default function FunctionalReference({
   useEffect(() => {
     window.gsap = gsap;
     window.ScrollTrigger = ScrollTrigger;
-    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    const scriptCleanups = scripts
+      .map((script) => Function(script)())
+      .filter((cleanup): cleanup is () => void => typeof cleanup === "function");
 
     const portfolioStage = document.querySelector<HTMLElement>(".linka-stage");
-    const scriptCleanups: Array<() => void> = [];
-    let didStart = false;
-
-    const startPortfolio = () => {
-      if (didStart) return;
-      didStart = true;
-
-      scripts
-        .map((script) => Function(script)())
-        .filter((cleanup): cleanup is () => void => typeof cleanup === "function")
-        .forEach((cleanup) => scriptCleanups.push(cleanup));
-
-      window.requestAnimationFrame(() => window.ScrollTrigger?.refresh(true));
-    };
 
     const forwardReturnButtonClick = (event: MouseEvent) => {
       const button = portfolioStage?.querySelector<HTMLButtonElement>(
@@ -67,14 +55,7 @@ export default function FunctionalReference({
 
     portfolioStage?.addEventListener("click", forwardReturnButtonClick, true);
 
-    if (window.__LINKA_PRELOADER_DONE__) {
-      startPortfolio();
-    } else {
-      window.addEventListener("linka:preloader:done", startPortfolio, { once: true });
-    }
-
     return () => {
-      window.removeEventListener("linka:preloader:done", startPortfolio);
       portfolioStage?.removeEventListener("click", forwardReturnButtonClick, true);
       scriptCleanups.reverse().forEach((cleanup) => cleanup());
     };
