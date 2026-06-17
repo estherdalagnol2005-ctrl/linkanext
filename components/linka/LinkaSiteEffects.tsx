@@ -979,7 +979,10 @@ function initMarquee(addCleanup: (cleanup: () => void) => void) {
 }
 
 function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
-  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>("video"));
+  const allVideos = Array.from(document.querySelectorAll<HTMLVideoElement>("video"));
+  const portfolioVideos = allVideos.filter((video) => video.closest(".linka-portfolio-mount"));
+  const managedVideos = allVideos.filter((video) => !video.closest(".linka-portfolio-mount"));
+  const portfolioMount = document.querySelector<HTMLElement>(".linka-portfolio-mount");
   const pausedVideos = new WeakSet<HTMLVideoElement>();
 
   function resumeVideo(video: HTMLVideoElement) {
@@ -1009,7 +1012,32 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
       { root: null, rootMargin: "220px 0px", threshold: [0, 0.03, 0.18] },
     );
 
-    videos.forEach((video) => videoObserver?.observe(video));
+    managedVideos.forEach((video) => videoObserver?.observe(video));
+  }
+
+  let portfolioPreloadObserver: IntersectionObserver | undefined;
+  function preloadPortfolioVideos() {
+    portfolioVideos.forEach((video) => {
+      video.preload = "auto";
+      video.setAttribute("preload", "auto");
+      if (video.readyState === 0) video.load();
+    });
+    portfolioPreloadObserver?.disconnect();
+    portfolioPreloadObserver = undefined;
+  }
+
+  if (portfolioMount && portfolioVideos.length) {
+    if ("IntersectionObserver" in window) {
+      portfolioPreloadObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) preloadPortfolioVideos();
+        },
+        { root: null, rootMargin: "1200px 0px", threshold: 0 },
+      );
+      portfolioPreloadObserver.observe(portfolioMount);
+    } else {
+      preloadPortfolioVideos();
+    }
   }
 
   const roots = Array.from(
@@ -1054,11 +1082,11 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
     document.documentElement.classList.toggle("linka-doc-paused", hidden);
 
     if (hidden) {
-      videos.forEach(pauseVideo);
+      managedVideos.forEach(pauseVideo);
       return;
     }
 
-    videos.forEach((video) => {
+    managedVideos.forEach((video) => {
       const rect = video.getBoundingClientRect();
       const isNearViewport = rect.bottom >= -220 && rect.top <= window.innerHeight + 220;
       if (isNearViewport) resumeVideo(video);
@@ -1069,6 +1097,7 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
 
   addCleanup(() => {
     videoObserver?.disconnect();
+    portfolioPreloadObserver?.disconnect();
     rootObserver?.disconnect();
     document.removeEventListener("visibilitychange", handleVisibilityChange);
     document.documentElement.classList.remove("linka-doc-paused");
