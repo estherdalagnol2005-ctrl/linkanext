@@ -27,6 +27,7 @@ export default function LenisProvider() {
     if (typeof window === "undefined") return;
 
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const owner = Symbol("linka-lenis");
     const finePointer = window.matchMedia(FINE_POINTER_QUERY);
