@@ -19,6 +19,7 @@ declare global {
 }
 
 const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
+const TOUCH_POINTER_QUERY = "(hover: none), (pointer: coarse)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const PRELOADER_DONE_EVENT = "linka:preloader:done";
 
@@ -30,11 +31,12 @@ export default function LenisProvider() {
 
     const owner = Symbol("linka-lenis");
     const finePointer = window.matchMedia(FINE_POINTER_QUERY);
+    const touchPointer = window.matchMedia(TOUCH_POINTER_QUERY);
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
     let refreshFrame: number | null = null;
     let preloaderDone = window.__LINKA_PRELOADER_DONE__ === true;
 
-    const shouldUseSmoothScroll = () => finePointer.matches && !reducedMotion.matches;
+    const shouldUseSmoothScroll = () => finePointer.matches && !touchPointer.matches && !reducedMotion.matches;
 
     const refreshScrollTrigger = () => {
       if (refreshFrame !== null) window.cancelAnimationFrame(refreshFrame);
@@ -49,10 +51,10 @@ export default function LenisProvider() {
 
       const lenis = new Lenis({
         anchors: true,
-        lerp: 0.12,
+        lerp: 0.145,
         smoothWheel: true,
         syncTouch: false,
-        wheelMultiplier: 0.92,
+        wheelMultiplier: 0.98,
       });
       const raf = (time: number) => lenis.raf(time * 1000);
 
@@ -91,11 +93,13 @@ export default function LenisProvider() {
     else window.addEventListener(PRELOADER_DONE_EVENT, handlePreloaderDone, { once: true });
 
     finePointer.addEventListener("change", sync);
+    touchPointer.addEventListener("change", sync);
     reducedMotion.addEventListener("change", sync);
 
     return () => {
       window.removeEventListener(PRELOADER_DONE_EVENT, handlePreloaderDone);
       finePointer.removeEventListener("change", sync);
+      touchPointer.removeEventListener("change", sync);
       reducedMotion.removeEventListener("change", sync);
       stop(false);
       if (refreshFrame !== null) window.cancelAnimationFrame(refreshFrame);
