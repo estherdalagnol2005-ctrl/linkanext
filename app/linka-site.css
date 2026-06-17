@@ -1269,11 +1269,11 @@ body {
 }
 
 .lv10-copy h1{
-  max-width:590px;
+  max-width:570px;
   margin:26px 0 0;
   font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(38px,4.4vw,66px);
-  line-height:.96;
+  font-size:58px;
+  line-height:1.01;
   letter-spacing:-.058em;
   font-weight:900;
 }
@@ -1472,7 +1472,7 @@ body {
 
   .lv10-copy h1{
     max-width:100%;
-    font-size:44px;
+    font-size:40px;
   }
 
   .lv10-copy p{
@@ -1588,8 +1588,8 @@ body {
 
   .lv10-copy h1{
     margin-top:20px;
-    font-size:34px;
-    line-height:1;
+    font-size:32px;
+    line-height:1.03;
     letter-spacing:-.045em;
   }
 
@@ -1648,7 +1648,7 @@ body {
   .launch-exp{--x:-132px;--y:108px;}
   .launch-sua{--x:132px;--y:108px;}
 
-  .lv10-copy h1{font-size:31px;}
+  .lv10-copy h1{font-size:30px;}
   .lv10-copy p{font-size:13.6px;}
 }
 
@@ -1675,6 +1675,83 @@ body {
 
   .lv10-launch-star{
     display:none!important;
+  }
+}
+
+.linka-portfolio-intro{
+  width:min(800px,100%);
+  margin:0 auto;
+  padding:100px 24px 60px;
+  text-align:center;
+  position:relative;
+  z-index:3;
+}
+
+.linka-portfolio-kicker{
+  display:block;
+  color:rgba(255,255,255,.66);
+  font:900 11px/1 Manrope,Arial,sans-serif;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.linka-portfolio-intro h2{
+  max-width:780px;
+  margin:18px auto 0;
+  color:#fff;
+  font-family:"Space Grotesk",Manrope,sans-serif;
+  font-size:60px;
+  line-height:1.02;
+  letter-spacing:0;
+  font-weight:900;
+}
+
+.linka-portfolio-intro h2 em{
+  color:#7dd3fc;
+  font-style:normal;
+}
+
+.linka-portfolio-intro p{
+  max-width:620px;
+  margin:18px auto 0;
+  color:rgba(255,255,255,.72);
+  font:680 16px/1.72 Manrope,Arial,sans-serif;
+}
+
+.linka-portfolio-mount .linka-choice-prompt .titulo-principal{
+  font-size:38px!important;
+  line-height:.98!important;
+}
+
+@media(max-width:767px){
+  .linka-portfolio-intro{
+    width:100%;
+    padding:76px 20px 44px;
+  }
+
+  .linka-portfolio-kicker{
+    font-size:9.5px;
+    letter-spacing:.13em;
+  }
+
+  .linka-portfolio-intro h2{
+    max-width:360px;
+    margin-top:15px;
+    font-size:39px;
+    line-height:1.03;
+    letter-spacing:0;
+  }
+
+  .linka-portfolio-intro p{
+    max-width:340px;
+    margin-top:15px;
+    font-size:14px;
+    line-height:1.64;
+  }
+
+  .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
+    font-size:24px!important;
+    line-height:.98!important;
   }
 }
 /* =========================================================
@@ -1964,11 +2041,11 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .linka-copy-v64.visible .lov64-kicker span{animation:lov64Dot 2.8s ease-in-out infinite}
 
 .lov64-shell h2{
-  max-width:590px!important;
+  max-width:570px!important;
   margin:26px 0 0!important;
   font-family:"Space Grotesk",Manrope,sans-serif!important;
-  font-size:clamp(38px,4.4vw,66px)!important;
-  line-height:.96!important;
+  font-size:58px!important;
+  line-height:1.01!important;
   letter-spacing:-.058em!important;
   font-weight:900!important;
   color:#fff!important;
@@ -1993,7 +2070,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   background-clip:initial!important;
   -webkit-text-fill-color:var(--lk-accent)!important;
   font-weight:900!important;
-  line-height:.96!important;
+  line-height:1.01!important;
   text-align:left!important;
   text-shadow:
     0 0 18px rgba(125,211,252,.16),
@@ -2401,14 +2478,14 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   .lov64-shell h2{
     max-width:100%!important;
     margin-top:20px!important;
-    font-size:34px!important;
-    line-height:1!important;
+    font-size:32px!important;
+    line-height:1.03!important;
     letter-spacing:-.045em!important;
   }
 
   .lov64-shell h2 strong{
     margin-top:5px!important;
-    line-height:1!important;
+    line-height:1.03!important;
   }
 
   .lov64-lead{
@@ -2527,7 +2604,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 @media(max-width:390px){
-  .lov64-shell h2{font-size:31px!important}
+  .lov64-shell h2{font-size:30px!important}
   .lov64-lead{font-size:13.6px!important}
   .premium-card h3{font-size:18.6px!important}
 }
@@ -3316,11 +3393,11 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lp8-copy h2{
-  max-width:640px;
+  max-width:600px;
   margin:30px 0 0;
   font-family:Space Grotesk,Manrope,sans-serif;
-  font-size:clamp(38px,4.4vw,66px);
-  line-height:.96;
+  font-size:58px;
+  line-height:1.01;
   letter-spacing:-.058em;
   font-weight:900;
 }
@@ -3498,7 +3575,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lp8-copy h2{
-    font-size:44px;
+    font-size:40px;
   }
 }
 
@@ -3599,8 +3676,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
   .lp8-copy h2{
     margin-top:22px;
-    font-size:34px;
-    line-height:1;
+    font-size:32px;
+    line-height:1.03;
     letter-spacing:-.045em;
   }
 
@@ -3636,7 +3713,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lp8-copy h2{
-    font-size:31px;
+    font-size:30px;
   }
 }
 
