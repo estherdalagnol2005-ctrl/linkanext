@@ -168,6 +168,24 @@ declare global {
 
 type WhatsAppKind = "project" | "discount" | "identity" | "contact";
 
+let scrollRefreshTimer: number | undefined;
+
+function requestScrollRefresh(delay = 120, force = false) {
+  if (typeof window === "undefined") return;
+  if (scrollRefreshTimer) window.clearTimeout(scrollRefreshTimer);
+
+  scrollRefreshTimer = window.setTimeout(() => {
+    scrollRefreshTimer = undefined;
+    window.ScrollTrigger?.refresh(force);
+  }, delay);
+}
+
+function cancelScrollRefresh() {
+  if (!scrollRefreshTimer || typeof window === "undefined") return;
+  window.clearTimeout(scrollRefreshTimer);
+  scrollRefreshTimer = undefined;
+}
+
 function storedLanguage(): Language {
   try {
     return window.localStorage.getItem("linka-language") === "en" ? "en" : "pt";
@@ -364,7 +382,7 @@ function applyLanguage(nextLang: Language) {
     // localStorage may be unavailable in restricted browsing modes.
   }
 
-  window.setTimeout(() => window.ScrollTrigger?.refresh(), 80);
+  requestScrollRefresh(90);
 }
 
 function randomBetween(min: number, max: number) {
@@ -384,14 +402,17 @@ function initParticles(addCleanup: (cleanup: () => void) => void) {
   const field = particleField;
 
   const particleAmounts = {
-    desktop: 180,
-    tablet: 125,
-    mobile: 90,
+    desktop: 110,
+    tablet: 60,
+    mobile: 36,
   } as const;
 
   type ParticleMode = keyof typeof particleAmounts;
   let currentMode = "";
   let resizeTimer: number | undefined;
+  let pointerFrame: number | undefined;
+  let pointerX = 0;
+  let pointerY = 0;
 
   function getScreenMode(): ParticleMode {
     if (window.innerWidth <= 480) return "mobile";
@@ -452,11 +473,19 @@ function initParticles(addCleanup: (cleanup: () => void) => void) {
   function handlePointerMove(event: MouseEvent) {
     if (window.innerWidth <= 820) return;
 
-    const normalizedX = event.clientX / window.innerWidth - 0.5;
-    const normalizedY = event.clientY / window.innerHeight - 0.5;
+    pointerX = event.clientX;
+    pointerY = event.clientY;
 
-    field.style.setProperty("--lk5-parallax-x", `${normalizedX * 12}px`);
-    field.style.setProperty("--lk5-parallax-y", `${normalizedY * 12}px`);
+    if (pointerFrame) return;
+
+    pointerFrame = window.requestAnimationFrame(() => {
+      pointerFrame = undefined;
+      const normalizedX = pointerX / window.innerWidth - 0.5;
+      const normalizedY = pointerY / window.innerHeight - 0.5;
+
+      field.style.setProperty("--lk5-parallax-x", `${normalizedX * 12}px`);
+      field.style.setProperty("--lk5-parallax-y", `${normalizedY * 12}px`);
+    });
   }
 
   function handleResize() {
@@ -471,6 +500,7 @@ function initParticles(addCleanup: (cleanup: () => void) => void) {
   addCleanup(() => {
     window.removeEventListener("mousemove", handlePointerMove);
     window.removeEventListener("resize", handleResize);
+    if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
     if (resizeTimer) window.clearTimeout(resizeTimer);
     field.innerHTML = "";
   });
@@ -732,15 +762,26 @@ function initPortfolioIntro(addCleanup: (cleanup: () => void) => void) {
         force3D: true,
       });
 
-      gsap.to(items, {
+      let introTween: gsap.core.Tween | undefined;
+      let revealedImmediately = false;
+      const revealImmediatelyOnFastScroll = (self: ScrollTrigger) => {
+        if (!isMobile || revealedImmediately || Math.abs(self.getVelocity()) < 1600) return;
+        revealedImmediately = true;
+        gsap.set(items, { autoAlpha: 1, y: 0 });
+        introTween?.progress(1);
+      };
+
+      introTween = gsap.to(items, {
         autoAlpha: 1,
         y: 0,
-        duration: isMobile ? 0.72 : 0.9,
-        stagger: isMobile ? 0.1 : 0.14,
+        duration: isMobile ? 0.32 : 0.9,
+        stagger: isMobile ? 0.03 : 0.14,
         ease: "power3.out",
         scrollTrigger: {
           trigger: intro,
-          start: isMobile ? "top 90%" : "top 84%",
+          start: isMobile ? "top 110%" : "top 84%",
+          onEnter: revealImmediatelyOnFastScroll,
+          onUpdate: revealImmediatelyOnFastScroll,
           once: true,
         },
       });
@@ -876,16 +917,23 @@ function initExperience(addCleanup: (cleanup: () => void) => void, schedule: (ca
       });
     }, root);
 
+    let resizeTimer: number | undefined;
+
     function handleResize() {
       if (done) return;
-      gsap.set(star, { y: isMobile() ? "-42vh" : "-44vh" });
-      ScrollTrigger.refresh();
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (done) return;
+        gsap.set(star, { y: isMobile() ? "-42vh" : "-44vh" });
+        requestScrollRefresh(120);
+      }, 160);
     }
 
     window.addEventListener("resize", handleResize, { passive: true });
 
     addCleanup(() => {
       window.removeEventListener("resize", handleResize);
+      if (resizeTimer) window.clearTimeout(resizeTimer);
       context.revert();
       delete root.dataset.lov67Booted;
       root.classList.remove("ready", "gsap-star-ready", "visible", "star-complete", "fireworks", "paused");
@@ -932,12 +980,159 @@ function initMarquee(addCleanup: (cleanup: () => void) => void) {
 
   refreshAll();
   window.addEventListener("load", refreshAll);
-  window.addEventListener("resize", handleResize);
+  window.addEventListener("resize", handleResize, { passive: true });
 
   addCleanup(() => {
     window.removeEventListener("load", refreshAll);
     window.removeEventListener("resize", handleResize);
     if (resizeTimer) window.clearTimeout(resizeTimer);
+  });
+}
+
+function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
+  const allVideos = Array.from(document.querySelectorAll<HTMLVideoElement>("video"));
+  const portfolioVideos = allVideos.filter((video) => video.closest(".linka-portfolio-mount"));
+  const firstPortfolioVideo = portfolioVideos[0];
+  const remainingPortfolioVideos = portfolioVideos.slice(1);
+  const managedVideos = allVideos.filter((video) => !video.closest(".linka-portfolio-mount"));
+  const portfolioMount = document.querySelector<HTMLElement>(".linka-portfolio-mount");
+  const pausedVideos = new WeakSet<HTMLVideoElement>();
+  let preloaderDoneFrame: number | undefined;
+
+  function resumeVideo(video: HTMLVideoElement) {
+    if (document.hidden || !pausedVideos.has(video)) return;
+    pausedVideos.delete(video);
+    video.play().catch(() => undefined);
+  }
+
+  function pauseVideo(video: HTMLVideoElement) {
+    if (video.paused || video.ended) return;
+    pausedVideos.add(video);
+    video.pause();
+  }
+
+  let videoObserver: IntersectionObserver | undefined;
+  if ("IntersectionObserver" in window) {
+    videoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          const isVisible = entry.isIntersecting && entry.intersectionRatio > 0.02;
+
+          if (isVisible) resumeVideo(video);
+          else pauseVideo(video);
+        });
+      },
+      { root: null, rootMargin: "220px 0px", threshold: [0, 0.03, 0.18] },
+    );
+
+    managedVideos.forEach((video) => videoObserver?.observe(video));
+  }
+
+  let portfolioPreloadObserver: IntersectionObserver | undefined;
+  function preloadPortfolioVideo(video: HTMLVideoElement | undefined) {
+    if (!video) return;
+    video.preload = "auto";
+    video.setAttribute("preload", "auto");
+    if (video.readyState === 0) video.load();
+  }
+
+  function preloadFirstPortfolioVideo() {
+    preloadPortfolioVideo(firstPortfolioVideo);
+  }
+
+  function preloadRemainingPortfolioVideos() {
+    remainingPortfolioVideos.forEach(preloadPortfolioVideo);
+    portfolioPreloadObserver?.disconnect();
+    portfolioPreloadObserver = undefined;
+  }
+
+  if (firstPortfolioVideo) {
+    if (window.__LINKA_PRELOADER_DONE__) {
+      preloaderDoneFrame = window.requestAnimationFrame(preloadFirstPortfolioVideo);
+    } else {
+      window.addEventListener("linka:preloader:done", preloadFirstPortfolioVideo, { once: true });
+    }
+  }
+
+  if (portfolioMount && remainingPortfolioVideos.length) {
+    if ("IntersectionObserver" in window) {
+      portfolioPreloadObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) preloadRemainingPortfolioVideos();
+        },
+        { root: null, rootMargin: "3000px 0px", threshold: 0 },
+      );
+      portfolioPreloadObserver.observe(portfolioMount);
+    } else {
+      preloadRemainingPortfolioVideos();
+    }
+  }
+
+  const roots = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      ".linka-v10-hero, [data-lov64], .linka-stack-strip-v3, [data-linka-promo], .linka-nasa-transition-v3",
+    ),
+  );
+
+  function setDecorativePaused(root: HTMLElement, paused: boolean) {
+    root.classList.toggle("linka-perf-paused", paused);
+
+    const targets = Array.from(
+      root.querySelectorAll<HTMLElement>(".lv10-logo, .lv10-img, .lv10-glow, .lov64-star, .lov64-star-core"),
+    );
+
+    gsap.getTweensOf(targets).forEach((tween) => {
+      const tweenWithScrollTrigger = tween as gsap.core.Tween & { scrollTrigger?: ScrollTrigger };
+      if (tweenWithScrollTrigger.scrollTrigger) return;
+      if (paused) tween.pause();
+      else tween.resume();
+    });
+  }
+
+  let rootObserver: IntersectionObserver | undefined;
+  if ("IntersectionObserver" in window) {
+    rootObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const root = entry.target as HTMLElement;
+          const isVisible = entry.isIntersecting && entry.intersectionRatio > 0.01;
+          setDecorativePaused(root, !isVisible);
+        });
+      },
+      { root: null, rootMargin: "180px 0px", threshold: [0, 0.02] },
+    );
+
+    roots.forEach((root) => rootObserver?.observe(root));
+  }
+
+  function handleVisibilityChange() {
+    const hidden = document.hidden;
+    document.documentElement.classList.toggle("linka-doc-paused", hidden);
+
+    if (hidden) {
+      managedVideos.forEach(pauseVideo);
+      return;
+    }
+
+    managedVideos.forEach((video) => {
+      const rect = video.getBoundingClientRect();
+      const isNearViewport = rect.bottom >= -220 && rect.top <= window.innerHeight + 220;
+      if (isNearViewport) resumeVideo(video);
+    });
+  }
+
+  document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
+
+  addCleanup(() => {
+    videoObserver?.disconnect();
+    portfolioPreloadObserver?.disconnect();
+    window.removeEventListener("linka:preloader:done", preloadFirstPortfolioVideo);
+    if (preloaderDoneFrame) window.cancelAnimationFrame(preloaderDoneFrame);
+    rootObserver?.disconnect();
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    document.documentElement.classList.remove("linka-doc-paused");
+    roots.forEach((root) => root.classList.remove("linka-perf-paused"));
   });
 }
 
@@ -1136,6 +1331,7 @@ export default function LinkaSiteEffects() {
     window.gsap = gsap;
     window.ScrollTrigger = ScrollTrigger;
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const cleanups: Array<() => void> = [];
     const timers: number[] = [];
@@ -1152,15 +1348,17 @@ export default function LinkaSiteEffects() {
     initPortfolioIntro(addCleanup);
     initExperience(addCleanup, schedule);
     initMarquee(addCleanup);
+    initViewportPerformance(addCleanup);
     initPromo(addCleanup, schedule);
     initTransition(addCleanup, schedule);
     initLanguage(addCleanup, schedule);
 
-    window.setTimeout(() => ScrollTrigger.refresh(), 120);
+    requestScrollRefresh(140);
 
     return () => {
       cleanups.reverse().forEach((cleanup) => cleanup());
       timers.forEach((timer) => window.clearTimeout(timer));
+      cancelScrollRefresh();
     };
   }, []);
 
