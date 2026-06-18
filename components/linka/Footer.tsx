@@ -23,7 +23,7 @@ export default function Footer() {
             <a className="lf4-whatsapp" href={WHATSAPP_CONTACT_URL} rel="noopener" target="_blank">
               WhatsApp
             </a>
-            <a href="#" rel="noopener" target="_blank">
+            <a href="https://www.instagram.com/linka.online/" rel="noopener noreferrer" target="_blank">
               Instagram
             </a>
           </div>

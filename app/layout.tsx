@@ -8,13 +8,13 @@ import "./globals.css";
 import "./linka-site.css";
 
 export const metadata: Metadata = {
-  title: "Linka Studio | Experiências Digitais",
-  description: "A Linka cria sites, landing pages e experiências digitais com presença, clareza e valor.",
+  title: "Linka Studio | Digital Experiences",
+  description: "Linka creates websites, landing pages and digital experiences with presence, clarity and value.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <head>
         <meta name="theme-color" content="#050609" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
