@@ -237,6 +237,7 @@ declare global {
 
 type WhatsAppKind = "project" | "discount" | "identity" | "contact";
 const LANGUAGE_STORAGE_KEY = "linka-language-v2";
+const LANGUAGE_DEFAULT_EN_KEY = "linka-language-v2-default-en";
 
 let scrollRefreshTimer: number | undefined;
 
@@ -263,6 +264,12 @@ function normalizeLanguage(value: string | null | undefined): Language {
 
 function storedLanguage(): Language {
   try {
+    if (window.localStorage.getItem(LANGUAGE_DEFAULT_EN_KEY) !== "true") {
+      window.localStorage.setItem(LANGUAGE_DEFAULT_EN_KEY, "true");
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, "en");
+      return "en";
+    }
+
     return normalizeLanguage(window.localStorage.getItem(LANGUAGE_STORAGE_KEY));
   } catch {
     return "en";
