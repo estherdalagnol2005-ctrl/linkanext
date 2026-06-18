@@ -476,11 +476,20 @@ function applyLanguage(nextLang: Language) {
     switcher.title = copy.switchAria;
   }
 
+  const switchTrigger = document.querySelector<HTMLButtonElement>(".lls-trigger");
+  if (switchTrigger) switchTrigger.setAttribute("aria-label", copy.switchAria);
+
+  const switchMenu = document.querySelector<HTMLElement>(".lls-menu");
+  if (switchMenu) switchMenu.setAttribute("aria-label", copy.switchAria);
+
+  const currentLanguageLabel = document.querySelector<HTMLElement>(".lls-current");
+  if (currentLanguageLabel) currentLanguageLabel.textContent = lang.toUpperCase();
+
   document.querySelectorAll<HTMLElement>(".lls-lang[data-language]").forEach((option) => {
     const optionLanguage = normalizeLanguage(option.dataset.language);
     const isActive = optionLanguage === lang;
     option.classList.toggle("is-active", isActive);
-    option.setAttribute("aria-pressed", String(isActive));
+    option.setAttribute("aria-checked", String(isActive));
   });
 
   try {
@@ -1422,15 +1431,47 @@ function initLanguage(
   schedule(() => api.apply(lang), 1000);
 
   const switcher = document.querySelector<HTMLElement>(".linka-language-switch");
+  const trigger = switcher?.querySelector<HTMLButtonElement>(".lls-trigger");
+  const setMenuOpen = (isOpen: boolean) => {
+    if (!switcher || !trigger) return;
+    switcher.classList.toggle("is-open", isOpen);
+    switcher.closest(".linka-header-v11")?.classList.toggle("has-language-menu-open", isOpen);
+    trigger.setAttribute("aria-expanded", String(isOpen));
+  };
+  const closeMenu = () => setMenuOpen(false);
   const handleClick = (event: MouseEvent) => {
-    const option = (event.target as HTMLElement).closest<HTMLElement>("[data-language]");
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const triggerButton = target.closest<HTMLButtonElement>(".lls-trigger");
+    if (triggerButton && switcher?.contains(triggerButton)) {
+      setMenuOpen(!switcher.classList.contains("is-open"));
+      return;
+    }
+
+    const option = target.closest<HTMLElement>(".lls-lang[data-language]");
     if (!option || !switcher?.contains(option)) return;
     api.apply(normalizeLanguage(option.dataset.language));
+    closeMenu();
+  };
+  const handleDocumentClick = (event: MouseEvent) => {
+    if (!switcher || switcher.contains(event.target as Node)) return;
+    closeMenu();
+  };
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key !== "Escape" || !switcher?.classList.contains("is-open")) return;
+    closeMenu();
+    trigger?.focus();
   };
   switcher?.addEventListener("click", handleClick);
+  document.addEventListener("click", handleDocumentClick);
+  document.addEventListener("keydown", handleKeyDown);
 
   addCleanup(() => {
+    closeMenu();
     switcher?.removeEventListener("click", handleClick);
+    document.removeEventListener("click", handleDocumentClick);
+    document.removeEventListener("keydown", handleKeyDown);
     delete window.LINKA_I18N;
   });
 }
