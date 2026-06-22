@@ -1,95 +1,86 @@
 const HERO_WHATSAPP_URL =
   "https://wa.me/5554996443484?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Linka%20e%20quero%20agendar%20uma%20reuni%C3%A3o%20para%20conversar%20sobre%20meu%20projeto.";
 
-const HERO_PROJECTS = {
-  mainDesktop: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
-  mainMobile: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
-  depthDesktop: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
+const HERO_PROJECT = {
+  desktop: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
+  mobile: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
 };
 
 export default function Hero() {
   return (
-    <section className="linka-v12-hero" data-linka-hero="" id="home">
-      <div className="lv12-backdrop" aria-hidden="true">
-        <span className="lv12-light lv12-light-a" />
-        <span className="lv12-light lv12-light-b" />
-        <span className="lv12-line lv12-line-a" />
-        <span className="lv12-line lv12-line-b" />
-        <span className="lv12-noise" />
+    <section className="linka-hero-experience" data-linka-hero="" id="home">
+      <div className="lhx-color-field" aria-hidden="true">
+        <span className="lhx-shape lhx-shape-purple" />
+        <span className="lhx-shape lhx-shape-coral" />
+        <span className="lhx-shape lhx-shape-green" />
       </div>
 
-      <div className="lv12-shell">
-        <div className="lv12-copy">
-          <p className="lv12-kicker">LINKA DIGITAL / PORTFOLIO DIGITAL</p>
+      <div className="lhx-scene">
+        <div className="lhx-copy">
+          <p className="lhx-kicker">DESIGN · ESTRATÉGIA · TECNOLOGIA</p>
 
-          <h1 className="lv12-title">
-            <span className="lv12-title-mask">
-              <span className="lv12-title-line lv12-title-line-a">Sites que não passam</span>
+          <h1 className="lhx-title">
+            <span className="lhx-title-mask">
+              <span className="lhx-title-line lhx-title-line-a">Sites que transformam</span>
             </span>
-            {" "}
-            <span className="lv12-title-mask">
-              <span className="lv12-title-line lv12-title-line-b">despercebidos.</span>
+            <span className="lhx-title-mask">
+              <span className="lhx-title-line lhx-title-line-b">marcas em</span>
+            </span>
+            <span className="lhx-title-mask">
+              <span className="lhx-title-line lhx-title-line-c">experiências.</span>
             </span>
           </h1>
 
-          <p className="lv12-body">
-            Design, estratégia e tecnologia para transformar marcas em experiências digitais
-            marcantes.
+          <p className="lhx-body">
+            Criamos experiências digitais marcantes para negócios que não querem parecer iguais a
+            todos os outros.
           </p>
 
-          <nav className="lv12-actions" aria-label="Ações principais da hero">
-            <a className="lv12-cta" href="#portfolio">
-              <span className="lv12-cta-label">Conhecer projetos</span>
-              <span aria-hidden="true">→</span>
+          <div className="lhx-actions">
+            <a className="lhx-cta" href="#portfolio">
+              <span className="lhx-cta-label">Explorar projetos</span>
             </a>
 
-            <a className="lv12-link" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
-              <span className="lv12-link-label">Falar com a Linka</span>
-              <span aria-hidden="true">→</span>
+            <a className="lhx-link" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
+              <span className="lhx-link-label">Iniciar um projeto ↗</span>
             </a>
-          </nav>
+          </div>
         </div>
 
-        <div className="lv12-showcase" aria-label="Projeto Casa Sea em destaque">
-          <div className="lv12-depth-card" aria-hidden="true">
-            <video
-              className="lv12-video lv12-video-depth"
-              data-src-desktop={HERO_PROJECTS.depthDesktop}
-              loop
-              muted
-              playsInline
-              preload="metadata"
-            />
-          </div>
+        <div className="lhx-showcase" aria-label="Projeto Quatorze Hair Spa criado pela Linka">
+          <div className="lhx-project-surface">
+            <span className="lhx-project-label">
+              <span className="lhx-project-name">QUATORZE HAIR SPA</span>
+              <span className="lhx-project-meta">WEBSITE / 2026</span>
+            </span>
 
-          <figure className="lv12-project">
-            <div className="lv12-project-screen">
-              <div className="lv12-video-fallback" aria-hidden="true">
-                <span>Casa Sea</span>
-                <small>Imóveis de alto padrão</small>
+            <div className="lhx-video-frame">
+              <div className="lhx-video-fallback" aria-hidden="true">
+                <span>Quatorze</span>
+                <small>Hair Spa</small>
               </div>
+
               <video
-                aria-label="Projeto Casa Sea criado pela Linka"
-                className="lv12-video lv12-video-main"
-                data-src-desktop={HERO_PROJECTS.mainDesktop}
-                data-src-mobile={HERO_PROJECTS.mainMobile}
+                aria-label="Projeto Quatorze Hair Spa criado pela Linka"
+                className="lhx-video"
+                data-src-desktop={HERO_PROJECT.desktop}
+                data-src-mobile={HERO_PROJECT.mobile}
                 loop
                 muted
                 playsInline
                 preload="metadata"
               />
             </div>
-          </figure>
-
-          <div className="lv12-meta" aria-hidden="true">
-            <span className="lv12-index">01</span>
-            <span className="lv12-meta-line" />
-            <span className="lv12-project-type">Website / 2026</span>
           </div>
+
+          <aside className="lhx-note" aria-hidden="true">
+            <span className="lhx-note-label">01 / DIGITAL EXPERIENCE</span>
+            <p className="lhx-note-copy">Beleza, cuidado e presença digital com atmosfera própria.</p>
+          </aside>
         </div>
 
-        <div className="lv12-scroll-cue" aria-hidden="true">
-          <span>Scroll</span>
+        <div className="lhx-scroll-cue" aria-hidden="true">
+          <span className="lhx-scroll-label">Scroll</span>
           <i />
         </div>
       </div>

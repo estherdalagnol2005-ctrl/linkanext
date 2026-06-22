@@ -10,17 +10,21 @@ const COPY = {
   pt: {
     title: "Linka Studio | Experiências Digitais",
     description: "A Linka cria sites, landing pages e experiências digitais com presença, clareza e valor.",
-    heroKicker: "LINKA DIGITAL / PORTFÓLIO DIGITAL",
-    heroTitleLine1: "Sites que não passam",
-    heroTitleLine2: "despercebidos.",
+    heroKicker: "DESIGN · ESTRATÉGIA · TECNOLOGIA",
+    heroTitleLine1: "Sites que transformam",
+    heroTitleLine2: "marcas em",
+    heroTitleLine3: "experiências.",
     heroBody:
-      "Design, estratégia e tecnologia para transformar marcas em experiências digitais marcantes.",
-    heroCta: "Conhecer projetos",
-    heroSecondaryCta: "Falar com a Linka",
-    heroProjectAria: "Projeto Casa Sea criado pela Linka",
-    heroProjectFallback: "Casa Sea",
-    heroProjectFallbackSmall: "Imóveis de alto padrão",
-    heroProjectType: "Website / 2026",
+      "Criamos experiências digitais marcantes para negócios que não querem parecer iguais a todos os outros.",
+    heroCta: "Explorar projetos",
+    heroContactCta: "Iniciar um projeto ↗",
+    heroProjectAria: "Projeto Quatorze Hair Spa criado pela Linka",
+    heroProjectName: "QUATORZE HAIR SPA",
+    heroProjectMeta: "WEBSITE / 2026",
+    heroProjectFallback: "Quatorze",
+    heroProjectFallbackSmall: "Hair Spa",
+    heroNoteLabel: "01 / EXPERIÊNCIA DIGITAL",
+    heroNoteCopy: "Beleza, cuidado e presença digital com atmosfera própria.",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
@@ -89,17 +93,21 @@ const COPY = {
     title: "Linka Studio | Digital Experiences",
     description:
       "Linka creates websites, landing pages and digital experiences with presence, clarity and value.",
-    heroKicker: "LINKA DIGITAL / DIGITAL PORTFOLIO",
-    heroTitleLine1: "Websites that never",
-    heroTitleLine2: "go unnoticed.",
+    heroKicker: "DESIGN · STRATEGY · TECHNOLOGY",
+    heroTitleLine1: "Websites that turn",
+    heroTitleLine2: "brands into",
+    heroTitleLine3: "experiences.",
     heroBody:
-      "Design, strategy and technology to turn brands into memorable digital experiences.",
+      "We create memorable digital experiences for businesses that do not want to look like everyone else.",
     heroCta: "Explore projects",
-    heroSecondaryCta: "Talk to Linka",
-    heroProjectAria: "Casa Sea project created by Linka",
-    heroProjectFallback: "Casa Sea",
-    heroProjectFallbackSmall: "High-end real estate",
-    heroProjectType: "Website / 2026",
+    heroContactCta: "Start a project ↗",
+    heroProjectAria: "Quatorze Hair Spa project created by Linka",
+    heroProjectName: "QUATORZE HAIR SPA",
+    heroProjectMeta: "WEBSITE / 2026",
+    heroProjectFallback: "Quatorze",
+    heroProjectFallbackSmall: "Hair Spa",
+    heroNoteLabel: "01 / DIGITAL EXPERIENCE",
+    heroNoteCopy: "Beauty, care and digital presence with its own atmosphere.",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
@@ -164,17 +172,21 @@ const COPY = {
   es: {
     title: "Linka Studio | Experiencias Digitales",
     description: "Linka crea sitios web, landing pages y experiencias digitales con presencia, claridad y valor.",
-    heroKicker: "LINKA DIGITAL / PORTAFOLIO DIGITAL",
-    heroTitleLine1: "Sitios que no pasan",
-    heroTitleLine2: "desapercibidos.",
+    heroKicker: "DISEÑO · ESTRATEGIA · TECNOLOGÍA",
+    heroTitleLine1: "Sitios que transforman",
+    heroTitleLine2: "marcas en",
+    heroTitleLine3: "experiencias.",
     heroBody:
-      "Diseño, estrategia y tecnología para transformar marcas en experiencias digitales memorables.",
+      "Creamos experiencias digitales memorables para negocios que no quieren parecerse a todos los demás.",
     heroCta: "Ver proyectos",
-    heroSecondaryCta: "Hablar con Linka",
-    heroProjectAria: "Proyecto Casa Sea creado por Linka",
-    heroProjectFallback: "Casa Sea",
-    heroProjectFallbackSmall: "Inmuebles de alto nivel",
-    heroProjectType: "Website / 2026",
+    heroContactCta: "Iniciar un proyecto ↗",
+    heroProjectAria: "Proyecto Quatorze Hair Spa creado por Linka",
+    heroProjectName: "QUATORZE HAIR SPA",
+    heroProjectMeta: "WEBSITE / 2026",
+    heroProjectFallback: "Quatorze",
+    heroProjectFallbackSmall: "Hair Spa",
+    heroNoteLabel: "01 / EXPERIENCIA DIGITAL",
+    heroNoteCopy: "Belleza, cuidado y presencia digital con una atmósfera propia.",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
@@ -378,20 +390,24 @@ function applyLanguage(nextLang: Language) {
   if (meta) meta.content = copy.description;
 
   setAttributeForAll(".lh11-brand", "aria-label", copy.headerStartAria);
-  setText(".lv12-kicker", copy.heroKicker);
-  setText(".lv12-title-line-a", copy.heroTitleLine1);
-  setText(".lv12-title-line-b", copy.heroTitleLine2);
-  setText(".lv12-body", copy.heroBody);
-  setText(".lv12-cta-label", copy.heroCta);
-  setText(".lv12-link-label", copy.heroSecondaryCta);
-  setText(".lv12-video-fallback > span", copy.heroProjectFallback);
-  setText(".lv12-video-fallback > small", copy.heroProjectFallbackSmall);
-  setText(".lv12-project-type", copy.heroProjectType);
-  setText(".lv12-scroll-cue > span", copy.heroScroll);
-  setAttributeForAll(".lv12-showcase", "aria-label", copy.heroProjectAria);
-  setAttributeForAll(".lv12-video-main", "aria-label", copy.heroProjectAria);
+  setText(".lhx-kicker", copy.heroKicker);
+  setText(".lhx-title-line-a", copy.heroTitleLine1);
+  setText(".lhx-title-line-b", copy.heroTitleLine2);
+  setText(".lhx-title-line-c", copy.heroTitleLine3);
+  setText(".lhx-body", copy.heroBody);
+  setText(".lhx-cta-label", copy.heroCta);
+  setText(".lhx-link-label", copy.heroContactCta);
+  setText(".lhx-project-name", copy.heroProjectName);
+  setText(".lhx-project-meta", copy.heroProjectMeta);
+  setText(".lhx-video-fallback > span", copy.heroProjectFallback);
+  setText(".lhx-video-fallback > small", copy.heroProjectFallbackSmall);
+  setText(".lhx-note-label", copy.heroNoteLabel);
+  setText(".lhx-note-copy", copy.heroNoteCopy);
+  setText(".lhx-scroll-label", copy.heroScroll);
+  setAttributeForAll(".lhx-showcase", "aria-label", copy.heroProjectAria);
+  setAttributeForAll(".lhx-video", "aria-label", copy.heroProjectAria);
 
-  const heroContact = document.querySelector<HTMLAnchorElement>(".lv12-link");
+  const heroContact = document.querySelector<HTMLAnchorElement>(".lhx-link");
   if (heroContact) heroContact.href = whatsappUrl("project", lang);
 
   setHtml(".lov64-kicker", copy.expKicker);
@@ -662,186 +678,165 @@ function initHeader() {
 
 function initHero(addCleanup: (cleanup: () => void) => void) {
   document.querySelectorAll<HTMLElement>("[data-linka-hero]").forEach((hero) => {
-    if (hero.dataset.lv12Booted === "true") return;
+    if (hero.dataset.lhxBooted === "true") return;
 
-    const shell = hero.querySelector<HTMLElement>(".lv12-shell");
-    const copy = hero.querySelector<HTMLElement>(".lv12-copy");
-    const kicker = hero.querySelector<HTMLElement>(".lv12-kicker");
-    const title = hero.querySelector<HTMLElement>(".lv12-title");
-    const titleLines = Array.from(hero.querySelectorAll<HTMLElement>(".lv12-title-line"));
-    const body = hero.querySelector<HTMLElement>(".lv12-body");
-    const actions = hero.querySelector<HTMLElement>(".lv12-actions");
-    const showcase = hero.querySelector<HTMLElement>(".lv12-showcase");
-    const project = hero.querySelector<HTMLElement>(".lv12-project");
-    const projectScreen = hero.querySelector<HTMLElement>(".lv12-project-screen");
-    const depthCard = hero.querySelector<HTMLElement>(".lv12-depth-card");
-    const meta = hero.querySelector<HTMLElement>(".lv12-meta");
-    const scrollCue = hero.querySelector<HTMLElement>(".lv12-scroll-cue");
-    const lights = Array.from(hero.querySelectorAll<HTMLElement>(".lv12-light, .lv12-line"));
-    const mainVideo = hero.querySelector<HTMLVideoElement>(".lv12-video-main");
-    const depthVideo = hero.querySelector<HTMLVideoElement>(".lv12-video-depth");
+    const scene = hero.querySelector<HTMLElement>(".lhx-scene");
+    const copy = hero.querySelector<HTMLElement>(".lhx-copy");
+    const kicker = hero.querySelector<HTMLElement>(".lhx-kicker");
+    const title = hero.querySelector<HTMLElement>(".lhx-title");
+    const titleLines = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-title-line"));
+    const body = hero.querySelector<HTMLElement>(".lhx-body");
+    const actions = hero.querySelector<HTMLElement>(".lhx-actions");
+    const showcase = hero.querySelector<HTMLElement>(".lhx-showcase");
+    const surface = hero.querySelector<HTMLElement>(".lhx-project-surface");
+    const videoFrame = hero.querySelector<HTMLElement>(".lhx-video-frame");
+    const video = hero.querySelector<HTMLVideoElement>(".lhx-video");
+    const note = hero.querySelector<HTMLElement>(".lhx-note");
+    const scrollCue = hero.querySelector<HTMLElement>(".lhx-scroll-cue");
+    const purpleShape = hero.querySelector<HTMLElement>(".lhx-shape-purple");
+    const coralShape = hero.querySelector<HTMLElement>(".lhx-shape-coral");
+    const greenShape = hero.querySelector<HTMLElement>(".lhx-shape-green");
+    const shapes = [purpleShape, coralShape, greenShape].filter(Boolean) as HTMLElement[];
+    const purpleTargets = purpleShape ? [purpleShape] : [];
+    const coralTargets = coralShape ? [coralShape] : [];
+    const greenTargets = greenShape ? [greenShape] : [];
 
-    if (!shell || !copy || !kicker || !title || !body || !actions || !showcase || !project || !projectScreen) {
+    if (!scene || !copy || !kicker || !title || !titleLines.length || !body || !actions || !showcase || !surface || !videoFrame) {
       return;
     }
 
-    hero.dataset.lv12Booted = "true";
+    hero.dataset.lhxBooted = "true";
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const optionalElements = [depthCard, meta, scrollCue].filter(Boolean) as HTMLElement[];
-    const mobileEditorial = [meta, scrollCue].filter(Boolean) as HTMLElement[];
-    const desktopAtmosphere = [meta, scrollCue, ...lights].filter(Boolean) as HTMLElement[];
     const mm = gsap.matchMedia();
-    let refreshFrame: number | undefined;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const revealItems = [kicker, body, actions, showcase, surface, note, scrollCue, ...shapes].filter(Boolean) as HTMLElement[];
 
-    function prepareVideo(video: HTMLVideoElement | null, src: string | null | undefined, shouldPlay: boolean) {
-      if (!video || !src) return;
-      if (video.getAttribute("src") !== src) video.setAttribute("src", src);
+    function prepareVideo(isMobile: boolean) {
+      if (!video) return;
+      const source = isMobile ? video.dataset.srcMobile : video.dataset.srcDesktop;
+      if (!source) return;
+
+      if (video.getAttribute("src") !== source) video.setAttribute("src", source);
       video.muted = true;
       video.defaultMuted = true;
       video.loop = true;
       video.playsInline = true;
-      video.preload = shouldPlay ? "auto" : "metadata";
+      video.preload = "metadata";
       video.setAttribute("muted", "");
       video.setAttribute("playsinline", "");
       video.setAttribute("webkit-playsinline", "");
       video.setAttribute("loop", "");
-      video.setAttribute("preload", video.preload);
+      video.setAttribute("preload", "metadata");
       video.setAttribute("disablepictureinpicture", "");
       video.setAttribute("controlslist", "nodownload noplaybackrate nofullscreen");
       video.removeAttribute("controls");
-      video.load();
-      if (shouldPlay) video.play().catch(() => undefined);
+      if (video.readyState === 0) video.load();
+      video.play().catch(() => undefined);
     }
 
-    function setActiveVideos(isMobile: boolean) {
-      const mainSource = isMobile ? mainVideo?.dataset.srcMobile : mainVideo?.dataset.srcDesktop;
-      prepareVideo(mainVideo, mainSource, true);
-
-      if (isMobile) {
-        depthVideo?.pause();
-        depthVideo?.removeAttribute("src");
-        depthVideo?.load();
-        return;
-      }
-
-      prepareVideo(depthVideo, depthVideo?.dataset.srcDesktop, true);
-    }
-
-    function scheduleRefresh() {
-      if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
-      refreshFrame = window.requestAnimationFrame(() => {
-        refreshFrame = undefined;
-        window.ScrollTrigger?.refresh();
+    function showStatic(isMobile: boolean) {
+      prepareVideo(isMobile);
+      gsap.set([scene, copy, title, ...titleLines, ...revealItems, videoFrame], {
+        autoAlpha: 1,
+        clearProps: "transform,opacity,visibility,borderRadius",
       });
+      hero.classList.add("lhx-ready");
     }
 
     const context = gsap.context(() => {
-      if (reduceMotion) {
-        setActiveVideos(window.matchMedia("(max-width: 900px)").matches);
-        gsap.set([kicker, title, ...titleLines, body, actions, showcase, project, projectScreen, ...optionalElements], {
-          autoAlpha: 1,
-          clearProps: "transform,opacity,visibility,borderRadius",
-        });
-        hero.classList.add("lv12-ready");
-        scheduleRefresh();
+      if (prefersReduced) {
+        showStatic(window.matchMedia("(max-width: 900px)").matches);
         return;
       }
 
       mm.add("(max-width: 900px)", () => {
-        setActiveVideos(true);
+        prepareVideo(true);
 
-        gsap.set(titleLines, { yPercent: 105 });
-        gsap.set([body, actions, kicker], { autoAlpha: 0, y: 14 });
-        gsap.set(showcase, { autoAlpha: 1, y: 18, scale: 0.94, transformOrigin: "50% 72%" });
-        gsap.set(mobileEditorial, { autoAlpha: 0, y: 10 });
+        gsap.set(titleLines, { yPercent: 108 });
+        gsap.set([kicker, body, actions], { autoAlpha: 0, y: 14 });
+        gsap.set(showcase, { autoAlpha: 0, y: 34, scale: 0.96, transformOrigin: "50% 82%" });
+        gsap.set([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 0, y: 10 });
+        gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
-          .add(() => hero.classList.add("lv12-ready"), 0)
-          .to(titleLines, { yPercent: 0, duration: 0.62, stagger: 0.055, ease: "expo.out" }, 0.03)
-          .to(showcase, { y: 0, scale: 0.94, duration: 0.72, ease: "expo.out" }, 0.1)
-          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
-          .to(mobileEditorial, { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.05 }, 0.68);
+          .add(() => hero.classList.add("lhx-ready"), 0)
+          .to(titleLines, { yPercent: 0, duration: 0.58, stagger: 0.045, ease: "expo.out" }, 0.04)
+          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, ease: "expo.out" }, 0.14)
+          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
+          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 1, y: 0, duration: 0.34, stagger: 0.035 }, 0.7);
 
         gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=72%",
-            scrub: 0.65,
+            end: "+=70%",
+            scrub: 0.62,
             invalidateOnRefresh: true,
           },
         })
-          .to(title, { y: -34, autoAlpha: 0.76 }, 0)
-          .to([kicker, body, actions, ...optionalElements], { y: -22, autoAlpha: 0 }, 0)
-          .to(showcase, { y: -18, scale: 1, x: 0 }, 0)
-          .to(projectScreen, { borderRadius: 14 }, 0)
-          .to(mobileEditorial, { y: -16, autoAlpha: 0 }, 0);
+          .to([kicker, body, actions], { y: -24, autoAlpha: 0 }, 0)
+          .to(title, { y: -34, autoAlpha: 0.82 }, 0)
+          .to(showcase, { y: -18, scale: 1.07 }, 0)
+          .to(videoFrame, { borderRadius: 4 }, 0)
+          .to(purpleTargets, { scale: 1.34, x: -18, y: -10 }, 0)
+          .to(coralTargets, { scale: 1.28, y: -74 }, 0)
+          .to(greenTargets, { scale: 1.16, x: 18, y: -22 }, 0)
+          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { y: -18, autoAlpha: 0 }, 0);
 
-        scheduleRefresh();
-
-        return () => {
-          intro.kill();
-        };
+        return () => intro.kill();
       });
 
       mm.add("(min-width: 901px)", () => {
-        if (!depthCard) return;
+        prepareVideo(false);
 
-        setActiveVideos(false);
-
-        gsap.set(titleLines, { yPercent: 108 });
-        gsap.set([body, actions, kicker], { autoAlpha: 0, y: 16 });
-        gsap.set(project, { autoAlpha: 1, y: 28, scale: 0.965, transformOrigin: "56% 58%" });
-        gsap.set(depthCard, { autoAlpha: 0, x: -26, y: 18, scale: 0.96 });
-        gsap.set(desktopAtmosphere, { autoAlpha: 0 });
+        gsap.set(titleLines, { yPercent: 112 });
+        gsap.set([kicker, body, actions], { autoAlpha: 0, y: 18 });
+        gsap.set(showcase, { autoAlpha: 0, y: 54, scale: 0.94, transformOrigin: "62% 58%" });
+        gsap.set([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 0, y: 12 });
+        gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
-          .add(() => hero.classList.add("lv12-ready"), 0)
-          .to(titleLines, { yPercent: 0, duration: 0.68, stagger: 0.06, ease: "expo.out" }, 0.02)
-          .to(project, { y: 0, scale: 1, duration: 0.78, ease: "expo.out" }, 0.1)
-          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.54, stagger: 0.055 }, 0.38)
-          .to(depthCard, { autoAlpha: 0.74, x: 0, y: 0, scale: 1, duration: 0.58 }, 0.48)
-          .to(desktopAtmosphere, { autoAlpha: 1, duration: 0.48, stagger: 0.035 }, 0.72);
+          .add(() => hero.classList.add("lhx-ready"), 0)
+          .to(titleLines, { yPercent: 0, duration: 0.66, stagger: 0.055, ease: "expo.out" }, 0.04)
+          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.74, ease: "expo.out" }, 0.12)
+          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
+          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 1, y: 0, duration: 0.38, stagger: 0.04 }, 0.74);
 
         gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=68%",
-            scrub: 0.75,
+            end: "+=78%",
+            scrub: 0.72,
             invalidateOnRefresh: true,
           },
         })
-          .to(copy, { y: -48, autoAlpha: 0.48 }, 0)
-          .to(project, { y: -34, scale: 1.08 }, 0)
-          .to(depthCard, { x: 78, y: -42, scale: 0.92, autoAlpha: 0.26 }, 0)
-          .to(desktopAtmosphere, { y: -20, autoAlpha: 0.25 }, 0);
+          .to(copy, { y: -62, autoAlpha: 0.44 }, 0)
+          .to(showcase, { y: -42, scale: 1.09 }, 0)
+          .to(videoFrame, { borderRadius: 3 }, 0)
+          .to(purpleTargets, { scale: 1.26, x: -38, y: -18 }, 0)
+          .to(coralTargets, { scale: 1.42, y: -112 }, 0)
+          .to(greenTargets, { scale: 1.18, x: 46, y: -34 }, 0)
+          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { y: -24, autoAlpha: 0 }, 0);
 
-        scheduleRefresh();
-
-        return () => {
-          intro.kill();
-        };
+        return () => intro.kill();
       });
     }, hero);
 
     addCleanup(() => {
-      if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
       mm.revert();
       context.revert();
-      [mainVideo, depthVideo].forEach((video) => {
-        if (!video) return;
+      if (video) {
         video.pause();
         video.removeAttribute("src");
         video.load();
-      });
-      hero.classList.remove("lv12-ready");
-      delete hero.dataset.lv12Booted;
+      }
+      hero.classList.remove("lhx-ready");
+      delete hero.dataset.lhxBooted;
     });
   });
 }
@@ -1183,15 +1178,19 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
 
   const roots = Array.from(
     document.querySelectorAll<HTMLElement>(
-      ".linka-v10-hero, [data-lov64], .linka-stack-strip-v3, [data-linka-promo], .linka-nasa-transition-v3",
+      "[data-linka-hero], [data-lov64], .linka-stack-strip-v3, [data-linka-promo], .linka-nasa-transition-v3",
     ),
   );
 
   function setDecorativePaused(root: HTMLElement, paused: boolean) {
     root.classList.toggle("linka-perf-paused", paused);
 
+    if (root.matches("[data-linka-hero]")) return;
+
     const targets = Array.from(
-      root.querySelectorAll<HTMLElement>(".lv10-logo, .lv10-img, .lv10-glow, .lov64-star, .lov64-star-core"),
+      root.querySelectorAll<HTMLElement>(
+        ".lov64-star, .lov64-star-core",
+      ),
     );
 
     gsap.getTweensOf(targets).forEach((tween) => {
