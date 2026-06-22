@@ -1,11 +1,6 @@
 const HERO_WHATSAPP_URL =
   "https://wa.me/5554996443484?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Linka%20e%20quero%20agendar%20uma%20reuni%C3%A3o%20para%20conversar%20sobre%20meu%20projeto.";
 
-const HERO_PROJECT = {
-  desktop: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
-  mobile: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
-};
-
 export default function Hero() {
   return (
     <section className="linka-hero-experience" data-linka-hero="" id="home">
@@ -42,41 +37,24 @@ export default function Hero() {
             </a>
 
             <a className="lhx-link" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
-              <span className="lhx-link-label">Iniciar um projeto ↗</span>
+              <span className="lhx-link-label">Iniciar um projeto</span>
+              <span className="lhx-link-arrow" aria-hidden="true">
+                &rarr;
+              </span>
             </a>
           </div>
         </div>
 
-        <div className="lhx-showcase" aria-label="Projeto Quatorze Hair Spa criado pela Linka">
-          <div className="lhx-project-surface">
-            <span className="lhx-project-label">
-              <span className="lhx-project-name">QUATORZE HAIR SPA</span>
-              <span className="lhx-project-meta">WEBSITE / 2026</span>
-            </span>
-
-            <div className="lhx-video-frame">
-              <div className="lhx-video-fallback" aria-hidden="true">
-                <span>Quatorze</span>
-                <small>Hair Spa</small>
-              </div>
-
-              <video
-                aria-label="Projeto Quatorze Hair Spa criado pela Linka"
-                className="lhx-video"
-                data-src-desktop={HERO_PROJECT.desktop}
-                data-src-mobile={HERO_PROJECT.mobile}
-                loop
-                muted
-                playsInline
-                preload="metadata"
-              />
-            </div>
+        <div className="lhx-showcase" aria-label="Landing pages, sites e experiências digitais da Linka">
+          <div className="lhx-type-tunnel" aria-hidden="true">
+            <span className="lhx-type-layer lhx-type-layer-a">ROLE PARA EXPLORAR</span>
+            <span className="lhx-type-layer lhx-type-layer-b">LANDING PAGES</span>
+            <span className="lhx-type-layer lhx-type-layer-c">SITES QUE CONVERTEM</span>
           </div>
 
-          <aside className="lhx-note" aria-hidden="true">
-            <span className="lhx-note-label">01 / DIGITAL EXPERIENCE</span>
-            <p className="lhx-note-copy">Beleza, cuidado e presença digital com atmosfera própria.</p>
-          </aside>
+          <p className="lhx-depth-caption" aria-hidden="true">
+            LANDING PAGES / SITES / EXPERIÊNCIAS DIGITAIS
+          </p>
         </div>
 
         <div className="lhx-scroll-cue" aria-hidden="true">

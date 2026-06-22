@@ -17,14 +17,12 @@ const COPY = {
     heroBody:
       "Criamos experiências digitais marcantes para negócios que não querem parecer iguais a todos os outros.",
     heroCta: "Explorar projetos",
-    heroContactCta: "Iniciar um projeto ↗",
-    heroProjectAria: "Projeto Quatorze Hair Spa criado pela Linka",
-    heroProjectName: "QUATORZE HAIR SPA",
-    heroProjectMeta: "WEBSITE / 2026",
-    heroProjectFallback: "Quatorze",
-    heroProjectFallbackSmall: "Hair Spa",
-    heroNoteLabel: "01 / EXPERIÊNCIA DIGITAL",
-    heroNoteCopy: "Beleza, cuidado e presença digital com atmosfera própria.",
+    heroContactCta: "Iniciar um projeto",
+    heroTunnelAria: "Landing pages, sites e experiências digitais da Linka",
+    heroTunnelLine1: "ROLE PARA EXPLORAR",
+    heroTunnelLine2: "LANDING PAGES",
+    heroTunnelLine3: "SITES QUE CONVERTEM",
+    heroTunnelCaption: "LANDING PAGES / SITES / EXPERIÊNCIAS DIGITAIS",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
@@ -100,14 +98,12 @@ const COPY = {
     heroBody:
       "We create memorable digital experiences for businesses that do not want to look like everyone else.",
     heroCta: "Explore projects",
-    heroContactCta: "Start a project ↗",
-    heroProjectAria: "Quatorze Hair Spa project created by Linka",
-    heroProjectName: "QUATORZE HAIR SPA",
-    heroProjectMeta: "WEBSITE / 2026",
-    heroProjectFallback: "Quatorze",
-    heroProjectFallbackSmall: "Hair Spa",
-    heroNoteLabel: "01 / DIGITAL EXPERIENCE",
-    heroNoteCopy: "Beauty, care and digital presence with its own atmosphere.",
+    heroContactCta: "Start a project",
+    heroTunnelAria: "Landing pages, websites and digital experiences by Linka",
+    heroTunnelLine1: "SCROLL TO EXPLORE",
+    heroTunnelLine2: "LANDING PAGES",
+    heroTunnelLine3: "WEBSITES BUILT TO CONVERT",
+    heroTunnelCaption: "LANDING PAGES / WEBSITES / DIGITAL EXPERIENCES",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
@@ -179,14 +175,12 @@ const COPY = {
     heroBody:
       "Creamos experiencias digitales memorables para negocios que no quieren parecerse a todos los demás.",
     heroCta: "Ver proyectos",
-    heroContactCta: "Iniciar un proyecto ↗",
-    heroProjectAria: "Proyecto Quatorze Hair Spa creado por Linka",
-    heroProjectName: "QUATORZE HAIR SPA",
-    heroProjectMeta: "WEBSITE / 2026",
-    heroProjectFallback: "Quatorze",
-    heroProjectFallbackSmall: "Hair Spa",
-    heroNoteLabel: "01 / EXPERIENCIA DIGITAL",
-    heroNoteCopy: "Belleza, cuidado y presencia digital con una atmósfera propia.",
+    heroContactCta: "Iniciar un proyecto",
+    heroTunnelAria: "Landing pages, sitios y experiencias digitales de Linka",
+    heroTunnelLine1: "DESLIZA PARA EXPLORAR",
+    heroTunnelLine2: "LANDING PAGES",
+    heroTunnelLine3: "SITIOS QUE CONVIERTEN",
+    heroTunnelCaption: "LANDING PAGES / SITIOS / EXPERIENCIAS DIGITALES",
     heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
@@ -397,15 +391,12 @@ function applyLanguage(nextLang: Language) {
   setText(".lhx-body", copy.heroBody);
   setText(".lhx-cta-label", copy.heroCta);
   setText(".lhx-link-label", copy.heroContactCta);
-  setText(".lhx-project-name", copy.heroProjectName);
-  setText(".lhx-project-meta", copy.heroProjectMeta);
-  setText(".lhx-video-fallback > span", copy.heroProjectFallback);
-  setText(".lhx-video-fallback > small", copy.heroProjectFallbackSmall);
-  setText(".lhx-note-label", copy.heroNoteLabel);
-  setText(".lhx-note-copy", copy.heroNoteCopy);
+  setText(".lhx-type-layer-a", copy.heroTunnelLine1);
+  setText(".lhx-type-layer-b", copy.heroTunnelLine2);
+  setText(".lhx-type-layer-c", copy.heroTunnelLine3);
+  setText(".lhx-depth-caption", copy.heroTunnelCaption);
   setText(".lhx-scroll-label", copy.heroScroll);
-  setAttributeForAll(".lhx-showcase", "aria-label", copy.heroProjectAria);
-  setAttributeForAll(".lhx-video", "aria-label", copy.heroProjectAria);
+  setAttributeForAll(".lhx-showcase", "aria-label", copy.heroTunnelAria);
 
   const heroContact = document.querySelector<HTMLAnchorElement>(".lhx-link");
   if (heroContact) heroContact.href = whatsappUrl("project", lang);
@@ -688,10 +679,9 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const body = hero.querySelector<HTMLElement>(".lhx-body");
     const actions = hero.querySelector<HTMLElement>(".lhx-actions");
     const showcase = hero.querySelector<HTMLElement>(".lhx-showcase");
-    const surface = hero.querySelector<HTMLElement>(".lhx-project-surface");
-    const videoFrame = hero.querySelector<HTMLElement>(".lhx-video-frame");
-    const video = hero.querySelector<HTMLVideoElement>(".lhx-video");
-    const note = hero.querySelector<HTMLElement>(".lhx-note");
+    const tunnel = hero.querySelector<HTMLElement>(".lhx-type-tunnel");
+    const tunnelLayers = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-type-layer"));
+    const caption = hero.querySelector<HTMLElement>(".lhx-depth-caption");
     const scrollCue = hero.querySelector<HTMLElement>(".lhx-scroll-cue");
     const purpleShape = hero.querySelector<HTMLElement>(".lhx-shape-purple");
     const coralShape = hero.querySelector<HTMLElement>(".lhx-shape-coral");
@@ -701,62 +691,94 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const coralTargets = coralShape ? [coralShape] : [];
     const greenTargets = greenShape ? [greenShape] : [];
 
-    if (!scene || !copy || !kicker || !title || !titleLines.length || !body || !actions || !showcase || !surface || !videoFrame) {
+    if (
+      !scene ||
+      !copy ||
+      !kicker ||
+      !title ||
+      !titleLines.length ||
+      !body ||
+      !actions ||
+      !showcase ||
+      !tunnel ||
+      tunnelLayers.length < 3 ||
+      !caption
+    ) {
       return;
     }
+
+    const [layerA, layerB, layerC] = tunnelLayers as [HTMLElement, HTMLElement, HTMLElement];
 
     hero.dataset.lhxBooted = "true";
 
     const mm = gsap.matchMedia();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = [kicker, body, actions, showcase, surface, note, scrollCue, ...shapes].filter(Boolean) as HTMLElement[];
+    const revealItems = [kicker, body, actions, showcase, tunnel, caption, scrollCue, ...shapes].filter(Boolean) as HTMLElement[];
 
-    function prepareVideo(isMobile: boolean) {
-      if (!video) return;
-      const source = isMobile ? video.dataset.srcMobile : video.dataset.srcDesktop;
-      if (!source) return;
+    function setTunnelStart(isMobile: boolean) {
+      gsap.set(tunnel, {
+        transformPerspective: isMobile ? 760 : 1040,
+        transformStyle: "preserve-3d",
+      });
 
-      if (video.getAttribute("src") !== source) video.setAttribute("src", source);
-      video.muted = true;
-      video.defaultMuted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = "metadata";
-      video.setAttribute("muted", "");
-      video.setAttribute("playsinline", "");
-      video.setAttribute("webkit-playsinline", "");
-      video.setAttribute("loop", "");
-      video.setAttribute("preload", "metadata");
-      video.setAttribute("disablepictureinpicture", "");
-      video.setAttribute("controlslist", "nodownload noplaybackrate nofullscreen");
-      video.removeAttribute("controls");
-      if (video.readyState === 0) video.load();
-      video.play().catch(() => undefined);
+      gsap.set(layerA, {
+        xPercent: -50,
+        yPercent: -50,
+        z: isMobile ? -170 : -230,
+        y: isMobile ? -80 : -122,
+        scale: isMobile ? 0.62 : 0.56,
+        rotationX: isMobile ? 4 : 5,
+        rotationY: isMobile ? -4 : -7,
+        autoAlpha: isMobile ? 0.78 : 0.74,
+        transformOrigin: "50% 50%",
+      });
+
+      gsap.set(layerB, {
+        xPercent: -50,
+        yPercent: -50,
+        z: isMobile ? -340 : -450,
+        y: isMobile ? -6 : -8,
+        scale: isMobile ? 0.5 : 0.44,
+        rotationX: isMobile ? -3 : -4,
+        rotationY: isMobile ? 4 : 6,
+        autoAlpha: isMobile ? 0.56 : 0.5,
+        transformOrigin: "50% 50%",
+      });
+
+      gsap.set(layerC, {
+        xPercent: -50,
+        yPercent: -50,
+        z: isMobile ? -520 : -710,
+        y: isMobile ? 70 : 108,
+        scale: isMobile ? 0.4 : 0.34,
+        rotationX: isMobile ? 5 : 6,
+        rotationY: isMobile ? -2 : -4,
+        autoAlpha: isMobile ? 0.38 : 0.34,
+        transformOrigin: "50% 50%",
+      });
     }
 
-    function showStatic(isMobile: boolean) {
-      prepareVideo(isMobile);
-      gsap.set([scene, copy, title, ...titleLines, ...revealItems, videoFrame], {
+    function showStatic() {
+      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...tunnelLayers], {
         autoAlpha: 1,
-        clearProps: "transform,opacity,visibility,borderRadius",
+        clearProps: "transform,opacity,visibility",
       });
       hero.classList.add("lhx-ready");
     }
 
     const context = gsap.context(() => {
       if (prefersReduced) {
-        showStatic(window.matchMedia("(max-width: 900px)").matches);
+        showStatic();
         return;
       }
 
       mm.add("(max-width: 900px)", () => {
-        prepareVideo(true);
-
         gsap.set(titleLines, { yPercent: 108 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 14 });
         gsap.set(showcase, { autoAlpha: 0, y: 34, scale: 0.96, transformOrigin: "50% 82%" });
-        gsap.set([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 0, y: 10 });
+        gsap.set([caption, scrollCue], { autoAlpha: 0, y: 10 });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
+        setTunnelStart(true);
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
@@ -764,38 +786,47 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(titleLines, { yPercent: 0, duration: 0.58, stagger: 0.045, ease: "expo.out" }, 0.04)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, ease: "expo.out" }, 0.14)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
-          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 1, y: 0, duration: 0.34, stagger: 0.035 }, 0.7);
+          .to([caption, scrollCue], { autoAlpha: 1, y: 0, duration: 0.34, stagger: 0.035 }, 0.7);
 
-        gsap.timeline({
+        const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=70%",
+            end: "+=86%",
             scrub: 0.62,
             invalidateOnRefresh: true,
           },
-        })
-          .to([kicker, body, actions], { y: -24, autoAlpha: 0 }, 0)
-          .to(title, { y: -34, autoAlpha: 0.82 }, 0)
-          .to(showcase, { y: -18, scale: 1.07 }, 0)
-          .to(videoFrame, { borderRadius: 4 }, 0)
-          .to(purpleTargets, { scale: 1.34, x: -18, y: -10 }, 0)
-          .to(coralTargets, { scale: 1.28, y: -74 }, 0)
-          .to(greenTargets, { scale: 1.16, x: 18, y: -22 }, 0)
-          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { y: -18, autoAlpha: 0 }, 0);
+        });
 
-        return () => intro.kill();
+        scrollTl
+          .to([kicker, body, actions], { y: -24, autoAlpha: 0 }, 0)
+          .to(title, { y: -42, autoAlpha: 0.44 }, 0.16)
+          .to(showcase, { y: -22, scale: 1.04 }, 0)
+          .to(tunnel, { y: -22, rotationZ: -1 }, 0)
+          .to(layerA, { z: 120, y: -138, scale: 1.18, rotationX: -2, rotationY: 2, autoAlpha: 0 }, 0)
+          .to(layerB, { z: -70, y: -28, scale: 0.84, rotationX: 0, rotationY: -1, autoAlpha: 0.94 }, 0.12)
+          .to(layerB, { z: 112, y: -100, scale: 1.14, rotationX: -3, rotationY: 3, autoAlpha: 0 }, 0.52)
+          .to(layerC, { z: -72, y: -18, scale: 0.88, rotationX: 0, rotationY: 0, autoAlpha: 0.96 }, 0.42)
+          .to(layerC, { z: 68, y: -52, scale: 1.06, rotationX: -2, rotationY: -1, autoAlpha: 1 }, 0.78)
+          .to(purpleTargets, { scale: 1.34, x: -18, y: -8 }, 0)
+          .to(coralTargets, { scale: 1.34, y: -78 }, 0.28)
+          .to(greenTargets, { scale: 1.2, x: 18, y: 36 }, 0.32)
+          .to([caption, scrollCue], { y: -18, autoAlpha: 0 }, 0.04);
+
+        return () => {
+          intro.kill();
+          scrollTl.kill();
+        };
       });
 
       mm.add("(min-width: 901px)", () => {
-        prepareVideo(false);
-
         gsap.set(titleLines, { yPercent: 112 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 18 });
         gsap.set(showcase, { autoAlpha: 0, y: 54, scale: 0.94, transformOrigin: "62% 58%" });
-        gsap.set([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 0, y: 12 });
+        gsap.set([caption, scrollCue], { autoAlpha: 0, y: 12 });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
+        setTunnelStart(false);
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
@@ -803,38 +834,43 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(titleLines, { yPercent: 0, duration: 0.66, stagger: 0.055, ease: "expo.out" }, 0.04)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.74, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
-          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { autoAlpha: 1, y: 0, duration: 0.38, stagger: 0.04 }, 0.74);
+          .to([caption, scrollCue], { autoAlpha: 1, y: 0, duration: 0.38, stagger: 0.04 }, 0.74);
 
-        gsap.timeline({
+        const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=78%",
+            end: "+=94%",
             scrub: 0.72,
             invalidateOnRefresh: true,
           },
-        })
-          .to(copy, { y: -62, autoAlpha: 0.44 }, 0)
-          .to(showcase, { y: -42, scale: 1.09 }, 0)
-          .to(videoFrame, { borderRadius: 3 }, 0)
-          .to(purpleTargets, { scale: 1.26, x: -38, y: -18 }, 0)
-          .to(coralTargets, { scale: 1.42, y: -112 }, 0)
-          .to(greenTargets, { scale: 1.18, x: 46, y: -34 }, 0)
-          .to([note, scrollCue].filter(Boolean) as HTMLElement[], { y: -24, autoAlpha: 0 }, 0);
+        });
 
-        return () => intro.kill();
+        scrollTl
+          .to(copy, { y: -74, autoAlpha: 0.28 }, 0.08)
+          .to(showcase, { y: -38, scale: 1.06 }, 0)
+          .to(tunnel, { y: -34, rotationZ: 1.4 }, 0)
+          .to(layerA, { z: 150, y: -172, scale: 1.2, rotationX: -2, rotationY: 2, autoAlpha: 0 }, 0)
+          .to(layerB, { z: -80, y: -18, scale: 0.86, rotationX: 0, rotationY: -2, autoAlpha: 0.96 }, 0.12)
+          .to(layerB, { z: 138, y: -136, scale: 1.18, rotationX: -3, rotationY: 2, autoAlpha: 0 }, 0.54)
+          .to(layerC, { z: -90, y: -20, scale: 0.82, rotationX: 0, rotationY: 0, autoAlpha: 0.94 }, 0.42)
+          .to(layerC, { z: 96, y: -76, scale: 1.08, rotationX: -2, rotationY: -1, autoAlpha: 1 }, 0.78)
+          .to(purpleTargets, { scale: 1.26, x: -38, y: -18 }, 0)
+          .to(coralTargets, { scale: 1.42, y: -112 }, 0.24)
+          .to(greenTargets, { scale: 1.18, x: 46, y: 18 }, 0.28)
+          .to([caption, scrollCue], { y: -24, autoAlpha: 0 }, 0.02);
+
+        return () => {
+          intro.kill();
+          scrollTl.kill();
+        };
       });
     }, hero);
 
     addCleanup(() => {
       mm.revert();
       context.revert();
-      if (video) {
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-      }
       hero.classList.remove("lhx-ready");
       delete hero.dataset.lhxBooted;
     });
