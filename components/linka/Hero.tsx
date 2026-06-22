@@ -4,31 +4,34 @@ const HERO_WHATSAPP_URL =
 export default function Hero() {
   return (
     <section className="linka-hero-experience" data-linka-hero="" id="home">
-      <div className="lhx-color-field" aria-hidden="true">
-        <span className="lhx-shape lhx-shape-purple" />
-        <span className="lhx-shape lhx-shape-coral" />
-        <span className="lhx-shape lhx-shape-green" />
-      </div>
-
       <div className="lhx-scene">
+        <div className="lhx-color-field" aria-hidden="true">
+          <span className="lhx-shape lhx-shape-blue" />
+          <span className="lhx-shape lhx-shape-arc" />
+          <span className="lhx-shape lhx-shape-green" />
+        </div>
+
         <div className="lhx-copy">
           <p className="lhx-kicker">DESIGN · ESTRATÉGIA · TECNOLOGIA</p>
 
           <h1 className="lhx-title">
             <span className="lhx-title-mask">
-              <span className="lhx-title-line lhx-title-line-a">Sites que transformam</span>
+              <span className="lhx-title-line lhx-title-line-a">Sites que marcam.</span>
             </span>
             <span className="lhx-title-mask">
-              <span className="lhx-title-line lhx-title-line-b">marcas em</span>
+              <span className="lhx-title-line lhx-title-line-b">Landing pages que convertem.</span>
             </span>
             <span className="lhx-title-mask">
-              <span className="lhx-title-line lhx-title-line-c">experiências.</span>
+              <span className="lhx-title-line lhx-title-line-c">
+                <span className="lhx-title-line-c-copy">Experiências digitais que</span>{" "}
+                <span className="lhx-title-em">conectam.</span>
+              </span>
             </span>
           </h1>
 
           <p className="lhx-body">
-            Criamos experiências digitais marcantes para negócios que não querem parecer iguais a
-            todos os outros.
+            Criamos presença digital estratégica para transformar marcas em experiências que as
+            pessoas lembram.
           </p>
 
           <div className="lhx-actions">
@@ -45,21 +48,45 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="lhx-showcase" aria-label="Landing pages, sites e experiências digitais da Linka">
-          <div className="lhx-type-tunnel" aria-hidden="true">
-            <span className="lhx-type-layer lhx-type-layer-a">ROLE PARA EXPLORAR</span>
-            <span className="lhx-type-layer lhx-type-layer-b">LANDING PAGES</span>
-            <span className="lhx-type-layer lhx-type-layer-c">SITES QUE CONVERTEM</span>
+        <div className="lhx-showcase" aria-label="Serviços digitais da Linka">
+          <div className="lhx-depth-indicator">
+            <span className="lhx-depth-indicator-label">ROLE PARA DESCOBRIR</span>
+            <i aria-hidden="true" />
           </div>
 
-          <p className="lhx-depth-caption" aria-hidden="true">
-            LANDING PAGES / SITES / EXPERIÊNCIAS DIGITAIS
-          </p>
-        </div>
+          <div className="lhx-type-tunnel">
+            <article className="lhx-service-card lhx-service-card-sites">
+              <span className="lhx-service-index" aria-hidden="true">01</span>
+              <h2 className="lhx-service-title lhx-service-title-sites">SITES</h2>
+              <p className="lhx-service-copy lhx-service-copy-sites">
+                Presença digital que posiciona, diferencia e fortalece sua marca.
+              </p>
+            </article>
 
-        <div className="lhx-scroll-cue" aria-hidden="true">
-          <span className="lhx-scroll-label">Scroll</span>
-          <i />
+            <article className="lhx-service-card lhx-service-card-landings">
+              <span className="lhx-service-index" aria-hidden="true">02</span>
+              <h2 className="lhx-service-title lhx-service-title-landings">LANDING PAGES</h2>
+              <p className="lhx-service-copy lhx-service-copy-landings">
+                Páginas estratégicas criadas para apresentar, envolver e converter.
+              </p>
+            </article>
+
+            <article className="lhx-service-card lhx-service-card-experiences">
+              <span className="lhx-service-index" aria-hidden="true">03</span>
+              <h2 className="lhx-service-title lhx-service-title-experiences">EXPERIÊNCIAS DIGITAIS</h2>
+              <p className="lhx-service-copy lhx-service-copy-experiences">
+                Interações marcantes que aproximam marcas e pessoas.
+              </p>
+            </article>
+
+            <article className="lhx-service-card lhx-service-card-bio">
+              <span className="lhx-service-index" aria-hidden="true">04</span>
+              <h2 className="lhx-service-title lhx-service-title-bio">LINK NA BIO</h2>
+              <p className="lhx-service-copy lhx-service-copy-bio">
+                Todos os seus links em uma página única, estratégica e personalizada.
+              </p>
+            </article>
+          </div>
         </div>
       </div>
     </section>

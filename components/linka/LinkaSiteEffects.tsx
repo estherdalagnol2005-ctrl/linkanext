@@ -11,19 +11,24 @@ const COPY = {
     title: "Linka Studio | Experiências Digitais",
     description: "A Linka cria sites, landing pages e experiências digitais com presença, clareza e valor.",
     heroKicker: "DESIGN · ESTRATÉGIA · TECNOLOGIA",
-    heroTitleLine1: "Sites que transformam",
-    heroTitleLine2: "marcas em",
-    heroTitleLine3: "experiências.",
+    heroTitleLine1: "Sites que marcam.",
+    heroTitleLine2: "Landing pages que convertem.",
+    heroTitleLine3: "Experiências digitais que",
+    heroTitleEm: "conectam.",
     heroBody:
-      "Criamos experiências digitais marcantes para negócios que não querem parecer iguais a todos os outros.",
+      "Criamos presença digital estratégica para transformar marcas em experiências que as pessoas lembram.",
     heroCta: "Explorar projetos",
     heroContactCta: "Iniciar um projeto",
-    heroTunnelAria: "Landing pages, sites e experiências digitais da Linka",
-    heroTunnelLine1: "ROLE PARA EXPLORAR",
-    heroTunnelLine2: "LANDING PAGES",
-    heroTunnelLine3: "SITES QUE CONVERTEM",
-    heroTunnelCaption: "LANDING PAGES / SITES / EXPERIÊNCIAS DIGITAIS",
-    heroScroll: "Scroll",
+    heroServicesAria: "Serviços digitais da Linka",
+    heroDepthIndicator: "ROLE PARA DESCOBRIR",
+    heroService1Title: "SITES",
+    heroService1Body: "Presença digital que posiciona, diferencia e fortalece sua marca.",
+    heroService2Title: "LANDING PAGES",
+    heroService2Body: "Páginas estratégicas criadas para apresentar, envolver e converter.",
+    heroService3Title: "EXPERIÊNCIAS DIGITAIS",
+    heroService3Body: "Interações marcantes que aproximam marcas e pessoas.",
+    heroService4Title: "LINK NA BIO",
+    heroService4Body: "Todos os seus links em uma página única, estratégica e personalizada.",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
     expLead:
@@ -92,19 +97,24 @@ const COPY = {
     description:
       "Linka creates websites, landing pages and digital experiences with presence, clarity and value.",
     heroKicker: "DESIGN · STRATEGY · TECHNOLOGY",
-    heroTitleLine1: "Websites that turn",
-    heroTitleLine2: "brands into",
-    heroTitleLine3: "experiences.",
+    heroTitleLine1: "Websites that stand out.",
+    heroTitleLine2: "Landing pages that convert.",
+    heroTitleLine3: "Digital experiences that",
+    heroTitleEm: "connect.",
     heroBody:
-      "We create memorable digital experiences for businesses that do not want to look like everyone else.",
+      "We create strategic digital presence that turns brands into memorable experiences.",
     heroCta: "Explore projects",
     heroContactCta: "Start a project",
-    heroTunnelAria: "Landing pages, websites and digital experiences by Linka",
-    heroTunnelLine1: "SCROLL TO EXPLORE",
-    heroTunnelLine2: "LANDING PAGES",
-    heroTunnelLine3: "WEBSITES BUILT TO CONVERT",
-    heroTunnelCaption: "LANDING PAGES / WEBSITES / DIGITAL EXPERIENCES",
-    heroScroll: "Scroll",
+    heroServicesAria: "Linka digital services",
+    heroDepthIndicator: "SCROLL TO DISCOVER",
+    heroService1Title: "WEBSITES",
+    heroService1Body: "Digital presence designed to position, differentiate and strengthen your brand.",
+    heroService2Title: "LANDING PAGES",
+    heroService2Body: "Strategic pages created to present, engage and convert.",
+    heroService3Title: "DIGITAL EXPERIENCES",
+    heroService3Body: "Memorable interactions that connect brands and people.",
+    heroService4Title: "LINK IN BIO",
+    heroService4Body: "All your important links in one strategic and personalized page.",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
     expLead:
@@ -169,19 +179,24 @@ const COPY = {
     title: "Linka Studio | Experiencias Digitales",
     description: "Linka crea sitios web, landing pages y experiencias digitales con presencia, claridad y valor.",
     heroKicker: "DISEÑO · ESTRATEGIA · TECNOLOGÍA",
-    heroTitleLine1: "Sitios que transforman",
-    heroTitleLine2: "marcas en",
-    heroTitleLine3: "experiencias.",
+    heroTitleLine1: "Sitios que destacan.",
+    heroTitleLine2: "Landing pages que convierten.",
+    heroTitleLine3: "Experiencias digitales que",
+    heroTitleEm: "conectan.",
     heroBody:
-      "Creamos experiencias digitales memorables para negocios que no quieren parecerse a todos los demás.",
+      "Creamos presencia digital estratégica para transformar marcas en experiencias memorables.",
     heroCta: "Ver proyectos",
     heroContactCta: "Iniciar un proyecto",
-    heroTunnelAria: "Landing pages, sitios y experiencias digitales de Linka",
-    heroTunnelLine1: "DESLIZA PARA EXPLORAR",
-    heroTunnelLine2: "LANDING PAGES",
-    heroTunnelLine3: "SITIOS QUE CONVIERTEN",
-    heroTunnelCaption: "LANDING PAGES / SITIOS / EXPERIENCIAS DIGITALES",
-    heroScroll: "Scroll",
+    heroServicesAria: "Servicios digitales de Linka",
+    heroDepthIndicator: "DESLIZA PARA DESCUBRIR",
+    heroService1Title: "SITIOS",
+    heroService1Body: "Presencia digital diseñada para posicionar, diferenciar y fortalecer tu marca.",
+    heroService2Title: "LANDING PAGES",
+    heroService2Body: "Páginas estratégicas creadas para presentar, conectar y convertir.",
+    heroService3Title: "EXPERIENCIAS DIGITALES",
+    heroService3Body: "Interacciones memorables que conectan marcas y personas.",
+    heroService4Title: "LINK EN BIO",
+    heroService4Body: "Todos tus enlaces importantes en una página estratégica y personalizada.",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
     expLead:
@@ -387,16 +402,21 @@ function applyLanguage(nextLang: Language) {
   setText(".lhx-kicker", copy.heroKicker);
   setText(".lhx-title-line-a", copy.heroTitleLine1);
   setText(".lhx-title-line-b", copy.heroTitleLine2);
-  setText(".lhx-title-line-c", copy.heroTitleLine3);
+  setText(".lhx-title-line-c-copy", copy.heroTitleLine3);
+  setText(".lhx-title-em", copy.heroTitleEm);
   setText(".lhx-body", copy.heroBody);
   setText(".lhx-cta-label", copy.heroCta);
   setText(".lhx-link-label", copy.heroContactCta);
-  setText(".lhx-type-layer-a", copy.heroTunnelLine1);
-  setText(".lhx-type-layer-b", copy.heroTunnelLine2);
-  setText(".lhx-type-layer-c", copy.heroTunnelLine3);
-  setText(".lhx-depth-caption", copy.heroTunnelCaption);
-  setText(".lhx-scroll-label", copy.heroScroll);
-  setAttributeForAll(".lhx-showcase", "aria-label", copy.heroTunnelAria);
+  setText(".lhx-depth-indicator-label", copy.heroDepthIndicator);
+  setText(".lhx-service-title-sites", copy.heroService1Title);
+  setText(".lhx-service-copy-sites", copy.heroService1Body);
+  setText(".lhx-service-title-landings", copy.heroService2Title);
+  setText(".lhx-service-copy-landings", copy.heroService2Body);
+  setText(".lhx-service-title-experiences", copy.heroService3Title);
+  setText(".lhx-service-copy-experiences", copy.heroService3Body);
+  setText(".lhx-service-title-bio", copy.heroService4Title);
+  setText(".lhx-service-copy-bio", copy.heroService4Body);
+  setAttributeForAll(".lhx-showcase", "aria-label", copy.heroServicesAria);
 
   const heroContact = document.querySelector<HTMLAnchorElement>(".lhx-link");
   if (heroContact) heroContact.href = whatsappUrl("project", lang);
@@ -680,15 +700,20 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const actions = hero.querySelector<HTMLElement>(".lhx-actions");
     const showcase = hero.querySelector<HTMLElement>(".lhx-showcase");
     const tunnel = hero.querySelector<HTMLElement>(".lhx-type-tunnel");
-    const tunnelLayers = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-type-layer"));
-    const caption = hero.querySelector<HTMLElement>(".lhx-depth-caption");
-    const scrollCue = hero.querySelector<HTMLElement>(".lhx-scroll-cue");
-    const purpleShape = hero.querySelector<HTMLElement>(".lhx-shape-purple");
-    const coralShape = hero.querySelector<HTMLElement>(".lhx-shape-coral");
+    const depthIndicator = hero.querySelector<HTMLElement>(".lhx-depth-indicator");
+    const serviceCards = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-service-card"));
+    const serviceTitles = serviceCards
+      .map((card) => card.querySelector<HTMLElement>(".lhx-service-title"))
+      .filter(Boolean) as HTMLElement[];
+    const serviceCopies = serviceCards
+      .map((card) => card.querySelector<HTMLElement>(".lhx-service-copy"))
+      .filter(Boolean) as HTMLElement[];
+    const blueShape = hero.querySelector<HTMLElement>(".lhx-shape-blue");
+    const arcShape = hero.querySelector<HTMLElement>(".lhx-shape-arc");
     const greenShape = hero.querySelector<HTMLElement>(".lhx-shape-green");
-    const shapes = [purpleShape, coralShape, greenShape].filter(Boolean) as HTMLElement[];
-    const purpleTargets = purpleShape ? [purpleShape] : [];
-    const coralTargets = coralShape ? [coralShape] : [];
+    const shapes = [blueShape, arcShape, greenShape].filter(Boolean) as HTMLElement[];
+    const blueTargets = blueShape ? [blueShape] : [];
+    const arcTargets = arcShape ? [arcShape] : [];
     const greenTargets = greenShape ? [greenShape] : [];
 
     if (
@@ -701,69 +726,121 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       !actions ||
       !showcase ||
       !tunnel ||
-      tunnelLayers.length < 3 ||
-      !caption
+      !depthIndicator ||
+      serviceCards.length !== 4 ||
+      serviceTitles.length !== 4 ||
+      serviceCopies.length !== 4
     ) {
       return;
     }
-
-    const [layerA, layerB, layerC] = tunnelLayers as [HTMLElement, HTMLElement, HTMLElement];
 
     hero.dataset.lhxBooted = "true";
 
     const mm = gsap.matchMedia();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = [kicker, body, actions, showcase, tunnel, caption, scrollCue, ...shapes].filter(Boolean) as HTMLElement[];
+    const revealItems = [kicker, body, actions, showcase, tunnel, depthIndicator, ...shapes].filter(Boolean) as HTMLElement[];
 
-    function setTunnelStart(isMobile: boolean) {
+    function setServicesStart(isMobile: boolean) {
       gsap.set(tunnel, {
-        transformPerspective: isMobile ? 760 : 1040,
+        transformPerspective: isMobile ? 720 : 1180,
         transformStyle: "preserve-3d",
       });
 
-      gsap.set(layerA, {
+      gsap.set(serviceCards, {
         xPercent: -50,
         yPercent: -50,
-        z: isMobile ? -170 : -230,
-        y: isMobile ? -80 : -122,
-        scale: isMobile ? 0.62 : 0.56,
-        rotationX: isMobile ? 4 : 5,
-        rotationY: isMobile ? -4 : -7,
-        autoAlpha: isMobile ? 0.78 : 0.74,
+        z: isMobile ? -260 : -560,
+        y: isMobile ? 34 : 48,
+        scale: isMobile ? 0.72 : 0.56,
+        rotationX: isMobile ? 0 : 5,
+        rotationY: isMobile ? 0 : -4,
+        autoAlpha: 0,
         transformOrigin: "50% 50%",
+        force3D: true,
       });
 
-      gsap.set(layerB, {
-        xPercent: -50,
-        yPercent: -50,
-        z: isMobile ? -340 : -450,
-        y: isMobile ? -6 : -8,
-        scale: isMobile ? 0.5 : 0.44,
-        rotationX: isMobile ? -3 : -4,
-        rotationY: isMobile ? 4 : 6,
-        autoAlpha: isMobile ? 0.56 : 0.5,
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.set(layerC, {
-        xPercent: -50,
-        yPercent: -50,
-        z: isMobile ? -520 : -710,
-        y: isMobile ? 70 : 108,
-        scale: isMobile ? 0.4 : 0.34,
-        rotationX: isMobile ? 5 : 6,
-        rotationY: isMobile ? -2 : -4,
-        autoAlpha: isMobile ? 0.38 : 0.34,
-        transformOrigin: "50% 50%",
-      });
+      gsap.set(serviceTitles, { autoAlpha: 1, y: 0 });
+      gsap.set(serviceCopies, { autoAlpha: 0, y: isMobile ? 10 : 14 });
     }
 
     function showStatic() {
-      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...tunnelLayers], {
+      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...serviceCards, ...serviceTitles, ...serviceCopies], {
         autoAlpha: 1,
         clearProps: "transform,opacity,visibility",
       });
       hero.classList.add("lhx-ready");
+    }
+
+    function addServiceSequence(timeline: gsap.core.Timeline, isMobile: boolean, offset: number) {
+      const segment = isMobile ? 1.12 : 1.16;
+      const entryDuration = isMobile ? 0.28 : 0.3;
+      const readDuration = segment * 0.35;
+      const exitDuration = isMobile ? 0.28 : 0.3;
+      const startZ = isMobile ? -260 : -560;
+      const exitZ = isMobile ? 170 : 330;
+      const startScale = isMobile ? 0.72 : 0.56;
+      const exitScale = isMobile ? 1.07 : 1.12;
+      const startY = isMobile ? 34 : 48;
+      const exitY = isMobile ? -74 : -116;
+
+      serviceCards.forEach((card, index) => {
+        const serviceCopy = serviceCopies[index];
+        const start = offset + index * segment;
+        const readStart = start + entryDuration;
+        const exitStart = readStart + readDuration;
+
+        timeline
+          .set(card, {
+            z: startZ,
+            y: startY,
+            scale: startScale,
+            rotationX: isMobile ? 0 : 5,
+            rotationY: isMobile ? 0 : index % 2 === 0 ? -4 : 4,
+            autoAlpha: 0,
+          }, start - 0.02)
+          .to(card, {
+            z: 0,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            rotationY: 0,
+            autoAlpha: 1,
+            duration: entryDuration,
+            ease: "power2.out",
+          }, start)
+          .to(serviceCopy, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.16,
+            ease: "power2.out",
+          }, start + entryDuration * 0.72)
+          .to(card, {
+            z: 0,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            rotationY: 0,
+            autoAlpha: 1,
+            duration: readDuration,
+            ease: "none",
+          }, readStart)
+          .to(serviceCopy, {
+            autoAlpha: 0,
+            y: isMobile ? -8 : -12,
+            duration: 0.13,
+            ease: "power1.in",
+          }, exitStart - 0.04)
+          .to(card, {
+            z: exitZ,
+            y: exitY,
+            scale: exitScale,
+            rotationX: isMobile ? 0 : -2,
+            rotationY: 0,
+            autoAlpha: 0,
+            duration: exitDuration,
+            ease: "power2.in",
+          }, exitStart);
+      });
     }
 
     const context = gsap.context(() => {
@@ -775,44 +852,41 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       mm.add("(max-width: 900px)", () => {
         gsap.set(titleLines, { yPercent: 108 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 14 });
-        gsap.set(showcase, { autoAlpha: 0, y: 34, scale: 0.96, transformOrigin: "50% 82%" });
-        gsap.set([caption, scrollCue], { autoAlpha: 0, y: 10 });
+        gsap.set(showcase, { autoAlpha: 0, y: 28, scale: 0.98, transformOrigin: "50% 72%" });
+        gsap.set(depthIndicator, { autoAlpha: 0, y: 10, scale: 0.98 });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
-        setTunnelStart(true);
+        setServicesStart(true);
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.58, stagger: 0.045, ease: "expo.out" }, 0.04)
-          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, ease: "expo.out" }, 0.14)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
-          .to([caption, scrollCue], { autoAlpha: 1, y: 0, duration: 0.34, stagger: 0.035 }, 0.7);
+          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.58, ease: "expo.out" }, 0.52)
+          .to(depthIndicator, { autoAlpha: 1, y: 0, scale: 1, duration: 0.32 }, 0.72);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=86%",
+            end: "bottom bottom",
             scrub: 0.62,
             invalidateOnRefresh: true,
           },
         });
 
         scrollTl
-          .to([kicker, body, actions], { y: -24, autoAlpha: 0 }, 0)
-          .to(title, { y: -42, autoAlpha: 0.44 }, 0.16)
-          .to(showcase, { y: -22, scale: 1.04 }, 0)
-          .to(tunnel, { y: -22, rotationZ: -1 }, 0)
-          .to(layerA, { z: 120, y: -138, scale: 1.18, rotationX: -2, rotationY: 2, autoAlpha: 0 }, 0)
-          .to(layerB, { z: -70, y: -28, scale: 0.84, rotationX: 0, rotationY: -1, autoAlpha: 0.94 }, 0.12)
-          .to(layerB, { z: 112, y: -100, scale: 1.14, rotationX: -3, rotationY: 3, autoAlpha: 0 }, 0.52)
-          .to(layerC, { z: -72, y: -18, scale: 0.88, rotationX: 0, rotationY: 0, autoAlpha: 0.96 }, 0.42)
-          .to(layerC, { z: 68, y: -52, scale: 1.06, rotationX: -2, rotationY: -1, autoAlpha: 1 }, 0.78)
-          .to(purpleTargets, { scale: 1.34, x: -18, y: -8 }, 0)
-          .to(coralTargets, { scale: 1.34, y: -78 }, 0.28)
-          .to(greenTargets, { scale: 1.2, x: 18, y: 36 }, 0.32)
-          .to([caption, scrollCue], { y: -18, autoAlpha: 0 }, 0.04);
+          .to([kicker, body, actions], { y: -26, autoAlpha: 0 }, 0)
+          .to(title, { y: -42, autoAlpha: 0.16 }, 0.18)
+          .to(depthIndicator, { y: -18, scale: 0.96, autoAlpha: 0, duration: 0.22 }, 0.18)
+          .to(showcase, { y: -18, scale: 1.02, duration: 4.7 }, 0)
+          .to(blueTargets, { scale: 1.16, x: -14, y: -8, duration: 4.7 }, 0)
+          .to(arcTargets, { scale: 1.18, x: 16, y: -16, rotation: 10, duration: 4.7 }, 0)
+          .to(greenTargets, { scale: 1.22, x: 88, y: 94, duration: 4.7 }, 0.34);
+
+        addServiceSequence(scrollTl, true, 0.48);
+        scrollTl.to(showcase, { y: -58, autoAlpha: 0.88, duration: 0.28 }, 4.98);
 
         return () => {
           intro.kill();
@@ -823,43 +897,40 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       mm.add("(min-width: 901px)", () => {
         gsap.set(titleLines, { yPercent: 112 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 18 });
-        gsap.set(showcase, { autoAlpha: 0, y: 54, scale: 0.94, transformOrigin: "62% 58%" });
-        gsap.set([caption, scrollCue], { autoAlpha: 0, y: 12 });
+        gsap.set(showcase, { autoAlpha: 0, y: 46, scale: 0.96, transformOrigin: "58% 58%" });
+        gsap.set(depthIndicator, { autoAlpha: 0, y: 12, scale: 0.98 });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
-        setTunnelStart(false);
+        setServicesStart(false);
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.66, stagger: 0.055, ease: "expo.out" }, 0.04)
-          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.74, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
-          .to([caption, scrollCue], { autoAlpha: 1, y: 0, duration: 0.38, stagger: 0.04 }, 0.74);
+          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.68, ease: "expo.out" }, 0.5)
+          .to(depthIndicator, { autoAlpha: 1, y: 0, scale: 1, duration: 0.36 }, 0.74);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: "+=94%",
+            end: "bottom bottom",
             scrub: 0.72,
             invalidateOnRefresh: true,
           },
         });
 
         scrollTl
-          .to(copy, { y: -74, autoAlpha: 0.28 }, 0.08)
-          .to(showcase, { y: -38, scale: 1.06 }, 0)
-          .to(tunnel, { y: -34, rotationZ: 1.4 }, 0)
-          .to(layerA, { z: 150, y: -172, scale: 1.2, rotationX: -2, rotationY: 2, autoAlpha: 0 }, 0)
-          .to(layerB, { z: -80, y: -18, scale: 0.86, rotationX: 0, rotationY: -2, autoAlpha: 0.96 }, 0.12)
-          .to(layerB, { z: 138, y: -136, scale: 1.18, rotationX: -3, rotationY: 2, autoAlpha: 0 }, 0.54)
-          .to(layerC, { z: -90, y: -20, scale: 0.82, rotationX: 0, rotationY: 0, autoAlpha: 0.94 }, 0.42)
-          .to(layerC, { z: 96, y: -76, scale: 1.08, rotationX: -2, rotationY: -1, autoAlpha: 1 }, 0.78)
-          .to(purpleTargets, { scale: 1.26, x: -38, y: -18 }, 0)
-          .to(coralTargets, { scale: 1.42, y: -112 }, 0.24)
-          .to(greenTargets, { scale: 1.18, x: 46, y: 18 }, 0.28)
-          .to([caption, scrollCue], { y: -24, autoAlpha: 0 }, 0.02);
+          .to(copy, { y: -82, autoAlpha: 0.18 }, 0.12)
+          .to(depthIndicator, { y: -24, scale: 0.96, autoAlpha: 0, duration: 0.24 }, 0.18)
+          .to(showcase, { y: -36, scale: 1.04, duration: 4.9 }, 0)
+          .to(blueTargets, { scale: 1.18, x: -42, y: -18, duration: 4.9 }, 0)
+          .to(arcTargets, { scale: 1.22, x: 42, y: -28, rotation: 9, duration: 4.9 }, 0)
+          .to(greenTargets, { scale: 1.24, x: 124, y: 72, duration: 4.9 }, 0.34);
+
+        addServiceSequence(scrollTl, false, 0.5);
+        scrollTl.to(showcase, { y: -84, autoAlpha: 0.9, duration: 0.32 }, 5.08);
 
         return () => {
           intro.kill();
