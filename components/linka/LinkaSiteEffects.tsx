@@ -10,13 +10,18 @@ const COPY = {
   pt: {
     title: "Linka Studio | Experiências Digitais",
     description: "A Linka cria sites, landing pages e experiências digitais com presença, clareza e valor.",
-    heroKicker: "LINKA DIGITAL — EXPERIÊNCIAS DIGITAIS",
+    heroKicker: "LINKA DIGITAL / PORTFÓLIO DIGITAL",
     heroTitleLine1: "Sites que não passam",
     heroTitleLine2: "despercebidos.",
     heroBody:
       "Design, estratégia e tecnologia para transformar marcas em experiências digitais marcantes.",
     heroCta: "Conhecer projetos",
-    heroContactCta: "Falar com a Linka",
+    heroSecondaryCta: "Falar com a Linka",
+    heroProjectAria: "Projeto Casa Sea criado pela Linka",
+    heroProjectFallback: "Casa Sea",
+    heroProjectFallbackSmall: "Imóveis de alto padrão",
+    heroProjectType: "Website / 2026",
+    heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
     expLead:
@@ -84,13 +89,18 @@ const COPY = {
     title: "Linka Studio | Digital Experiences",
     description:
       "Linka creates websites, landing pages and digital experiences with presence, clarity and value.",
-    heroKicker: "LINKA DIGITAL — DIGITAL EXPERIENCES",
+    heroKicker: "LINKA DIGITAL / DIGITAL PORTFOLIO",
     heroTitleLine1: "Websites that never",
     heroTitleLine2: "go unnoticed.",
     heroBody:
       "Design, strategy and technology to turn brands into memorable digital experiences.",
     heroCta: "Explore projects",
-    heroContactCta: "Talk to Linka",
+    heroSecondaryCta: "Talk to Linka",
+    heroProjectAria: "Casa Sea project created by Linka",
+    heroProjectFallback: "Casa Sea",
+    heroProjectFallbackSmall: "High-end real estate",
+    heroProjectType: "Website / 2026",
+    heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
     expLead:
@@ -154,13 +164,18 @@ const COPY = {
   es: {
     title: "Linka Studio | Experiencias Digitales",
     description: "Linka crea sitios web, landing pages y experiencias digitales con presencia, claridad y valor.",
-    heroKicker: "LINKA DIGITAL — EXPERIENCIAS DIGITALES",
+    heroKicker: "LINKA DIGITAL / PORTAFOLIO DIGITAL",
     heroTitleLine1: "Sitios que no pasan",
     heroTitleLine2: "desapercibidos.",
     heroBody:
       "Diseño, estrategia y tecnología para transformar marcas en experiencias digitales memorables.",
     heroCta: "Ver proyectos",
-    heroContactCta: "Hablar con Linka",
+    heroSecondaryCta: "Hablar con Linka",
+    heroProjectAria: "Proyecto Casa Sea creado por Linka",
+    heroProjectFallback: "Casa Sea",
+    heroProjectFallbackSmall: "Inmuebles de alto nivel",
+    heroProjectType: "Website / 2026",
+    heroScroll: "Scroll",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
     expLead:
@@ -363,15 +378,21 @@ function applyLanguage(nextLang: Language) {
   if (meta) meta.content = copy.description;
 
   setAttributeForAll(".lh11-brand", "aria-label", copy.headerStartAria);
-  setText(".lv10-kicker-label", copy.heroKicker);
-  setText(".lv10-title-line-main", copy.heroTitleLine1);
-  setText(".lv10-title-line-accent", copy.heroTitleLine2);
-  setText(".lv10-copy > p", copy.heroBody);
-  setText(".lv10-cta-label", copy.heroCta);
+  setText(".lv12-kicker", copy.heroKicker);
+  setText(".lv12-title-line-a", copy.heroTitleLine1);
+  setText(".lv12-title-line-b", copy.heroTitleLine2);
+  setText(".lv12-body", copy.heroBody);
+  setText(".lv12-cta-label", copy.heroCta);
+  setText(".lv12-link-label", copy.heroSecondaryCta);
+  setText(".lv12-video-fallback > span", copy.heroProjectFallback);
+  setText(".lv12-video-fallback > small", copy.heroProjectFallbackSmall);
+  setText(".lv12-project-type", copy.heroProjectType);
+  setText(".lv12-scroll-cue > span", copy.heroScroll);
+  setAttributeForAll(".lv12-showcase", "aria-label", copy.heroProjectAria);
+  setAttributeForAll(".lv12-video-main", "aria-label", copy.heroProjectAria);
 
-  const heroContact = document.querySelector<HTMLAnchorElement>(".lv10-link");
+  const heroContact = document.querySelector<HTMLAnchorElement>(".lv12-link");
   if (heroContact) heroContact.href = whatsappUrl("project", lang);
-  setText(".lv10-link-label", copy.heroContactCta);
 
   setHtml(".lov64-kicker", copy.expKicker);
   setHtml(".lov64-shell h2", copy.expTitle);
@@ -641,279 +662,186 @@ function initHeader() {
 
 function initHero(addCleanup: (cleanup: () => void) => void) {
   document.querySelectorAll<HTMLElement>("[data-linka-hero]").forEach((hero) => {
-    if (hero.dataset.lv10Booted === "true") return;
+    if (hero.dataset.lv12Booted === "true") return;
 
-    const stage = hero.querySelector<HTMLElement>(".lv10-stage");
-    const copy = hero.querySelector<HTMLElement>(".lv10-copy");
-    const background = hero.querySelector<HTMLElement>(".lv10-background");
-    const radial = hero.querySelector<HTMLElement>(".lv10-radial");
-    const kicker = hero.querySelector<HTMLElement>(".lv10-kicker");
-    const titleLines = Array.from(hero.querySelectorAll<HTMLElement>(".lv10-title-line"));
-    const description = hero.querySelector<HTMLElement>(".lv10-copy > p");
-    const actions = hero.querySelector<HTMLElement>(".lv10-actions");
-    const mainDevice = hero.querySelector<HTMLElement>(".lv10-device-main");
-    const secondaryDevice = hero.querySelector<HTMLElement>(".lv10-device-secondary");
-    const phone = hero.querySelector<HTMLElement>(".lv10-phone");
-    const chips = Array.from(hero.querySelectorAll<HTMLElement>(".lv10-project-chip"));
-    const atmosphere = Array.from(
-      hero.querySelectorAll<HTMLElement>(".lv10-ambient, .lv10-gridline, .lv10-orbit-line"),
-    );
-    const scrollIndicator = hero.querySelector<HTMLElement>(".lv10-scroll-indicator");
+    const shell = hero.querySelector<HTMLElement>(".lv12-shell");
+    const copy = hero.querySelector<HTMLElement>(".lv12-copy");
+    const kicker = hero.querySelector<HTMLElement>(".lv12-kicker");
+    const title = hero.querySelector<HTMLElement>(".lv12-title");
+    const titleLines = Array.from(hero.querySelectorAll<HTMLElement>(".lv12-title-line"));
+    const body = hero.querySelector<HTMLElement>(".lv12-body");
+    const actions = hero.querySelector<HTMLElement>(".lv12-actions");
+    const showcase = hero.querySelector<HTMLElement>(".lv12-showcase");
+    const project = hero.querySelector<HTMLElement>(".lv12-project");
+    const projectScreen = hero.querySelector<HTMLElement>(".lv12-project-screen");
+    const depthCard = hero.querySelector<HTMLElement>(".lv12-depth-card");
+    const meta = hero.querySelector<HTMLElement>(".lv12-meta");
+    const scrollCue = hero.querySelector<HTMLElement>(".lv12-scroll-cue");
+    const lights = Array.from(hero.querySelectorAll<HTMLElement>(".lv12-light, .lv12-line"));
+    const mainVideo = hero.querySelector<HTMLVideoElement>(".lv12-video-main");
+    const depthVideo = hero.querySelector<HTMLVideoElement>(".lv12-video-depth");
 
-    if (!stage || !copy || !background || !radial || !kicker || !description || !actions || !mainDevice) return;
+    if (!shell || !copy || !kicker || !title || !body || !actions || !showcase || !project || !projectScreen) {
+      return;
+    }
 
-    hero.dataset.lv10Booted = "true";
+    hero.dataset.lv12Booted = "true";
 
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mainImage = mainDevice.querySelector<HTMLImageElement>(".lv10-project-image");
-    const secondaryLayers = [secondaryDevice, phone, ...chips].filter(Boolean) as HTMLElement[];
-    const revealItems = [kicker, description, actions, mainDevice, ...secondaryLayers, scrollIndicator].filter(
-      Boolean,
-    ) as HTMLElement[];
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const optionalElements = [depthCard, meta, scrollCue].filter(Boolean) as HTMLElement[];
+    const mobileEditorial = [meta, scrollCue].filter(Boolean) as HTMLElement[];
+    const desktopAtmosphere = [meta, scrollCue, ...lights].filter(Boolean) as HTMLElement[];
+    const mm = gsap.matchMedia();
+    let refreshFrame: number | undefined;
 
-    let pointerFrame: number | null = null;
-    let imageReadyTimer: number | null = null;
-    let introStarted = false;
-    let latestPointerX = 0;
-    let latestPointerY = 0;
-    let introTimeline: gsap.core.Timeline | null = null;
+    function prepareVideo(video: HTMLVideoElement | null, src: string | null | undefined, shouldPlay: boolean) {
+      if (!video || !src) return;
+      if (video.getAttribute("src") !== src) video.setAttribute("src", src);
+      video.muted = true;
+      video.defaultMuted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = shouldPlay ? "auto" : "metadata";
+      video.setAttribute("muted", "");
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
+      video.setAttribute("loop", "");
+      video.setAttribute("preload", video.preload);
+      video.setAttribute("disablepictureinpicture", "");
+      video.setAttribute("controlslist", "nodownload noplaybackrate nofullscreen");
+      video.removeAttribute("controls");
+      video.load();
+      if (shouldPlay) video.play().catch(() => undefined);
+    }
 
-    const context = gsap.context(() => {
-      if (prefersReduced) {
-        gsap.set([background, radial, ...atmosphere, ...titleLines, ...revealItems], {
-          autoAlpha: 1,
-          clearProps: "transform,filter,clipPath",
-        });
-        hero.classList.add("lv10-ready");
+    function setActiveVideos(isMobile: boolean) {
+      const mainSource = isMobile ? mainVideo?.dataset.srcMobile : mainVideo?.dataset.srcDesktop;
+      prepareVideo(mainVideo, mainSource, true);
+
+      if (isMobile) {
+        depthVideo?.pause();
+        depthVideo?.removeAttribute("src");
+        depthVideo?.load();
         return;
       }
 
-      gsap.set(hero, { "--lv10-mouse-x": "50%", "--lv10-mouse-y": "44%" });
-      gsap.set(background, { autoAlpha: 1 });
-      gsap.set(atmosphere, { autoAlpha: 0, scale: 0.96 });
-      gsap.set(kicker, { autoAlpha: 0, y: 16, filter: "blur(8px)" });
-      gsap.set(titleLines, { yPercent: 112, filter: "blur(6px)" });
-      gsap.set(description, { autoAlpha: 0, y: 18, filter: "blur(7px)" });
-      gsap.set(actions, { autoAlpha: 0, y: 18, filter: "blur(7px)" });
-      gsap.set(mainDevice, {
-        autoAlpha: 0,
-        y: isMobile ? 42 : 84,
-        scale: 0.92,
-        rotateX: isMobile ? 0 : 8,
-        transformPerspective: 1200,
-        transformOrigin: "50% 80%",
-        filter: "blur(10px)",
+      prepareVideo(depthVideo, depthVideo?.dataset.srcDesktop, true);
+    }
+
+    function scheduleRefresh() {
+      if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
+      refreshFrame = window.requestAnimationFrame(() => {
+        refreshFrame = undefined;
+        window.ScrollTrigger?.refresh();
       });
-      gsap.set(secondaryLayers, {
-        autoAlpha: 0,
-        y: isMobile ? 20 : 44,
-        scale: 0.94,
-        filter: "blur(10px)",
-      });
-      if (scrollIndicator) gsap.set(scrollIndicator, { autoAlpha: 0, y: 10 });
+    }
 
-      introTimeline = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
-      introTimeline
-        .add(() => hero.classList.add("lv10-ready"), 0)
-        .to(atmosphere, { autoAlpha: 1, scale: 1, duration: 1.6, stagger: 0.08, ease: "sine.out" }, 0)
-        .to(kicker, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.72 }, 0.12)
-        .to(titleLines, { yPercent: 0, filter: "blur(0px)", duration: 1.04, stagger: 0.09, ease: "expo.out" }, 0.28)
-        .to(description, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.74 }, 0.68)
-        .to(actions, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.74 }, 0.82)
-        .to(
-          mainDevice,
-          { autoAlpha: 1, y: 0, scale: 1, rotateX: 0, filter: "blur(0px)", duration: 1.08, ease: "expo.out" },
-          0.74,
-        )
-        .to(
-          secondaryLayers,
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 0.86,
-            stagger: isMobile ? 0.04 : 0.08,
-            ease: "expo.out",
-          },
-          1.02,
-        );
-
-      if (scrollIndicator) {
-        introTimeline.to(scrollIndicator, { autoAlpha: 0.78, y: 0, duration: 0.5 }, 1.48);
-      }
-
-      gsap.to(mainDevice, {
-        y: isMobile ? -5 : -10,
-        duration: isMobile ? 4.8 : 5.8,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        delay: 1.65,
-      });
-
-      if (!isMobile) {
-        gsap.to(secondaryLayers, {
-          y: (index) => (index % 2 === 0 ? -8 : -12),
-          x: (index) => (index % 2 === 0 ? 4 : -5),
-          duration: (index) => 5.4 + index * 0.25,
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          delay: 1.9,
+    const context = gsap.context(() => {
+      if (reduceMotion) {
+        setActiveVideos(window.matchMedia("(max-width: 900px)").matches);
+        gsap.set([kicker, title, ...titleLines, body, actions, showcase, project, projectScreen, ...optionalElements], {
+          autoAlpha: 1,
+          clearProps: "transform,opacity,visibility,borderRadius",
         });
+        hero.classList.add("lv12-ready");
+        scheduleRefresh();
+        return;
       }
 
-      gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: hero,
-          start: "top top",
-          end: isMobile ? "bottom top" : "+=78%",
-          scrub: isMobile ? 0.9 : 1.15,
-          invalidateOnRefresh: true,
-          fastScrollEnd: false,
-        },
-      })
-        .to(copy, { y: isMobile ? -38 : -92, autoAlpha: isMobile ? 0.32 : 0.18 }, 0)
-        .to(mainDevice, { scale: isMobile ? 1.035 : 1.12, y: isMobile ? -18 : -42, rotateX: isMobile ? 0 : -4 }, 0)
-        .to(radial, { scale: isMobile ? 1.04 : 1.16, autoAlpha: isMobile ? 0.72 : 0.92 }, 0)
-        .to(background, { filter: isMobile ? "brightness(1.05)" : "brightness(1.16)" }, 0);
+      mm.add("(max-width: 900px)", () => {
+        setActiveVideos(true);
 
-      if (secondaryDevice) {
-        gsap.to(secondaryDevice, {
-          x: isMobile ? 0 : 96,
-          y: isMobile ? -16 : -72,
-          scale: isMobile ? 0.98 : 0.92,
-          autoAlpha: isMobile ? 0 : 0.36,
-          ease: "none",
+        gsap.set(titleLines, { yPercent: 105 });
+        gsap.set([body, actions, kicker], { autoAlpha: 0, y: 14 });
+        gsap.set(showcase, { autoAlpha: 1, y: 18, scale: 0.94, transformOrigin: "50% 72%" });
+        gsap.set(mobileEditorial, { autoAlpha: 0, y: 10 });
+
+        const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+        intro
+          .add(() => hero.classList.add("lv12-ready"), 0)
+          .to(titleLines, { yPercent: 0, duration: 0.62, stagger: 0.055, ease: "expo.out" }, 0.03)
+          .to(showcase, { y: 0, scale: 0.94, duration: 0.72, ease: "expo.out" }, 0.1)
+          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
+          .to(mobileEditorial, { autoAlpha: 1, y: 0, duration: 0.42, stagger: 0.05 }, 0.68);
+
+        gsap.timeline({
+          defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: isMobile ? "bottom top" : "+=78%",
-            scrub: isMobile ? 0.9 : 1.1,
+            end: "+=72%",
+            scrub: 0.65,
+            invalidateOnRefresh: true,
           },
-        });
-      }
+        })
+          .to(title, { y: -34, autoAlpha: 0.76 }, 0)
+          .to([kicker, body, actions, ...optionalElements], { y: -22, autoAlpha: 0 }, 0)
+          .to(showcase, { y: -18, scale: 1, x: 0 }, 0)
+          .to(projectScreen, { borderRadius: 14 }, 0)
+          .to(mobileEditorial, { y: -16, autoAlpha: 0 }, 0);
 
-      if (phone) {
-        gsap.to(phone, {
-          x: isMobile ? 0 : 64,
-          y: isMobile ? -12 : -76,
-          scale: isMobile ? 0.96 : 0.9,
-          autoAlpha: isMobile ? 0 : 0.28,
-          ease: "none",
+        scheduleRefresh();
+
+        return () => {
+          intro.kill();
+        };
+      });
+
+      mm.add("(min-width: 901px)", () => {
+        if (!depthCard) return;
+
+        setActiveVideos(false);
+
+        gsap.set(titleLines, { yPercent: 108 });
+        gsap.set([body, actions, kicker], { autoAlpha: 0, y: 16 });
+        gsap.set(project, { autoAlpha: 1, y: 28, scale: 0.965, transformOrigin: "56% 58%" });
+        gsap.set(depthCard, { autoAlpha: 0, x: -26, y: 18, scale: 0.96 });
+        gsap.set(desktopAtmosphere, { autoAlpha: 0 });
+
+        const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+        intro
+          .add(() => hero.classList.add("lv12-ready"), 0)
+          .to(titleLines, { yPercent: 0, duration: 0.68, stagger: 0.06, ease: "expo.out" }, 0.02)
+          .to(project, { y: 0, scale: 1, duration: 0.78, ease: "expo.out" }, 0.1)
+          .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.54, stagger: 0.055 }, 0.38)
+          .to(depthCard, { autoAlpha: 0.74, x: 0, y: 0, scale: 1, duration: 0.58 }, 0.48)
+          .to(desktopAtmosphere, { autoAlpha: 1, duration: 0.48, stagger: 0.035 }, 0.72);
+
+        gsap.timeline({
+          defaults: { ease: "none" },
           scrollTrigger: {
             trigger: hero,
             start: "top top",
-            end: isMobile ? "bottom top" : "+=78%",
-            scrub: isMobile ? 0.9 : 1.1,
+            end: "+=68%",
+            scrub: 0.75,
+            invalidateOnRefresh: true,
           },
-        });
-      }
+        })
+          .to(copy, { y: -48, autoAlpha: 0.48 }, 0)
+          .to(project, { y: -34, scale: 1.08 }, 0)
+          .to(depthCard, { x: 78, y: -42, scale: 0.92, autoAlpha: 0.26 }, 0)
+          .to(desktopAtmosphere, { y: -20, autoAlpha: 0.25 }, 0);
 
-      if (chips.length) {
-        gsap.to(chips, {
-          y: isMobile ? -12 : -62,
-          autoAlpha: 0.12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: hero,
-            start: "top top",
-            end: isMobile ? "bottom top" : "+=78%",
-            scrub: isMobile ? 0.9 : 1.1,
-          },
-        });
-      }
+        scheduleRefresh();
 
-      if (scrollIndicator) {
-        gsap.fromTo(
-          scrollIndicator,
-          { autoAlpha: 0.78, y: 0 },
-          {
-            autoAlpha: 0,
-            y: -16,
-            ease: "none",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: hero,
-              start: "top top",
-              end: isMobile ? "22% top" : "28% top",
-              scrub: 0.6,
-            },
-          },
-        );
-      }
+        return () => {
+          intro.kill();
+        };
+      });
     }, hero);
 
-    function startIntro() {
-      if (introStarted || prefersReduced) return;
-      introStarted = true;
-      introTimeline?.play(0);
-    }
-
-    const handleImageReady = () => startIntro();
-    if (!prefersReduced) {
-      if (!mainImage || (mainImage.complete && mainImage.naturalWidth > 0)) {
-        startIntro();
-      } else {
-        mainImage.addEventListener("load", handleImageReady, { once: true });
-        mainImage.addEventListener("error", handleImageReady, { once: true });
-        imageReadyTimer = window.setTimeout(startIntro, 1100);
-      }
-    }
-
-    function handlePointerMove(event: PointerEvent) {
-      if (isTouch || prefersReduced) return;
-      const rect = hero.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-
-      latestPointerX = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
-      latestPointerY = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
-
-      if (pointerFrame !== null) return;
-      pointerFrame = window.requestAnimationFrame(() => {
-        pointerFrame = null;
-        hero.style.setProperty("--lv10-mouse-x", `${50 + latestPointerX * 10}%`);
-        hero.style.setProperty("--lv10-mouse-y", `${44 + latestPointerY * 8}%`);
-
-        gsap.to(stage, {
-          x: latestPointerX * 9,
-          y: latestPointerY * 6,
-          rotateY: latestPointerX * 2.2,
-          rotateX: latestPointerY * -1.2,
-          duration: 0.72,
-          ease: "power3.out",
-        });
-      });
-    }
-
-    function handlePointerLeave() {
-      if (isTouch || prefersReduced) return;
-      hero.style.setProperty("--lv10-mouse-x", "50%");
-      hero.style.setProperty("--lv10-mouse-y", "44%");
-      gsap.to(stage, { x: 0, y: 0, rotateX: 0, rotateY: 0, duration: 0.95, ease: "expo.out" });
-    }
-
-    if (!isTouch && !prefersReduced) {
-      hero.addEventListener("pointermove", handlePointerMove);
-      hero.addEventListener("pointerleave", handlePointerLeave);
-    }
-
     addCleanup(() => {
-      hero.removeEventListener("pointermove", handlePointerMove);
-      hero.removeEventListener("pointerleave", handlePointerLeave);
-      mainImage?.removeEventListener("load", handleImageReady);
-      mainImage?.removeEventListener("error", handleImageReady);
-      if (pointerFrame !== null) window.cancelAnimationFrame(pointerFrame);
-      if (imageReadyTimer !== null) window.clearTimeout(imageReadyTimer);
-      hero.style.removeProperty("--lv10-mouse-x");
-      hero.style.removeProperty("--lv10-mouse-y");
-      hero.classList.remove("lv10-ready");
+      if (refreshFrame) window.cancelAnimationFrame(refreshFrame);
+      mm.revert();
       context.revert();
-      delete hero.dataset.lv10Booted;
+      [mainVideo, depthVideo].forEach((video) => {
+        if (!video) return;
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+      });
+      hero.classList.remove("lv12-ready");
+      delete hero.dataset.lv12Booted;
     });
   });
 }
@@ -1262,12 +1190,8 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   function setDecorativePaused(root: HTMLElement, paused: boolean) {
     root.classList.toggle("linka-perf-paused", paused);
 
-    if (root.matches(".linka-v10-hero")) return;
-
     const targets = Array.from(
-      root.querySelectorAll<HTMLElement>(
-        ".lv10-device, .lv10-phone, .lv10-project-chip, .lv10-radial, .lov64-star, .lov64-star-core",
-      ),
+      root.querySelectorAll<HTMLElement>(".lv10-logo, .lv10-img, .lv10-glow, .lov64-star, .lov64-star-core"),
     );
 
     gsap.getTweensOf(targets).forEach((tween) => {
