@@ -6,7 +6,6 @@ export default function Hero() {
     <section className="linka-hero-experience" data-linka-hero="" id="home">
       <div className="lhx-scene">
         <div className="lhx-color-field" aria-hidden="true">
-          <span className="lhx-shape lhx-shape-blue" />
           <span className="lhx-shape lhx-shape-arc" />
           <span className="lhx-shape lhx-shape-green" />
         </div>
@@ -49,42 +48,31 @@ export default function Hero() {
         </div>
 
         <div className="lhx-showcase" aria-label="Serviços digitais da Linka">
-          <div className="lhx-depth-indicator">
-            <span className="lhx-depth-indicator-label">ROLE PARA DESCOBRIR</span>
-            <i aria-hidden="true" />
+          <div className="lhx-intro-card">
+            <p className="lhx-card-title">
+              <span className="lhx-card-title-mask">
+                <span className="lhx-card-title-text">O que a Linka faz</span>
+              </span>
+              <span className="lhx-card-cursor" aria-hidden="true" />
+            </p>
+            <span className="lhx-card-hint">Role para descobrir</span>
           </div>
 
           <div className="lhx-type-tunnel">
             <article className="lhx-service-card lhx-service-card-sites">
-              <span className="lhx-service-index" aria-hidden="true">01</span>
               <h2 className="lhx-service-title lhx-service-title-sites">SITES</h2>
-              <p className="lhx-service-copy lhx-service-copy-sites">
-                Presença digital que posiciona, diferencia e fortalece sua marca.
-              </p>
             </article>
 
             <article className="lhx-service-card lhx-service-card-landings">
-              <span className="lhx-service-index" aria-hidden="true">02</span>
               <h2 className="lhx-service-title lhx-service-title-landings">LANDING PAGES</h2>
-              <p className="lhx-service-copy lhx-service-copy-landings">
-                Páginas estratégicas criadas para apresentar, envolver e converter.
-              </p>
             </article>
 
             <article className="lhx-service-card lhx-service-card-experiences">
-              <span className="lhx-service-index" aria-hidden="true">03</span>
               <h2 className="lhx-service-title lhx-service-title-experiences">EXPERIÊNCIAS DIGITAIS</h2>
-              <p className="lhx-service-copy lhx-service-copy-experiences">
-                Interações marcantes que aproximam marcas e pessoas.
-              </p>
             </article>
 
             <article className="lhx-service-card lhx-service-card-bio">
-              <span className="lhx-service-index" aria-hidden="true">04</span>
               <h2 className="lhx-service-title lhx-service-title-bio">LINK NA BIO</h2>
-              <p className="lhx-service-copy lhx-service-copy-bio">
-                Todos os seus links em uma página única, estratégica e personalizada.
-              </p>
             </article>
           </div>
         </div>
