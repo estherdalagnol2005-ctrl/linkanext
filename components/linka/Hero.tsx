@@ -1,18 +1,21 @@
 const HERO_WHATSAPP_URL =
   "https://wa.me/5554996443484?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Linka%20e%20quero%20agendar%20uma%20reuni%C3%A3o%20para%20conversar%20sobre%20meu%20projeto.";
 
+const services = [
+  { key: "sites", code: "WEB", title: "SITES" },
+  { key: "landings", code: "CVR", title: "LANDING PAGES" },
+  { key: "experiences", code: "EXP", title: "EXPERIÊNCIAS DIGITAIS" },
+  { key: "bio", code: "LNK", title: "LINK NA BIO" },
+] as const;
+
 export default function Hero() {
   return (
     <section className="linka-hero-experience" data-linka-hero="" id="home">
       <div className="lhx-scene">
-        <div className="lhx-color-field" aria-hidden="true">
-          <span className="lhx-surface lhx-surface-main" />
-          <span className="lhx-surface lhx-surface-cyan" />
-          <span className="lhx-surface lhx-surface-green" />
-          <span className="lhx-shape lhx-shape-arc" />
-          <span className="lhx-shape lhx-shape-ribbon" />
-          <span className="lhx-shape lhx-shape-node" />
-          <span className="lhx-shape lhx-shape-green" />
+        <div className="lhx-game-field" aria-hidden="true">
+          <span className="lhx-field-plane lhx-field-plane-blue" />
+          <span className="lhx-field-plane lhx-field-plane-violet" />
+          <span className="lhx-field-signal" />
         </div>
 
         <div className="lhx-copy">
@@ -51,40 +54,58 @@ export default function Hero() {
         </div>
 
         <div className="lhx-showcase" aria-label="Serviços digitais da Linka">
-          <div className="lhx-intro-card">
-            <span className="lhx-card-orbit" aria-hidden="true" />
-            <span className="lhx-card-progress" aria-hidden="true" />
+          <div className="lhx-portal">
+            <span className="lhx-portal-kicker" aria-hidden="true">UNLOCK THE STACK</span>
             <p className="lhx-card-title">
               <span className="lhx-card-title-mask">
                 <span className="lhx-card-title-text">O que a Linka faz</span>
               </span>
               <span className="lhx-card-cursor" aria-hidden="true" />
             </p>
-            <span className="lhx-card-hint">ROLE PARA DESCOBRIR</span>
+            <span className="lhx-card-hint">ROLE PARA DESBLOQUEAR</span>
           </div>
 
-          <div className="lhx-type-tunnel">
-            <span className="lhx-service-progress" aria-hidden="true" />
+          <div className="lhx-collection" aria-hidden="true">
+            <span className="lhx-collection-label">COLLECTION</span>
+            <div className="lhx-slot lhx-slot-a"><i /></div>
+            <div className="lhx-slot lhx-slot-b"><i /></div>
+            <div className="lhx-slot lhx-slot-c"><i /></div>
+            <div className="lhx-slot lhx-slot-d"><i /></div>
+          </div>
 
-            <article className="lhx-service-card lhx-service-card-sites">
-              <span className="lhx-service-step" aria-hidden="true">01</span>
-              <h2 className="lhx-service-title lhx-service-title-sites">SITES</h2>
-            </article>
+          <div className="lhx-energy-track" aria-hidden="true">
+            <span className="lhx-track-segment lhx-track-segment-a" />
+            <span className="lhx-track-node lhx-track-node-a" />
+            <span className="lhx-track-segment lhx-track-segment-b" />
+            <span className="lhx-track-node lhx-track-node-b" />
+            <span className="lhx-track-segment lhx-track-segment-c" />
+            <span className="lhx-track-node lhx-track-node-c" />
+            <span className="lhx-track-segment lhx-track-segment-d" />
+            <span className="lhx-track-node lhx-track-node-d" />
+          </div>
 
-            <article className="lhx-service-card lhx-service-card-landings">
-              <span className="lhx-service-step" aria-hidden="true">02</span>
-              <h2 className="lhx-service-title lhx-service-title-landings">LANDING PAGES</h2>
-            </article>
+          <div className="lhx-card-stage">
+            {services.map(({ code, key, title }) => (
+              <article className={`lhx-service-card lhx-service-card-${key}`} key={key}>
+                <span className="lhx-card-code" aria-hidden="true">{code}</span>
+                <span className="lhx-card-mark" aria-hidden="true"><i /></span>
+                <h2 className={`lhx-service-title lhx-service-title-${key}`}>{title}</h2>
+                <span className="lhx-card-energy" aria-hidden="true" />
+                <span className="lhx-unlock-badge">DESBLOQUEADO</span>
+                <span className="lhx-card-corner lhx-card-corner-a" aria-hidden="true" />
+                <span className="lhx-card-corner lhx-card-corner-b" aria-hidden="true" />
+              </article>
+            ))}
+          </div>
 
-            <article className="lhx-service-card lhx-service-card-experiences">
-              <span className="lhx-service-step" aria-hidden="true">03</span>
-              <h2 className="lhx-service-title lhx-service-title-experiences">EXPERIÊNCIAS DIGITAIS</h2>
-            </article>
-
-            <article className="lhx-service-card lhx-service-card-bio">
-              <span className="lhx-service-step" aria-hidden="true">04</span>
-              <h2 className="lhx-service-title lhx-service-title-bio">LINK NA BIO</h2>
-            </article>
+          <div className="lhx-completion">
+            <span className="lhx-completion-signal" aria-hidden="true"><i /></span>
+            <p className="lhx-completion-title">Coleção desbloqueada.</p>
+            <p className="lhx-completion-copy">Agora vamos criar a sua experiência.</p>
+            <a className="lhx-completion-cta" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
+              <span className="lhx-completion-cta-label">Iniciar meu projeto</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
           </div>
         </div>
       </div>

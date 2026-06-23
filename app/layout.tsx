@@ -6,6 +6,7 @@ import LenisProvider from "../components/linka/LenisProvider";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import "./linka-site.css";
+import "./unlock-stack.css";
 
 export const metadata: Metadata = {
   title: "Linka Studio | Digital Experiences",

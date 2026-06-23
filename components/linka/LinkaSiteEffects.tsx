@@ -21,11 +21,15 @@ const COPY = {
     heroContactCta: "Iniciar um projeto",
     heroServicesAria: "Serviços digitais da Linka",
     heroIntroTitle: "O que a Linka faz",
-    heroIntroHint: "ROLE PARA DESCOBRIR",
+    heroIntroHint: "ROLE PARA DESBLOQUEAR",
     heroService1Title: "SITES",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "EXPERIÊNCIAS DIGITAIS",
     heroService4Title: "LINK NA BIO",
+    heroUnlocked: "DESBLOQUEADO",
+    heroCompletionTitle: "Cole\u00e7\u00e3o desbloqueada.",
+    heroCompletionCopy: "Agora vamos criar a sua experi\u00eancia.",
+    heroCompletionCta: "Iniciar meu projeto",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
     expLead:
@@ -104,11 +108,15 @@ const COPY = {
     heroContactCta: "Start a project",
     heroServicesAria: "Linka digital services",
     heroIntroTitle: "What Linka does",
-    heroIntroHint: "SCROLL TO DISCOVER",
+    heroIntroHint: "SCROLL TO UNLOCK",
     heroService1Title: "WEBSITES",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "DIGITAL EXPERIENCES",
     heroService4Title: "LINK IN BIO",
+    heroUnlocked: "UNLOCKED",
+    heroCompletionTitle: "Collection unlocked.",
+    heroCompletionCopy: "Now let\u2019s create your experience.",
+    heroCompletionCta: "Start my project",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
     expLead:
@@ -183,11 +191,15 @@ const COPY = {
     heroContactCta: "Iniciar un proyecto",
     heroServicesAria: "Servicios digitales de Linka",
     heroIntroTitle: "Lo que hace Linka",
-    heroIntroHint: "DESLIZA PARA DESCUBRIR",
+    heroIntroHint: "DESLIZA PARA DESBLOQUEAR",
     heroService1Title: "SITIOS",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "EXPERIENCIAS DIGITALES",
     heroService4Title: "LINK EN BIO",
+    heroUnlocked: "DESBLOQUEADO",
+    heroCompletionTitle: "Colecci\u00f3n desbloqueada.",
+    heroCompletionCopy: "Ahora creemos tu experiencia.",
+    heroCompletionCta: "Iniciar mi proyecto",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
     expLead:
@@ -411,10 +423,16 @@ function applyLanguage(nextLang: Language) {
   setText(".lhx-service-title-landings", copy.heroService2Title);
   setText(".lhx-service-title-experiences", copy.heroService3Title);
   setText(".lhx-service-title-bio", copy.heroService4Title);
+  setTextForAll(".lhx-unlock-badge", copy.heroUnlocked);
+  setText(".lhx-completion-title", copy.heroCompletionTitle);
+  setText(".lhx-completion-copy", copy.heroCompletionCopy);
+  setText(".lhx-completion-cta-label", copy.heroCompletionCta);
   setAttributeForAll(".lhx-showcase", "aria-label", copy.heroServicesAria);
 
   const heroContact = document.querySelector<HTMLAnchorElement>(".lhx-link");
   if (heroContact) heroContact.href = whatsappUrl("project", lang);
+  const heroCompletionCta = document.querySelector<HTMLAnchorElement>(".lhx-completion-cta");
+  if (heroCompletionCta) heroCompletionCta.href = whatsappUrl("project", lang);
 
   setHtml(".lov64-kicker", copy.expKicker);
   setHtml(".lov64-shell h2", copy.expTitle);
@@ -699,38 +717,33 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const body = hero.querySelector<HTMLElement>(".lhx-body");
     const actions = hero.querySelector<HTMLElement>(".lhx-actions");
     const showcase = hero.querySelector<HTMLElement>(".lhx-showcase");
-    const tunnel = hero.querySelector<HTMLElement>(".lhx-type-tunnel");
-    const introCard = hero.querySelector<HTMLElement>(".lhx-intro-card");
+    const portal = hero.querySelector<HTMLElement>(".lhx-portal");
+    const portalKicker = hero.querySelector<HTMLElement>(".lhx-portal-kicker");
     const cardTitle = hero.querySelector<HTMLElement>(".lhx-card-title");
     const cardTitleText = hero.querySelector<HTMLElement>(".lhx-card-title-text");
     const cardCursor = hero.querySelector<HTMLElement>(".lhx-card-cursor");
     const cardHint = hero.querySelector<HTMLElement>(".lhx-card-hint");
-    const cardOrbit = hero.querySelector<HTMLElement>(".lhx-card-orbit");
-    const cardProgress = hero.querySelector<HTMLElement>(".lhx-card-progress");
+    const collection = hero.querySelector<HTMLElement>(".lhx-collection");
+    const collectionSlots = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-slot"));
+    const trackSegments = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-track-segment"));
+    const trackNodes = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-track-node"));
+    const cardStage = hero.querySelector<HTMLElement>(".lhx-card-stage");
     const serviceCards = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-service-card"));
     const serviceTitles = serviceCards
       .map((card) => card.querySelector<HTMLElement>(".lhx-service-title"))
       .filter(Boolean) as HTMLElement[];
-    const serviceSteps = serviceCards
-      .map((card) => card.querySelector<HTMLElement>(".lhx-service-step"))
+    const unlockBadges = serviceCards
+      .map((card) => card.querySelector<HTMLElement>(".lhx-unlock-badge"))
       .filter(Boolean) as HTMLElement[];
-    const serviceProgress = hero.querySelector<HTMLElement>(".lhx-service-progress");
-    const arcShape = hero.querySelector<HTMLElement>(".lhx-shape-arc");
-    const ribbonShape = hero.querySelector<HTMLElement>(".lhx-shape-ribbon");
-    const nodeShape = hero.querySelector<HTMLElement>(".lhx-shape-node");
-    const greenShape = hero.querySelector<HTMLElement>(".lhx-shape-green");
-    const mainSurface = hero.querySelector<HTMLElement>(".lhx-surface-main");
-    const cyanSurface = hero.querySelector<HTMLElement>(".lhx-surface-cyan");
-    const greenSurface = hero.querySelector<HTMLElement>(".lhx-surface-green");
-    const shapes = [arcShape, ribbonShape, nodeShape, greenShape].filter(Boolean) as HTMLElement[];
-    const surfaces = [mainSurface, cyanSurface, greenSurface].filter(Boolean) as HTMLElement[];
-    const arcTargets = arcShape ? [arcShape] : [];
-    const ribbonTargets = ribbonShape ? [ribbonShape] : [];
-    const nodeTargets = nodeShape ? [nodeShape] : [];
-    const greenTargets = greenShape ? [greenShape] : [];
-    const mainSurfaceTargets = mainSurface ? [mainSurface] : [];
-    const cyanSurfaceTargets = cyanSurface ? [cyanSurface] : [];
-    const greenSurfaceTargets = greenSurface ? [greenSurface] : [];
+    const cardEnergy = serviceCards
+      .map((card) => card.querySelector<HTMLElement>(".lhx-card-energy"))
+      .filter(Boolean) as HTMLElement[];
+    const completion = hero.querySelector<HTMLElement>(".lhx-completion");
+    const completionItems = completion
+      ? Array.from(completion.querySelectorAll<HTMLElement>(".lhx-completion-signal, .lhx-completion-title, .lhx-completion-copy, .lhx-completion-cta"))
+      : [];
+    const fieldPlanes = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-field-plane"));
+    const fieldSignal = hero.querySelector<HTMLElement>(".lhx-field-signal");
 
     if (
       !scene ||
@@ -741,18 +754,23 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       !body ||
       !actions ||
       !showcase ||
-      !tunnel ||
-      !introCard ||
+      !portal ||
+      !portalKicker ||
       !cardTitle ||
       !cardTitleText ||
       !cardCursor ||
       !cardHint ||
-      !cardOrbit ||
-      !cardProgress ||
-      !serviceProgress ||
+      !collection ||
+      collectionSlots.length !== 4 ||
+      trackSegments.length !== 4 ||
+      trackNodes.length !== 4 ||
+      !cardStage ||
       serviceCards.length !== 4 ||
       serviceTitles.length !== 4 ||
-      serviceSteps.length !== 4
+      unlockBadges.length !== 4 ||
+      cardEnergy.length !== 4 ||
+      !completion ||
+      completionItems.length !== 4
     ) {
       return;
     }
@@ -761,155 +779,96 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
 
     const mm = gsap.matchMedia();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = [kicker, body, actions, showcase, tunnel, introCard, cardTitle, cardTitleText, cardCursor, cardHint, cardOrbit, cardProgress, serviceProgress, ...surfaces, ...shapes].filter(Boolean) as HTMLElement[];
-
-    function setServicesStart(isMobile: boolean) {
-      gsap.set(tunnel, {
-        transformPerspective: isMobile ? 720 : 1180,
-        transformStyle: "preserve-3d",
-      });
-
-      gsap.set(serviceCards, {
-        xPercent: -50,
-        yPercent: -50,
-        z: isMobile ? -260 : -560,
-        y: isMobile ? 34 : 48,
-        scale: isMobile ? 0.72 : 0.56,
-        rotationX: isMobile ? 0 : 5,
-        rotationY: isMobile ? 0 : -4,
-        autoAlpha: 0,
-        transformOrigin: "50% 50%",
-        force3D: true,
-      });
-
-      gsap.set(serviceTitles, { autoAlpha: 1, y: 0 });
-      gsap.set(serviceSteps, { autoAlpha: 1, y: 0 });
-      gsap.set(serviceProgress, {
-        autoAlpha: 0,
-        scaleX: 0,
-        transformOrigin: "0% 50%",
-      });
-    }
-
-    function showStatic() {
-      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...serviceCards, ...serviceTitles, ...serviceSteps], {
-        autoAlpha: 1,
-        clearProps: "transform,opacity,visibility",
-      });
-      hero.style.setProperty("--lhx-active-color", "#3478FF");
-      hero.style.setProperty("--lhx-active-soft", "#55C7FF");
-      hero.classList.add("lhx-ready");
-    }
-
-    function addServiceSequence(timeline: gsap.core.Timeline, isMobile: boolean, offset: number) {
-      const servicePalette = [
-        { color: "#3478FF", soft: "#55C7FF" },
-        { color: "#B7FF32", soft: "#3478FF" },
-        { color: "#8458FF", soft: "#55C7FF" },
-        { color: "#55C7FF", soft: "#B7FF32" },
-      ];
-      const segment = isMobile ? 1.04 : 1.08;
-      const entryDuration = isMobile ? 0.3 : 0.32;
-      const readDuration = segment * 0.35;
-      const exitDuration = isMobile ? 0.26 : 0.3;
-      const startZ = isMobile ? -220 : -520;
-      const exitZ = isMobile ? 150 : 300;
-      const startScale = isMobile ? 0.8 : 0.62;
-      const exitScale = isMobile ? 1.08 : 1.1;
-      const startY = isMobile ? 18 : 34;
-      const exitY = isMobile ? -66 : -108;
-
-      serviceCards.forEach((card, index) => {
-        const start = offset + index * segment;
-        const readStart = start + entryDuration;
-        const exitStart = readStart + readDuration;
-        const palette = servicePalette[index];
-
-        timeline
-          .set(hero, {
-            "--lhx-active-color": palette.color,
-            "--lhx-active-soft": palette.soft,
-          }, start - 0.06)
-          .to(serviceProgress, {
-            autoAlpha: 1,
-            scaleX: (index + 1) / serviceCards.length,
-            duration: entryDuration + readDuration,
-            ease: "power1.out",
-          }, start)
-          .set(card, {
-            z: startZ,
-            y: startY,
-            scale: startScale,
-            rotationX: isMobile ? 0 : 5,
-            rotationY: isMobile ? 0 : index % 2 === 0 ? -4 : 4,
-            autoAlpha: 0,
-          }, start - 0.02)
-          .to(card, {
-            z: 0,
-            y: 0,
-            scale: 1,
-            rotationX: 0,
-            rotationY: 0,
-            autoAlpha: 1,
-            duration: entryDuration,
-            ease: "power2.out",
-          }, start)
-          .to(card, {
-            z: 0,
-            y: 0,
-            scale: 1,
-            rotationX: 0,
-            rotationY: 0,
-            autoAlpha: 1,
-            duration: readDuration,
-            ease: "none",
-          }, readStart)
-          .to(card, {
-            z: exitZ,
-            y: exitY,
-            scale: exitScale,
-            rotationX: isMobile ? 0 : -2,
-            rotationY: 0,
-            autoAlpha: 0,
-            duration: exitDuration,
-            ease: "power2.in",
-          }, exitStart);
-      });
-    }
+    const servicePalette = [
+      { color: "#3478FF", soft: "#55C7FF" },
+      { color: "#B7FF32", soft: "#3478FF" },
+      { color: "#8458FF", soft: "#55C7FF" },
+      { color: "#55C7FF", soft: "#B7FF32" },
+    ];
 
     const context = gsap.context(() => {
       if (prefersReduced) {
-        showStatic();
+        hero.classList.add("lhx-ready", "lhx-reduced");
+        gsap.set(
+          [
+            scene,
+            copy,
+            title,
+            ...titleLines,
+            kicker,
+            body,
+            actions,
+            showcase,
+            portal,
+            collection,
+            cardStage,
+            ...serviceCards,
+            ...serviceTitles,
+            ...unlockBadges,
+            ...cardEnergy,
+            completion,
+            ...completionItems,
+          ],
+          { autoAlpha: 1, clearProps: "transform,opacity,visibility" },
+        );
         return;
       }
 
       mm.add("(max-width: 900px)", () => {
+        const collectionPositions = [
+          { x: -126, y: -174, rotation: -6 },
+          { x: -42, y: -181, rotation: 3 },
+          { x: 44, y: -174, rotation: -3 },
+          { x: 128, y: -181, rotation: 6 },
+        ];
+
         gsap.set(titleLines, { yPercent: 108 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 14 });
-        gsap.set(showcase, { autoAlpha: 0, y: 28, scale: 0.98, transformOrigin: "50% 72%" });
-        gsap.set(introCard, { xPercent: -50, yPercent: -50, autoAlpha: 0, y: 16, scale: 0.94, transformOrigin: "50% 50%" });
+        gsap.set(showcase, { autoAlpha: 0, y: 24, transformOrigin: "50% 50%" });
+        gsap.set(portal, { autoAlpha: 0, y: 18, scale: 0.96, transformOrigin: "50% 50%" });
+        gsap.set(portalKicker, { autoAlpha: 0, x: -10 });
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 108 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 8 });
-        gsap.set(cardOrbit, { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 50%" });
-        gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
-        gsap.set(surfaces, { autoAlpha: 0, y: 28, scale: 0.9, transformOrigin: "50% 50%" });
-        gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
-        setServicesStart(true);
+        gsap.set(collection, { autoAlpha: 0, y: 14 });
+        gsap.set(collectionSlots, { autoAlpha: 0.38, scale: 0.92 });
+        gsap.set(trackSegments, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(trackNodes, { scale: 0.72, backgroundColor: "#07152F" });
+        gsap.set(fieldPlanes, { autoAlpha: 0, y: 24, scale: 0.92 });
+        gsap.set(fieldSignal, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(serviceCards, {
+          xPercent: -50,
+          yPercent: -50,
+          x: 0,
+          y: 42,
+          z: -330,
+          scale: 0.66,
+          rotationX: 2,
+          rotationY: 0,
+          autoAlpha: 0,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+        gsap.set(serviceCards[0], { y: 145, z: -250, scale: 0.72, autoAlpha: 0.42 });
+        gsap.set(unlockBadges, { autoAlpha: 0, y: 8, scale: 0.92 });
+        gsap.set(cardEnergy, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(completion, { autoAlpha: 0, y: 18, scale: 0.96 });
+        gsap.set(completionItems, { autoAlpha: 0, y: 10 });
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.58, stagger: 0.045, ease: "expo.out" }, 0.04)
-          .to(surfaces, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, stagger: 0.055, ease: "expo.out" }, 0.16)
+          .to(fieldPlanes, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, stagger: 0.06, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
-          .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.58, ease: "expo.out" }, 0.52)
-          .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46 }, 0.7)
-          .to(cardOrbit, { autoAlpha: 0.78, scale: 1, duration: 0.34, ease: "power2.out" }, 0.76)
+          .to(showcase, { autoAlpha: 1, y: 0, duration: 0.52, ease: "expo.out" }, 0.48)
+          .to(portal, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46 }, 0.62)
+          .to(portalKicker, { autoAlpha: 1, x: 0, duration: 0.34 }, 0.72)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.42, ease: "expo.out" }, 0.82)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.24, ease: "power2.out" }, 0.92)
           .to(cardHint, { autoAlpha: 0.74, y: 0, duration: 0.32 }, 1.02)
-          .to(cardProgress, { autoAlpha: 1, scaleX: 1, duration: 0.36, ease: "power2.out" }, 1.02);
+          .to(collection, { autoAlpha: 1, y: 0, duration: 0.42 }, 0.86)
+          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.5 }, 0.8);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -923,20 +882,75 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         });
 
         scrollTl
-          .to([kicker, body, actions], { y: -26, autoAlpha: 0 }, 0)
-          .to(title, { y: -42, autoAlpha: 0.16 }, 0.18)
-          .to(introCard, { y: -48, scale: 0.9, autoAlpha: 0, duration: 0.34, ease: "power1.inOut" }, 0.14)
-          .to(showcase, { y: -18, scale: 1.02, duration: 4.7 }, 0)
-          .to(mainSurfaceTargets, { scale: 1.14, x: -26, y: -34, rotation: -3, duration: 4.7 }, 0)
-          .to(cyanSurfaceTargets, { scale: 1.12, x: 42, y: -24, rotation: 14, duration: 4.7 }, 0.08)
-          .to(greenSurfaceTargets, { scale: 1.28, x: 58, y: 76, rotation: 2, duration: 4.7 }, 0.18)
-          .to(arcTargets, { scale: 1.18, x: 16, y: -16, rotation: 10, duration: 4.7 }, 0)
-          .to(ribbonTargets, { scale: 1.08, x: -26, y: -20, rotation: -7, duration: 4.7 }, 0.04)
-          .to(nodeTargets, { scale: 1.12, x: 36, y: 52, duration: 4.7 }, 0.12)
-          .to(greenTargets, { scale: 1.22, x: 88, y: 94, duration: 4.7 }, 0.34);
+          .to([kicker, body, actions], { y: -22, autoAlpha: 0.08, duration: 0.7 }, 0)
+          .to(title, { y: -34, autoAlpha: 0.12, duration: 0.8 }, 0.18)
+          .to(portal, { y: -30, scale: 0.92, autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 0.18)
+          .to(showcase, { y: -92, duration: 1.2, ease: "power1.inOut" }, 0.2)
+          .to(collection, { y: -2, duration: 6.8 }, 0)
+          .to(fieldPlanes, { y: -28, scale: 1.08, duration: 6.8 }, 0);
 
-        addServiceSequence(scrollTl, true, 0.68);
-        scrollTl.to(showcase, { y: -58, autoAlpha: 0.88, duration: 0.28 }, 5.18);
+        serviceCards.forEach((card, index) => {
+          const start = 0.72 + index * 1.36;
+          const position = collectionPositions[index];
+          const palette = servicePalette[index];
+
+          scrollTl
+            .set(hero, { "--lhx-active-color": palette.color, "--lhx-active-soft": palette.soft }, start)
+            .set(card, { zIndex: 20 + index }, start)
+            .to(
+              card,
+              {
+                x: 0,
+                y: 36,
+                z: 0,
+                scale: 1,
+                rotationX: 0,
+                rotationY: 0,
+                rotation: 0,
+                autoAlpha: 1,
+                duration: 0.42,
+                ease: "power2.out",
+              },
+              start,
+            )
+            .to(card, { scale: 1, duration: 0.3 }, start + 0.42)
+            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, start + 0.72)
+            .to(cardEnergy[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.72)
+            .to(card, { scale: 1.025, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.74)
+            .to(trackSegments[index], { scaleX: 1, duration: 0.3, ease: "power2.out" }, start + 0.72)
+            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.2 }, start + 0.78)
+            .to(collectionSlots[index], { autoAlpha: 0.9, scale: 1, duration: 0.2 }, start + 0.8)
+            .to(
+              card,
+              {
+                x: position.x,
+                y: position.y,
+                z: 0,
+                scale: 0.22,
+                rotation: position.rotation,
+                autoAlpha: 1,
+                duration: 0.42,
+                ease: "power2.inOut",
+              },
+              start + 1.02,
+            );
+
+          if (serviceCards[index + 1]) {
+            scrollTl.to(
+              serviceCards[index + 1],
+              { y: 116, z: -220, scale: 0.7, autoAlpha: 0.28, duration: 0.28 },
+              start + 1.02,
+            );
+          }
+        });
+
+        const finalStart = 6.25;
+        scrollTl
+          .to(fieldSignal, { scaleX: 1.08, duration: 0.24 }, finalStart)
+          .to(trackNodes, { boxShadow: "0 0 18px rgba(183,255,50,.72)", duration: 0.24 }, finalStart)
+          .to(serviceCards, { scale: 0.235, duration: 0.22, yoyo: true, repeat: 1, ease: "power1.inOut" }, finalStart + 0.05)
+          .to(completion, { autoAlpha: 1, y: 0, scale: 1, duration: 0.36, ease: "power2.out" }, finalStart + 0.25)
+          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.06, ease: "power2.out" }, finalStart + 0.34);
 
         return () => {
           intro.kill();
@@ -945,32 +959,60 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       });
 
       mm.add("(min-width: 901px)", () => {
+        const collectionPositions = [
+          { x: 238, y: -192, rotation: -7 },
+          { x: 350, y: -72, rotation: 5 },
+          { x: 228, y: 74, rotation: -4 },
+          { x: 350, y: 202, rotation: 7 },
+        ];
+
         gsap.set(titleLines, { yPercent: 112 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 18 });
-        gsap.set(showcase, { autoAlpha: 0, y: 46, scale: 0.96, transformOrigin: "58% 58%" });
-        gsap.set(introCard, { xPercent: -50, yPercent: -50, autoAlpha: 0, y: 18, scale: 0.94, transformOrigin: "50% 50%" });
+        gsap.set(showcase, { autoAlpha: 0, y: 34, scale: 0.98, transformOrigin: "50% 50%" });
+        gsap.set(portal, { autoAlpha: 0, x: -18, scale: 0.96, transformOrigin: "50% 50%" });
+        gsap.set(portalKicker, { autoAlpha: 0, x: -12 });
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 112 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 9 });
-        gsap.set(cardOrbit, { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 50%" });
-        gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
-        gsap.set(surfaces, { autoAlpha: 0, y: 34, scale: 0.9, transformOrigin: "50% 50%" });
-        gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
-        setServicesStart(false);
+        gsap.set(collection, { autoAlpha: 0, x: 18 });
+        gsap.set(collectionSlots, { autoAlpha: 0.38, scale: 0.92 });
+        gsap.set(trackSegments, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(trackNodes, { scale: 0.72, backgroundColor: "#07152F" });
+        gsap.set(fieldPlanes, { autoAlpha: 0, y: 32, scale: 0.9 });
+        gsap.set(fieldSignal, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(serviceCards, {
+          xPercent: -50,
+          yPercent: -50,
+          x: -74,
+          y: 24,
+          z: -620,
+          scale: 0.52,
+          rotationX: 6,
+          rotationY: -7,
+          autoAlpha: 0,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+        gsap.set(serviceCards[0], { x: -46, y: 138, z: -470, scale: 0.6, autoAlpha: 0.4 });
+        gsap.set(unlockBadges, { autoAlpha: 0, y: 10, scale: 0.92 });
+        gsap.set(cardEnergy, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(completion, { autoAlpha: 0, x: -18, scale: 0.96 });
+        gsap.set(completionItems, { autoAlpha: 0, y: 12 });
 
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.66, stagger: 0.055, ease: "expo.out" }, 0.04)
-          .to(surfaces, { autoAlpha: 1, y: 0, scale: 1, duration: 0.72, stagger: 0.06, ease: "expo.out" }, 0.14)
+          .to(fieldPlanes, { autoAlpha: 1, y: 0, scale: 1, duration: 0.72, stagger: 0.06, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.68, ease: "expo.out" }, 0.5)
-          .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.52 }, 0.74)
-          .to(cardOrbit, { autoAlpha: 0.78, scale: 1, duration: 0.36, ease: "power2.out" }, 0.78)
+          .to(portal, { autoAlpha: 1, x: 0, scale: 1, duration: 0.5 }, 0.68)
+          .to(portalKicker, { autoAlpha: 1, x: 0, duration: 0.34 }, 0.78)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.46, ease: "expo.out" }, 0.88)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.26, ease: "power2.out" }, 1)
           .to(cardHint, { autoAlpha: 0.72, y: 0, duration: 0.34 }, 1.1)
-          .to(cardProgress, { autoAlpha: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, 1.08);
+          .to(collection, { autoAlpha: 1, x: 0, duration: 0.46 }, 0.86)
+          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.54 }, 0.82);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -984,19 +1026,73 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         });
 
         scrollTl
-          .to(copy, { y: -82, autoAlpha: 0.18 }, 0.12)
-          .to(introCard, { y: -74, scale: 0.9, autoAlpha: 0, duration: 0.36, ease: "power1.inOut" }, 0.16)
-          .to(showcase, { y: -36, scale: 1.04, duration: 4.9 }, 0)
-          .to(mainSurfaceTargets, { scale: 1.16, x: 54, y: -38, rotation: -2, duration: 4.9 }, 0)
-          .to(cyanSurfaceTargets, { scale: 1.14, x: -78, y: -34, rotation: 15, duration: 4.9 }, 0.08)
-          .to(greenSurfaceTargets, { scale: 1.34, x: 122, y: 68, rotation: 4, duration: 4.9 }, 0.18)
-          .to(arcTargets, { scale: 1.22, x: 42, y: -28, rotation: 9, duration: 4.9 }, 0)
-          .to(ribbonTargets, { scale: 1.12, x: -64, y: -28, rotation: -8, duration: 4.9 }, 0.04)
-          .to(nodeTargets, { scale: 1.16, x: 72, y: 48, duration: 4.9 }, 0.12)
-          .to(greenTargets, { scale: 1.24, x: 124, y: 72, duration: 4.9 }, 0.34);
+          .to(copy, { y: -52, autoAlpha: 0.22, duration: 1.05 }, 0.16)
+          .to(portal, { x: -56, scale: 0.91, autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 0.22)
+          .to(showcase, { y: -12, duration: 6.9 }, 0)
+          .to(fieldPlanes, { y: -36, scale: 1.1, duration: 6.9 }, 0);
 
-        addServiceSequence(scrollTl, false, 0.74);
-        scrollTl.to(showcase, { y: -84, autoAlpha: 0.9, duration: 0.32 }, 5.32);
+        serviceCards.forEach((card, index) => {
+          const start = 0.76 + index * 1.38;
+          const position = collectionPositions[index];
+          const palette = servicePalette[index];
+
+          scrollTl
+            .set(hero, { "--lhx-active-color": palette.color, "--lhx-active-soft": palette.soft }, start)
+            .set(card, { zIndex: 20 + index }, start)
+            .to(
+              card,
+              {
+                x: -86,
+                y: 18,
+                z: 0,
+                scale: 1,
+                rotationX: 0,
+                rotationY: 0,
+                rotation: 0,
+                autoAlpha: 1,
+                duration: 0.44,
+                ease: "power2.out",
+              },
+              start,
+            )
+            .to(card, { scale: 1, duration: 0.31 }, start + 0.44)
+            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, start + 0.75)
+            .to(cardEnergy[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.75)
+            .to(card, { scale: 1.025, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.77)
+            .to(trackSegments[index], { scaleX: 1, duration: 0.3, ease: "power2.out" }, start + 0.75)
+            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.2 }, start + 0.8)
+            .to(collectionSlots[index], { autoAlpha: 0.9, scale: 1, duration: 0.2 }, start + 0.82)
+            .to(
+              card,
+              {
+                x: position.x,
+                y: position.y,
+                z: 0,
+                scale: 0.27,
+                rotation: position.rotation,
+                autoAlpha: 1,
+                duration: 0.44,
+                ease: "power2.inOut",
+              },
+              start + 1.04,
+            );
+
+          if (serviceCards[index + 1]) {
+            scrollTl.to(
+              serviceCards[index + 1],
+              { x: -58, y: 118, z: -430, scale: 0.58, autoAlpha: 0.28, duration: 0.3 },
+              start + 1.04,
+            );
+          }
+        });
+
+        const finalStart = 6.34;
+        scrollTl
+          .to(fieldSignal, { scaleX: 1.08, duration: 0.24 }, finalStart)
+          .to(trackNodes, { boxShadow: "0 0 20px rgba(183,255,50,.72)", duration: 0.24 }, finalStart)
+          .to(serviceCards, { scale: 0.285, duration: 0.22, yoyo: true, repeat: 1, ease: "power1.inOut" }, finalStart + 0.05)
+          .to(completion, { autoAlpha: 1, x: 0, scale: 1, duration: 0.38, ease: "power2.out" }, finalStart + 0.26)
+          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.32, stagger: 0.06, ease: "power2.out" }, finalStart + 0.36);
 
         return () => {
           intro.kill();
@@ -1008,7 +1104,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     addCleanup(() => {
       mm.revert();
       context.revert();
-      hero.classList.remove("lhx-ready");
+      hero.classList.remove("lhx-ready", "lhx-reduced");
       delete hero.dataset.lhxBooted;
     });
   });
