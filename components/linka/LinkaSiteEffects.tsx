@@ -705,6 +705,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const cardTitleText = hero.querySelector<HTMLElement>(".lhx-card-title-text");
     const cardCursor = hero.querySelector<HTMLElement>(".lhx-card-cursor");
     const cardHint = hero.querySelector<HTMLElement>(".lhx-card-hint");
+    const cardOrbit = hero.querySelector<HTMLElement>(".lhx-card-orbit");
     const cardProgress = hero.querySelector<HTMLElement>(".lhx-card-progress");
     const serviceCards = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-service-card"));
     const serviceTitles = serviceCards
@@ -718,11 +719,18 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const ribbonShape = hero.querySelector<HTMLElement>(".lhx-shape-ribbon");
     const nodeShape = hero.querySelector<HTMLElement>(".lhx-shape-node");
     const greenShape = hero.querySelector<HTMLElement>(".lhx-shape-green");
+    const mainSurface = hero.querySelector<HTMLElement>(".lhx-surface-main");
+    const cyanSurface = hero.querySelector<HTMLElement>(".lhx-surface-cyan");
+    const greenSurface = hero.querySelector<HTMLElement>(".lhx-surface-green");
     const shapes = [arcShape, ribbonShape, nodeShape, greenShape].filter(Boolean) as HTMLElement[];
+    const surfaces = [mainSurface, cyanSurface, greenSurface].filter(Boolean) as HTMLElement[];
     const arcTargets = arcShape ? [arcShape] : [];
     const ribbonTargets = ribbonShape ? [ribbonShape] : [];
     const nodeTargets = nodeShape ? [nodeShape] : [];
     const greenTargets = greenShape ? [greenShape] : [];
+    const mainSurfaceTargets = mainSurface ? [mainSurface] : [];
+    const cyanSurfaceTargets = cyanSurface ? [cyanSurface] : [];
+    const greenSurfaceTargets = greenSurface ? [greenSurface] : [];
 
     if (
       !scene ||
@@ -739,6 +747,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       !cardTitleText ||
       !cardCursor ||
       !cardHint ||
+      !cardOrbit ||
       !cardProgress ||
       !serviceProgress ||
       serviceCards.length !== 4 ||
@@ -752,7 +761,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
 
     const mm = gsap.matchMedia();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = [kicker, body, actions, showcase, tunnel, introCard, cardTitle, cardTitleText, cardCursor, cardHint, cardProgress, serviceProgress, ...shapes].filter(Boolean) as HTMLElement[];
+    const revealItems = [kicker, body, actions, showcase, tunnel, introCard, cardTitle, cardTitleText, cardCursor, cardHint, cardOrbit, cardProgress, serviceProgress, ...surfaces, ...shapes].filter(Boolean) as HTMLElement[];
 
     function setServicesStart(isMobile: boolean) {
       gsap.set(tunnel, {
@@ -882,7 +891,9 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 108 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 8 });
+        gsap.set(cardOrbit, { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 50%" });
         gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(surfaces, { autoAlpha: 0, y: 28, scale: 0.9, transformOrigin: "50% 50%" });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
         setServicesStart(true);
 
@@ -890,9 +901,11 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.58, stagger: 0.045, ease: "expo.out" }, 0.04)
+          .to(surfaces, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, stagger: 0.055, ease: "expo.out" }, 0.16)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.58, ease: "expo.out" }, 0.52)
           .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46 }, 0.7)
+          .to(cardOrbit, { autoAlpha: 0.78, scale: 1, duration: 0.34, ease: "power2.out" }, 0.76)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.42, ease: "expo.out" }, 0.82)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.24, ease: "power2.out" }, 0.92)
           .to(cardHint, { autoAlpha: 0.74, y: 0, duration: 0.32 }, 1.02)
@@ -914,6 +927,9 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(title, { y: -42, autoAlpha: 0.16 }, 0.18)
           .to(introCard, { y: -48, scale: 0.9, autoAlpha: 0, duration: 0.34, ease: "power1.inOut" }, 0.14)
           .to(showcase, { y: -18, scale: 1.02, duration: 4.7 }, 0)
+          .to(mainSurfaceTargets, { scale: 1.14, x: -26, y: -34, rotation: -3, duration: 4.7 }, 0)
+          .to(cyanSurfaceTargets, { scale: 1.12, x: 42, y: -24, rotation: 14, duration: 4.7 }, 0.08)
+          .to(greenSurfaceTargets, { scale: 1.28, x: 58, y: 76, rotation: 2, duration: 4.7 }, 0.18)
           .to(arcTargets, { scale: 1.18, x: 16, y: -16, rotation: 10, duration: 4.7 }, 0)
           .to(ribbonTargets, { scale: 1.08, x: -26, y: -20, rotation: -7, duration: 4.7 }, 0.04)
           .to(nodeTargets, { scale: 1.12, x: 36, y: 52, duration: 4.7 }, 0.12)
@@ -936,7 +952,9 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 112 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 9 });
+        gsap.set(cardOrbit, { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 50%" });
         gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(surfaces, { autoAlpha: 0, y: 34, scale: 0.9, transformOrigin: "50% 50%" });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
         setServicesStart(false);
 
@@ -944,9 +962,11 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         intro
           .add(() => hero.classList.add("lhx-ready"), 0)
           .to(titleLines, { yPercent: 0, duration: 0.66, stagger: 0.055, ease: "expo.out" }, 0.04)
+          .to(surfaces, { autoAlpha: 1, y: 0, scale: 1, duration: 0.72, stagger: 0.06, ease: "expo.out" }, 0.14)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.68, ease: "expo.out" }, 0.5)
           .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.52 }, 0.74)
+          .to(cardOrbit, { autoAlpha: 0.78, scale: 1, duration: 0.36, ease: "power2.out" }, 0.78)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.46, ease: "expo.out" }, 0.88)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.26, ease: "power2.out" }, 1)
           .to(cardHint, { autoAlpha: 0.72, y: 0, duration: 0.34 }, 1.1)
@@ -967,6 +987,9 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(copy, { y: -82, autoAlpha: 0.18 }, 0.12)
           .to(introCard, { y: -74, scale: 0.9, autoAlpha: 0, duration: 0.36, ease: "power1.inOut" }, 0.16)
           .to(showcase, { y: -36, scale: 1.04, duration: 4.9 }, 0)
+          .to(mainSurfaceTargets, { scale: 1.16, x: 54, y: -38, rotation: -2, duration: 4.9 }, 0)
+          .to(cyanSurfaceTargets, { scale: 1.14, x: -78, y: -34, rotation: 15, duration: 4.9 }, 0.08)
+          .to(greenSurfaceTargets, { scale: 1.34, x: 122, y: 68, rotation: 4, duration: 4.9 }, 0.18)
           .to(arcTargets, { scale: 1.22, x: 42, y: -28, rotation: 9, duration: 4.9 }, 0)
           .to(ribbonTargets, { scale: 1.12, x: -64, y: -28, rotation: -8, duration: 4.9 }, 0.04)
           .to(nodeTargets, { scale: 1.16, x: 72, y: 48, duration: 4.9 }, 0.12)

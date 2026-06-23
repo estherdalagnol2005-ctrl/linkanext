@@ -6,6 +6,9 @@ export default function Hero() {
     <section className="linka-hero-experience" data-linka-hero="" id="home">
       <div className="lhx-scene">
         <div className="lhx-color-field" aria-hidden="true">
+          <span className="lhx-surface lhx-surface-main" />
+          <span className="lhx-surface lhx-surface-cyan" />
+          <span className="lhx-surface lhx-surface-green" />
           <span className="lhx-shape lhx-shape-arc" />
           <span className="lhx-shape lhx-shape-ribbon" />
           <span className="lhx-shape lhx-shape-node" />
