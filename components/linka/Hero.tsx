@@ -62,15 +62,23 @@ export default function Hero() {
               </span>
               <span className="lhx-card-cursor" aria-hidden="true" />
             </p>
-            <span className="lhx-card-hint">ROLE PARA DESBLOQUEAR</span>
+            <div className="lhx-scroll-invite">
+              <span className="lhx-card-hint">ROLE PARA DESBLOQUEAR</span>
+              <span className="lhx-scroll-copy">Uma nova criação está esperando.</span>
+              <span className="lhx-scroll-motion" aria-hidden="true">
+                <i className="lhx-scroll-line"><b /></i>
+                <i className="lhx-scroll-chevron lhx-scroll-chevron-a" />
+                <i className="lhx-scroll-chevron lhx-scroll-chevron-b" />
+              </span>
+            </div>
           </div>
 
           <div className="lhx-collection" aria-hidden="true">
             <span className="lhx-collection-label">COLLECTION</span>
-            <div className="lhx-slot lhx-slot-a"><i /></div>
-            <div className="lhx-slot lhx-slot-b"><i /></div>
-            <div className="lhx-slot lhx-slot-c"><i /></div>
-            <div className="lhx-slot lhx-slot-d"><i /></div>
+            <div className="lhx-slot lhx-slot-a"><i /><span /></div>
+            <div className="lhx-slot lhx-slot-b"><i /><span /></div>
+            <div className="lhx-slot lhx-slot-c"><i /><span /></div>
+            <div className="lhx-slot lhx-slot-d"><i /><span /></div>
           </div>
 
           <div className="lhx-energy-track" aria-hidden="true">
@@ -89,6 +97,10 @@ export default function Hero() {
               <article className={`lhx-service-card lhx-service-card-${key}`} key={key}>
                 <span className="lhx-card-code" aria-hidden="true">{code}</span>
                 <span className="lhx-card-mark" aria-hidden="true"><i /></span>
+                <span className="lhx-lock-state">
+                  <i aria-hidden="true" />
+                  <span className="lhx-lock-label">BLOQUEADO</span>
+                </span>
                 <h2 className={`lhx-service-title lhx-service-title-${key}`}>{title}</h2>
                 <span className="lhx-card-energy" aria-hidden="true" />
                 <span className="lhx-unlock-badge">DESBLOQUEADO</span>
@@ -98,12 +110,16 @@ export default function Hero() {
             ))}
           </div>
 
+          <div className="lhx-reward-aura" aria-hidden="true">
+            <span className="lhx-reward-shine" />
+          </div>
+
           <div className="lhx-completion">
             <span className="lhx-completion-signal" aria-hidden="true"><i /></span>
-            <p className="lhx-completion-title">Coleção desbloqueada.</p>
-            <p className="lhx-completion-copy">Agora vamos criar a sua experiência.</p>
+            <p className="lhx-completion-title">Sua coleção está completa.</p>
+            <p className="lhx-completion-copy">Agora é hora de criar uma experiência só sua.</p>
             <a className="lhx-completion-cta" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
-              <span className="lhx-completion-cta-label">Iniciar meu projeto</span>
+              <span className="lhx-completion-cta-label">Criar meu projeto</span>
               <span aria-hidden="true">&rarr;</span>
             </a>
           </div>
