@@ -24,14 +24,14 @@ export default function Hero() {
             </span>
             <span className="lhx-title-mask">
               <span className="lhx-title-line lhx-title-line-c">
-                <span className="lhx-title-line-c-copy">Experiências digitais que</span>{" "}
+                <span className="lhx-title-line-c-copy">Experiências que</span>{" "}
                 <span className="lhx-title-em">conectam.</span>
               </span>
             </span>
           </h1>
 
           <p className="lhx-body">
-            Criamos presença digital estratégica para transformar marcas em experiências memoráveis.
+            Criamos presença digital estratégica para marcas que querem se destacar.
           </p>
 
           <div className="lhx-actions">
