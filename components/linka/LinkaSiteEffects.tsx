@@ -32,6 +32,7 @@ const COPY = {
     heroCompletionTitle: "Sua cole\u00e7\u00e3o est\u00e1 completa.",
     heroCompletionCopy: "Agora \u00e9 hora de criar uma experi\u00eancia s\u00f3 sua.",
     heroCompletionCta: "Criar meu projeto",
+    heroCompletionProjects: "Ver projetos",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>O toque de mágica</span><strong>que sua empresa merece.</strong>",
     expLead:
@@ -121,6 +122,7 @@ const COPY = {
     heroCompletionTitle: "Your collection is complete.",
     heroCompletionCopy: "Now it\u2019s time to create an experience of your own.",
     heroCompletionCta: "Create my project",
+    heroCompletionProjects: "View projects",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>The magic touch</span><strong>your company deserves.</strong>",
     expLead:
@@ -206,6 +208,7 @@ const COPY = {
     heroCompletionTitle: "Tu colecci\u00f3n est\u00e1 completa.",
     heroCompletionCopy: "Ahora es momento de crear una experiencia solo para ti.",
     heroCompletionCta: "Crear mi proyecto",
+    heroCompletionProjects: "Ver proyectos",
     expKicker: "<span></span> LINKA EXPERIENCE",
     expTitle: "<span>El toque mágico</span><strong>que tu empresa merece.</strong>",
     expLead:
@@ -435,6 +438,7 @@ function applyLanguage(nextLang: Language) {
   setText(".lhx-completion-title", copy.heroCompletionTitle);
   setText(".lhx-completion-copy", copy.heroCompletionCopy);
   setText(".lhx-completion-cta-label", copy.heroCompletionCta);
+  setText(".lhx-completion-projects-label", copy.heroCompletionProjects);
   setAttributeForAll(".lhx-showcase", "aria-label", copy.heroServicesAria);
 
   const heroContact = document.querySelector<HTMLAnchorElement>(".lhx-link");
@@ -707,9 +711,40 @@ function initHeader(addCleanup: (cleanup: () => void) => void) {
   if (!header) return;
 
   header.classList.remove("is-scrolled");
+  const shell = header.querySelector<HTMLElement>(".lh11-shell");
+  const modules = Array.from(header.querySelectorAll<HTMLElement>(".lh11-build-module"));
+  const line = header.querySelector<HTMLElement>(".lh11-shell-line");
+  const brand = header.querySelector<HTMLElement>(".lh11-brand");
+  const status = header.querySelector<HTMLElement>(".lh11-status-dot");
+  const language = header.querySelector<HTMLElement>(".linka-language-switch");
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const items = [shell, line, brand, status, language, ...modules].filter(Boolean) as HTMLElement[];
+  const context = gsap.context(() => {
+    if (prefersReduced || !shell || !line || !brand || !status || !language || modules.length !== 3) {
+      gsap.set(items, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
+      header.classList.add("lh11-built");
+      return;
+    }
+
+    gsap.set(shell, { autoAlpha: 0, y: -8 });
+    gsap.set(modules, { autoAlpha: 0, y: -10, scaleY: 0.45, transformOrigin: "50% 100%" });
+    gsap.set(line, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+    gsap.set([brand, language], { autoAlpha: 0, y: -5 });
+    gsap.set(status, { autoAlpha: 0, scale: 0.35 });
+
+    gsap.timeline({ defaults: { ease: "power2.out" } })
+      .to(shell, { autoAlpha: 1, y: 0, duration: 0.24 }, 0)
+      .to(modules, { autoAlpha: 1, y: 0, scaleY: 1, duration: 0.24, stagger: 0.055 }, 0.12)
+      .to(line, { autoAlpha: 1, scaleX: 1, duration: 0.3 }, 0.2)
+      .to([brand, language], { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.06 }, 0.3)
+      .to(status, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "back.out(1.5)" }, 0.52)
+      .add(() => header.classList.add("lh11-built"), 0.7);
+  }, header);
 
   addCleanup(() => {
+    context.revert();
     header.classList.remove("is-scrolled");
+    header.classList.remove("lh11-built");
   });
 }
 
@@ -756,7 +791,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const rewardShine = hero.querySelector<HTMLElement>(".lhx-reward-shine");
     const completion = hero.querySelector<HTMLElement>(".lhx-completion");
     const completionItems = completion
-      ? Array.from(completion.querySelectorAll<HTMLElement>(".lhx-completion-signal, .lhx-completion-title, .lhx-completion-copy, .lhx-completion-cta"))
+      ? Array.from(completion.querySelectorAll<HTMLElement>(".lhx-completion-signal, .lhx-completion-title, .lhx-completion-copy, .lhx-completion-actions"))
       : [];
     const fieldPlanes = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-field-plane"));
     const fieldSignal = hero.querySelector<HTMLElement>(".lhx-field-signal");
@@ -935,15 +970,16 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         scrollTl
           .to(scrollInvite, { autoAlpha: 0, y: -10, duration: 0.16, ease: "power1.out" }, 0)
           .to(scrollMotion, { autoAlpha: 0, y: 10, duration: 0.12 }, 0)
-          .to([kicker, body, actions], { y: -22, autoAlpha: 0.08, duration: 0.7 }, 0)
-          .to(title, { y: -34, autoAlpha: 0.12, duration: 0.8 }, 0.18)
-          .to(portal, { y: -30, scale: 0.92, autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 0.18)
-          .to(showcase, { y: -92, duration: 1.2, ease: "power1.inOut" }, 0.2)
-          .to(collection, { y: -2, duration: 6.8 }, 0)
-          .to(fieldPlanes, { y: -28, scale: 1.08, duration: 6.8 }, 0);
+          .to([kicker, body], { y: -10, autoAlpha: 0.68, duration: 0.58 }, 0)
+          .to(actions, { y: -6, autoAlpha: 0.94, duration: 0.5 }, 0)
+          .to(title, { y: -16, autoAlpha: 0.62, duration: 0.62 }, 0.12)
+          .to(portal, { y: -18, scale: 0.94, autoAlpha: 0, duration: 0.38, ease: "power1.inOut" }, 0.12)
+          .to(showcase, { y: -46, duration: 0.9, ease: "power1.inOut" }, 0.12)
+          .to(collection, { y: -2, duration: 5.45 }, 0)
+          .to(fieldPlanes, { y: -22, scale: 1.07, duration: 5.45 }, 0);
 
         serviceCards.forEach((card, index) => {
-          const start = 0.24 + index * 1.42;
+          const start = 0.12 + index * 1.18;
           const palette = servicePalette[index];
 
           scrollTl
@@ -960,26 +996,26 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
                 rotationY: 0,
                 rotation: 0,
                 autoAlpha: 1,
-                duration: 0.46,
+                duration: 0.34,
                 ease: "power2.out",
               },
               start,
             )
-            .to(lockStates[index], { autoAlpha: 0, y: -8, duration: 0.16 }, start + 0.16)
-            .to(serviceTitles[index], { autoAlpha: 1, duration: 0.24, ease: "power1.out" }, start + 0.16)
-            .to(card, { scale: 1, duration: 0.3 }, start + 0.46)
-            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, start + 0.76)
-            .to(cardEnergy[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.76)
-            .to(card, { scale: 1.025, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.78)
-            .to(trackSegments[index], { scaleX: 1, duration: 0.3, ease: "power2.out" }, start + 0.76)
-            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.2 }, start + 0.82)
+            .to(lockStates[index], { autoAlpha: 0, y: -8, duration: 0.14 }, start + 0.13)
+            .to(serviceTitles[index], { autoAlpha: 1, duration: 0.2, ease: "power1.out" }, start + 0.13)
+            .to(card, { scale: 1, duration: 0.24 }, start + 0.34)
+            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.16, ease: "power2.out" }, start + 0.58)
+            .to(cardEnergy[index], { scaleX: 1, duration: 0.2, ease: "power2.out" }, start + 0.58)
+            .to(card, { scale: 1.025, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.6)
+            .to(trackSegments[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.58)
+            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.18 }, start + 0.64)
             .to(collectionSlots[index], {
               autoAlpha: 1,
               scale: 1.04,
               borderColor: palette.color,
               boxShadow: `0 0 22px ${palette.color}66, inset 0 0 0 3px rgba(0,0,0,.2)`,
-              duration: 0.22,
-            }, start + 0.84)
+              duration: 0.18,
+            }, start + 0.66)
             .to(
               card,
               {
@@ -989,30 +1025,30 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
                 scale: () => collectionTargets[index].scale * 0.97,
                 rotation: () => collectionTargets[index].rotation,
                 autoAlpha: 1,
-                duration: 0.4,
+                duration: 0.32,
                 ease: "power2.inOut",
               },
-              start + 1.04,
+              start + 0.82,
             )
             .to(card, {
               scale: () => collectionTargets[index].scale,
-              duration: 0.14,
+              duration: 0.12,
               ease: "power1.out",
-            }, start + 1.44)
-            .to(collectionSlots[index], { scale: 1, duration: 0.14, ease: "power1.out" }, start + 1.44)
-            .to(slotScans[index], { autoAlpha: 1, scaleX: 1, duration: 0.2, ease: "power2.out" }, start + 1.42)
-            .to(trackNodes[index], { backgroundColor: "#B7FF32", scale: 1.12, duration: 0.12, yoyo: true, repeat: 1 }, start + 1.46);
+            }, start + 1.14)
+            .to(collectionSlots[index], { scale: 1, duration: 0.12, ease: "power1.out" }, start + 1.14)
+            .to(slotScans[index], { autoAlpha: 1, scaleX: 1, duration: 0.16, ease: "power2.out" }, start + 1.12)
+            .to(trackNodes[index], { backgroundColor: "#B7FF32", scale: 1.12, duration: 0.1, yoyo: true, repeat: 1 }, start + 1.16);
 
           if (serviceCards[index + 1]) {
             scrollTl.to(
               serviceCards[index + 1],
               { y: 116, z: -220, scale: 0.7, autoAlpha: 0.28, duration: 0.28 },
-              start + 1.16,
+              start + 0.92,
             );
           }
         });
 
-        const finalStart = 6.34;
+        const finalStart = 4.84;
         scrollTl
           .to(fieldSignal, { scaleX: 1.1, autoAlpha: 1, duration: 0.22 }, finalStart)
           .to(trackSegments, { scaleX: 1, duration: 0.2 }, finalStart)
@@ -1027,8 +1063,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(collectionSlots, { boxShadow: "0 0 24px rgba(85,199,255,.38), inset 0 0 0 2px rgba(245,243,238,.16)", duration: 0.3 }, finalStart + 0.18)
           .to(rewardShine, { autoAlpha: 0.82, xPercent: 150, duration: 0.42, ease: "power2.inOut" }, finalStart + 0.32)
           .to(fieldPlanes, { autoAlpha: 1, scale: 1.13, duration: 0.28, yoyo: true, repeat: 1 }, finalStart + 0.36)
-          .to(completion, { autoAlpha: 1, y: 0, scale: 1, duration: 0.34, ease: "power2.out" }, finalStart + 0.78)
-          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.06, ease: "power2.out" }, finalStart + 0.86);
+          .to(completion, { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "power2.out" }, finalStart + 0.56)
+          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.26, stagger: 0.045, ease: "power2.out" }, finalStart + 0.62);
 
         return () => {
           intro.kill();
@@ -1115,13 +1151,15 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         scrollTl
           .to(scrollInvite, { autoAlpha: 0, x: -12, duration: 0.16, ease: "power1.out" }, 0)
           .to(scrollMotion, { autoAlpha: 0, y: 10, duration: 0.12 }, 0)
-          .to(copy, { y: -52, autoAlpha: 0.22, duration: 1.05 }, 0.16)
-          .to(portal, { x: -56, scale: 0.91, autoAlpha: 0, duration: 0.5, ease: "power1.inOut" }, 0.22)
-          .to(showcase, { y: -12, duration: 6.9 }, 0)
-          .to(fieldPlanes, { y: -36, scale: 1.1, duration: 6.9 }, 0);
+          .to([kicker, body], { y: -16, autoAlpha: 0.64, duration: 0.68 }, 0.08)
+          .to(title, { y: -22, autoAlpha: 0.56, duration: 0.76 }, 0.12)
+          .to(actions, { y: -7, autoAlpha: 0.94, duration: 0.58 }, 0.08)
+          .to(portal, { x: -38, scale: 0.93, autoAlpha: 0, duration: 0.4, ease: "power1.inOut" }, 0.14)
+          .to(showcase, { y: -8, duration: 5.55 }, 0)
+          .to(fieldPlanes, { y: -28, scale: 1.08, duration: 5.55 }, 0);
 
         serviceCards.forEach((card, index) => {
-          const start = 0.26 + index * 1.44;
+          const start = 0.14 + index * 1.2;
           const palette = servicePalette[index];
 
           scrollTl
@@ -1138,26 +1176,26 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
                 rotationY: 0,
                 rotation: 0,
                 autoAlpha: 1,
-                duration: 0.46,
+                duration: 0.35,
                 ease: "power2.out",
               },
               start,
             )
-            .to(lockStates[index], { autoAlpha: 0, y: -8, duration: 0.16 }, start + 0.16)
-            .to(serviceTitles[index], { autoAlpha: 1, duration: 0.24, ease: "power1.out" }, start + 0.16)
-            .to(card, { scale: 1, duration: 0.31 }, start + 0.46)
-            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.18, ease: "power2.out" }, start + 0.77)
-            .to(cardEnergy[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.77)
-            .to(card, { scale: 1.025, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.79)
-            .to(trackSegments[index], { scaleX: 1, duration: 0.3, ease: "power2.out" }, start + 0.77)
-            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.2 }, start + 0.82)
+            .to(lockStates[index], { autoAlpha: 0, y: -8, duration: 0.14 }, start + 0.13)
+            .to(serviceTitles[index], { autoAlpha: 1, duration: 0.2, ease: "power1.out" }, start + 0.13)
+            .to(card, { scale: 1, duration: 0.25 }, start + 0.35)
+            .to(unlockBadges[index], { autoAlpha: 1, y: 0, scale: 1, duration: 0.16, ease: "power2.out" }, start + 0.6)
+            .to(cardEnergy[index], { scaleX: 1, duration: 0.2, ease: "power2.out" }, start + 0.6)
+            .to(card, { scale: 1.025, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.62)
+            .to(trackSegments[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.6)
+            .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.18 }, start + 0.66)
             .to(collectionSlots[index], {
               autoAlpha: 1,
               scale: 1.04,
               borderColor: palette.color,
               boxShadow: `0 0 24px ${palette.color}66, inset 0 0 0 3px rgba(0,0,0,.2)`,
-              duration: 0.22,
-            }, start + 0.84)
+              duration: 0.18,
+            }, start + 0.68)
             .to(
               card,
               {
@@ -1167,30 +1205,30 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
                 scale: () => collectionTargets[index].scale * 0.97,
                 rotation: () => collectionTargets[index].rotation,
                 autoAlpha: 1,
-                duration: 0.42,
+                duration: 0.34,
                 ease: "power2.inOut",
               },
-              start + 1.04,
+              start + 0.84,
             )
             .to(card, {
               scale: () => collectionTargets[index].scale,
-              duration: 0.14,
+              duration: 0.12,
               ease: "power1.out",
-            }, start + 1.46)
-            .to(collectionSlots[index], { scale: 1, duration: 0.14, ease: "power1.out" }, start + 1.46)
-            .to(slotScans[index], { autoAlpha: 1, scaleX: 1, duration: 0.2, ease: "power2.out" }, start + 1.44)
-            .to(trackNodes[index], { backgroundColor: "#B7FF32", scale: 1.12, duration: 0.12, yoyo: true, repeat: 1 }, start + 1.48);
+            }, start + 1.18)
+            .to(collectionSlots[index], { scale: 1, duration: 0.12, ease: "power1.out" }, start + 1.18)
+            .to(slotScans[index], { autoAlpha: 1, scaleX: 1, duration: 0.16, ease: "power2.out" }, start + 1.16)
+            .to(trackNodes[index], { backgroundColor: "#B7FF32", scale: 1.12, duration: 0.1, yoyo: true, repeat: 1 }, start + 1.2);
 
           if (serviceCards[index + 1]) {
             scrollTl.to(
               serviceCards[index + 1],
               { x: -92, y: 118, z: -430, scale: 0.58, autoAlpha: 0.28, duration: 0.3 },
-              start + 1.18,
+              start + 0.94,
             );
           }
         });
 
-        const finalStart = 6.48;
+        const finalStart = 4.94;
         scrollTl
           .to(fieldSignal, { scaleX: 1.1, autoAlpha: 1, duration: 0.22 }, finalStart)
           .to(trackSegments, { scaleX: 1, duration: 0.2 }, finalStart)
@@ -1205,8 +1243,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(collectionSlots, { boxShadow: "0 0 28px rgba(85,199,255,.42), inset 0 0 0 2px rgba(245,243,238,.18)", duration: 0.32 }, finalStart + 0.18)
           .to(rewardShine, { autoAlpha: 0.82, xPercent: 150, duration: 0.44, ease: "power2.inOut" }, finalStart + 0.34)
           .to(fieldPlanes, { autoAlpha: 1, scale: 1.14, duration: 0.3, yoyo: true, repeat: 1 }, finalStart + 0.38)
-          .to(completion, { autoAlpha: 1, x: 0, scale: 1, duration: 0.36, ease: "power2.out" }, finalStart + 0.82)
-          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.32, stagger: 0.06, ease: "power2.out" }, finalStart + 0.92);
+          .to(completion, { autoAlpha: 1, x: 0, scale: 1, duration: 0.32, ease: "power2.out" }, finalStart + 0.58)
+          .to(completionItems, { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.045, ease: "power2.out" }, finalStart + 0.66);
 
         return () => {
           intro.kill();
@@ -1816,6 +1854,11 @@ function initLanguage(
     switcher.classList.toggle("is-open", isOpen);
     switcher.closest(".linka-header-v11")?.classList.toggle("has-language-menu-open", isOpen);
     trigger.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) {
+      window.requestAnimationFrame(() => {
+        switcher.querySelector<HTMLButtonElement>(".lls-lang.is-active")?.focus();
+      });
+    }
   };
   const closeMenu = () => setMenuOpen(false);
   const handleClick = (event: MouseEvent) => {
@@ -1832,6 +1875,7 @@ function initLanguage(
     if (!option || !switcher?.contains(option)) return;
     api.apply(normalizeLanguage(option.dataset.language));
     closeMenu();
+    trigger?.focus();
   };
   const handleDocumentClick = (event: MouseEvent) => {
     if (!switcher || switcher.contains(event.target as Node)) return;

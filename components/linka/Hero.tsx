@@ -118,10 +118,16 @@ export default function Hero() {
             <span className="lhx-completion-signal" aria-hidden="true"><i /></span>
             <p className="lhx-completion-title">Sua coleção está completa.</p>
             <p className="lhx-completion-copy">Agora é hora de criar uma experiência só sua.</p>
-            <a className="lhx-completion-cta" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
-              <span className="lhx-completion-cta-label">Criar meu projeto</span>
-              <span aria-hidden="true">&rarr;</span>
-            </a>
+            <div className="lhx-completion-actions">
+              <a className="lhx-completion-cta" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
+                <span className="lhx-completion-cta-label">Criar meu projeto</span>
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+              <a className="lhx-completion-projects" href="#portfolio">
+                <span className="lhx-completion-projects-label">Ver projetos</span>
+                <span aria-hidden="true">&darr;</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

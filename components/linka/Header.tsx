@@ -5,6 +5,11 @@ export default function Header() {
   return (
     <header className="linka-header-v11" data-linka-header-v11="">
       <div className="lh11-shell">
+        <span className="lh11-build-modules" aria-hidden="true">
+          <i className="lh11-build-module lh11-build-module-a" />
+          <i className="lh11-build-module lh11-build-module-b" />
+          <i className="lh11-build-module lh11-build-module-c" />
+        </span>
         <span className="lh11-shell-line" aria-hidden="true" />
         <a aria-label="Back to the top" className="lh11-brand" href="#home">
           <span className="lh11-logo-aura" />

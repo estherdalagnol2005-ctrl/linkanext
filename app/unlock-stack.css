@@ -13,7 +13,7 @@
   --lhx-active-soft:#55C7FF;
   position:relative!important;
   width:100%!important;
-  min-height:650svh!important;
+  min-height:480svh!important;
   margin:0!important;
   padding:0 clamp(18px,4vw,54px)!important;
   overflow:clip!important;
@@ -34,7 +34,7 @@
   width:min(1380px,100%)!important;
   min-height:100svh!important;
   margin:0 auto!important;
-  padding:clamp(72px,7vw,112px) 0 42px!important;
+  padding:clamp(48px,5vw,78px) 0 30px!important;
   display:grid!important;
   grid-template-columns:minmax(0,.9fr) minmax(520px,1.1fr)!important;
   align-items:center!important;
@@ -149,16 +149,20 @@
 }
 
 .lhx-actions{
+  position:relative!important;
+  z-index:30!important;
   margin-top:17px!important;
   display:flex!important;
   align-items:center!important;
   flex-wrap:wrap!important;
   gap:11px!important;
+  pointer-events:auto!important;
 }
 
 .lhx-cta,
 .lhx-link,
-.lhx-completion-cta{
+.lhx-completion-cta,
+.lhx-completion-projects{
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -167,6 +171,8 @@
   letter-spacing:0!important;
   text-decoration:none!important;
   white-space:nowrap!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
   transition:transform .2s ease,color .2s ease,background-color .2s ease,border-color .2s ease!important;
 }
 
@@ -176,7 +182,7 @@
   border-radius:14px!important;
   color:var(--lhx-cream)!important;
   background:linear-gradient(135deg,rgba(52,120,255,.94),#1a4fd8)!important;
-  box-shadow:0 10px 22px rgba(52,120,255,.16)!important;
+  box-shadow:0 10px 22px rgba(52,120,255,.2),0 0 0 1px rgba(85,199,255,.08)!important;
 }
 
 .lhx-cta::after{
@@ -201,13 +207,15 @@
 
 .lhx-cta:hover,
 .lhx-link:hover,
-.lhx-completion-cta:hover{
+.lhx-completion-cta:hover,
+.lhx-completion-projects:hover{
   transform:translate3d(0,-2px,0)!important;
 }
 
 .lhx-cta:focus-visible,
 .lhx-link:focus-visible,
-.lhx-completion-cta:focus-visible{
+.lhx-completion-cta:focus-visible,
+.lhx-completion-projects:focus-visible{
   outline:2px solid var(--lhx-green)!important;
   outline-offset:4px!important;
 }
@@ -417,7 +425,7 @@
   position:absolute;
   left:10%;
   right:auto;
-  top:18%;
+  top:14%;
   z-index:3;
   width:330px;
   height:390px;
@@ -484,7 +492,7 @@
   position:absolute;
   left:5%;
   right:auto;
-  top:24%;
+  top:20%;
   z-index:4;
   width:310px;
   height:330px;
@@ -537,8 +545,8 @@
   --lhx-card-color:var(--lhx-blue);
   --lhx-card-ink:var(--lhx-cream);
   position:absolute!important;
-  left:48%!important;
-  top:51%!important;
+  left:46%!important;
+  top:48%!important;
   width:min(500px,72%)!important;
   aspect-ratio:1.72!important;
   margin:0!important;
@@ -768,7 +776,7 @@
 .lhx-reward-aura{
   position:absolute;
   left:6%;
-  top:14%;
+  top:10%;
   z-index:6;
   width:360px;
   height:450px;
@@ -796,7 +804,7 @@
 .lhx-completion{
   position:absolute;
   left:-24%;
-  bottom:0;
+  bottom:7%;
   z-index:15;
   width:min(360px,58%);
   padding:18px 20px;
@@ -841,14 +849,32 @@
   letter-spacing:0;
 }
 
-.lhx-completion-cta{
-  min-height:38px!important;
+.lhx-completion-actions{
   margin-top:14px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:9px;
+  pointer-events:auto;
+}
+
+.lhx-completion-cta,
+.lhx-completion-projects{
+  min-height:38px!important;
   padding:0 14px;
   gap:10px;
   border-radius:10px;
+}
+
+.lhx-completion-cta{
   color:var(--lhx-navy);
   background:var(--lhx-green);
+}
+
+.lhx-completion-projects{
+  color:var(--lhx-cream);
+  border:1px solid rgba(85,199,255,.38);
+  background:rgba(4,10,24,.74);
 }
 
 @keyframes lhxUnlockPulse{
@@ -902,7 +928,7 @@
 
 @media(max-width:900px){
   .linka-hero-experience{
-    min-height:680svh!important;
+    min-height:520svh!important;
     padding:0 14px!important;
   }
 
@@ -912,7 +938,7 @@
     align-items:stretch!important;
     justify-content:flex-start!important;
     min-height:100svh!important;
-    padding:clamp(56px,10vw,76px) 0 24px!important;
+    padding:clamp(32px,6vw,48px) 0 max(18px, env(safe-area-inset-bottom))!important;
     gap:0!important;
   }
 
@@ -957,7 +983,7 @@
   .lhx-showcase{
     flex:1 1 auto!important;
     min-height:430px!important;
-    margin-top:12px!important;
+    margin-top:-4px!important;
     perspective:760px!important;
   }
 
@@ -988,7 +1014,7 @@
 
   .lhx-portal{
     left:0!important;
-    top:2%!important;
+    top:0!important;
     width:min(328px,94%)!important;
     min-height:132px!important;
     padding:12px 70px 14px 15px!important;
@@ -1036,7 +1062,7 @@
   .lhx-collection{
     left:50%;
     right:auto;
-    top:17%;
+    top:13%;
     width:286px;
     height:166px;
     transform:translateX(-50%);
@@ -1071,7 +1097,7 @@
   .lhx-energy-track{
     left:50%;
     right:auto;
-    top:18%;
+    top:14%;
     width:282px;
     height:152px;
     transform:translateX(-50%);
@@ -1107,7 +1133,7 @@
 
   .lhx-service-card{
     left:50%!important;
-    top:57%!important;
+    top:52%!important;
     width:min(390px,94%)!important;
     padding:20px 21px!important;
     border-radius:14px 38px 14px 38px!important;
@@ -1188,7 +1214,7 @@
 
   .lhx-reward-aura{
     left:50%;
-    top:15%;
+    top:11%;
     width:318px;
     height:190px;
     border-radius:42px 74px 46px 82px;
@@ -1197,7 +1223,7 @@
 
   .lhx-completion{
     left:50%;
-    bottom:max(18px, env(safe-area-inset-bottom));
+    bottom:max(48px, calc(env(safe-area-inset-bottom) + 26px));
     width:min(330px,90%);
     padding:15px 16px;
     border-radius:7px 28px 28px 7px;
@@ -1211,11 +1237,23 @@
   .lhx-completion-copy{
     font-size:12px;
   }
+
+  .lhx-completion-actions{
+    align-items:stretch;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .lhx-completion-cta,
+  .lhx-completion-projects{
+    width:100%;
+    min-height:42px!important;
+  }
 }
 
 @media(max-width:380px){
   .lhx-scene{
-    padding-top:56px!important;
+    padding-top:32px!important;
   }
 
   .lhx-title{
@@ -1248,6 +1286,12 @@
 
   .lhx-scroll-copy{
     display:none;
+  }
+}
+
+@media(min-width:600px) and (max-width:900px){
+  .lhx-completion{
+    bottom:max(132px, calc(env(safe-area-inset-bottom) + 96px));
   }
 }
 
