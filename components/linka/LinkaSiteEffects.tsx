@@ -9,14 +9,14 @@ import { WHATSAPP_ICON_URL } from "./constants";
 const COPY = {
   pt: {
     title: "Linka Studio | Experiências Digitais",
-    description: "A Linka cria presença digital estratégica para marcas que querem se destacar.",
+    description: "A Linka cria experiências digitais estratégicas para marcas que querem crescer e ser lembradas.",
     heroKicker: "DESIGN · ESTRATÉGIA · TECNOLOGIA",
     heroTitleLine1: "Sites que se destacam.",
     heroTitleLine2: "Landing pages que convertem.",
-    heroTitleLine3: "Experiências que",
-    heroTitleEm: "conectam.",
+    heroTitleLine3: "",
+    heroTitleEm: "",
     heroBody:
-      "Criamos presença digital estratégica para marcas que querem se destacar.",
+      "Criamos experiências digitais estratégicas para marcas que querem crescer, se diferenciar e ser lembradas.",
     heroCta: "Explorar projetos",
     heroContactCta: "Iniciar um projeto",
     heroServicesAria: "Serviços digitais da Linka",
@@ -92,14 +92,14 @@ const COPY = {
   en: {
     title: "Linka Studio | Digital Experiences",
     description:
-      "Linka creates strategic digital presence for brands that want to stand out.",
+      "Linka creates strategic digital experiences for brands that want to grow and be remembered.",
     heroKicker: "DESIGN · STRATEGY · TECHNOLOGY",
-    heroTitleLine1: "",
-    heroTitleLine2: "",
-    heroTitleLine3: "Experiences that",
-    heroTitleEm: "connect.",
+    heroTitleLine1: "Websites that stand out.",
+    heroTitleLine2: "Landing pages that convert.",
+    heroTitleLine3: "",
+    heroTitleEm: "",
     heroBody:
-      "We create strategic digital presence for brands that want to stand out.",
+      "We create strategic digital experiences for brands that want to grow, stand apart and be remembered.",
     heroCta: "Explore projects",
     heroContactCta: "Start a project",
     heroServicesAria: "Linka digital services",
@@ -171,14 +171,14 @@ const COPY = {
   },
   es: {
     title: "Linka Studio | Experiencias Digitales",
-    description: "Linka crea presencia digital estratégica para marcas que quieren destacar.",
+    description: "Linka crea experiencias digitales estratégicas para marcas que quieren crecer y ser recordadas.",
     heroKicker: "DISEÑO · ESTRATEGIA · TECNOLOGÍA",
     heroTitleLine1: "Sitios que destacan.",
     heroTitleLine2: "Landing pages que convierten.",
-    heroTitleLine3: "Experiencias que",
-    heroTitleEm: "conectan.",
+    heroTitleLine3: "",
+    heroTitleEm: "",
     heroBody:
-      "Creamos presencia digital estratégica para marcas que quieren destacar.",
+      "Creamos experiencias digitales estratégicas para marcas que quieren crecer, diferenciarse y ser recordadas.",
     heroCta: "Ver proyectos",
     heroContactCta: "Iniciar un proyecto",
     heroServicesAria: "Servicios digitales de Linka",
@@ -680,15 +680,9 @@ function initHeader(addCleanup: (cleanup: () => void) => void) {
   const header = document.querySelector<HTMLElement>("[data-linka-header-v11]");
   if (!header) return;
 
-  const updateHeaderState = () => {
-    header.classList.toggle("is-scrolled", window.scrollY > 24);
-  };
-
-  updateHeaderState();
-  window.addEventListener("scroll", updateHeaderState, { passive: true });
+  header.classList.remove("is-scrolled");
 
   addCleanup(() => {
-    window.removeEventListener("scroll", updateHeaderState);
     header.classList.remove("is-scrolled");
   });
 }

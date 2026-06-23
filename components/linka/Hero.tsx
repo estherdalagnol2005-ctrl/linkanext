@@ -22,16 +22,15 @@ export default function Hero() {
             <span className="lhx-title-mask">
               <span className="lhx-title-line lhx-title-line-b">Landing pages que convertem.</span>
             </span>
-            <span className="lhx-title-mask">
+            <span className="lhx-title-mask" hidden>
               <span className="lhx-title-line lhx-title-line-c">
-                <span className="lhx-title-line-c-copy">Experiências que</span>{" "}
-                <span className="lhx-title-em">conectam.</span>
+                <span className="lhx-title-line-c-copy" /> <span className="lhx-title-em" />
               </span>
             </span>
           </h1>
 
           <p className="lhx-body">
-            Criamos presença digital estratégica para marcas que querem se destacar.
+            Criamos experiências digitais estratégicas para marcas que querem crescer, se diferenciar e ser lembradas.
           </p>
 
           <div className="lhx-actions">
