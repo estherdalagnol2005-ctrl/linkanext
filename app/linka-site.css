@@ -4947,6 +4947,38 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   overflow:clip!important;
 }
 
+.lhx-color-field::before{
+  content:"";
+  position:absolute;
+  right:2%;
+  top:12%;
+  width:min(680px,48vw);
+  height:min(420px,48svh);
+  border-radius:28px;
+  background:
+    linear-gradient(135deg,rgba(52,120,255,.28),rgba(132,88,255,.2) 46%,rgba(7,26,58,.02) 78%),
+    linear-gradient(90deg,transparent 0 12%,rgba(183,255,50,.12) 12% 14%,transparent 14% 100%);
+  transform:rotate(-8deg) skewX(-4deg);
+  opacity:.9;
+  pointer-events:none;
+}
+
+.lhx-color-field::after{
+  content:"";
+  position:absolute;
+  right:30%;
+  top:58%;
+  width:min(520px,38vw);
+  height:74px;
+  border:1px solid rgba(183,255,50,.22);
+  border-radius:18px 999px 999px 18px;
+  background:
+    linear-gradient(90deg,rgba(183,255,50,.2),rgba(85,199,255,.14),transparent);
+  transform:rotate(10deg);
+  opacity:.72;
+  pointer-events:none;
+}
+
 .lhx-shape{
   opacity:.78!important;
 }
@@ -4962,13 +4994,13 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .lhx-shape-ribbon{
-  right:11%!important;
-  top:23%!important;
-  width:min(430px,34vw)!important;
-  height:72px!important;
+  right:7%!important;
+  top:27%!important;
+  width:min(520px,38vw)!important;
+  height:86px!important;
   border-radius:999px 18px 999px 18px!important;
-  background:linear-gradient(90deg,rgba(52,120,255,.2),rgba(132,88,255,.14),transparent)!important;
-  border:1px solid rgba(85,199,255,.12)!important;
+  background:linear-gradient(90deg,rgba(52,120,255,.32),rgba(132,88,255,.2),rgba(85,199,255,.06))!important;
+  border:1px solid rgba(85,199,255,.18)!important;
   transform:rotate(-11deg)!important;
 }
 
@@ -5026,8 +5058,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 .lhx-title{
   width:min(900px,100%)!important;
   margin:14px 0 0!important;
-  font-size:clamp(3.3rem,5.4vw,5.8rem)!important;
-  line-height:.96!important;
+  font-size:clamp(3.1rem,4.8vw,5.125rem)!important;
+  line-height:.94!important;
   letter-spacing:0!important;
 }
 
@@ -5190,8 +5222,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .lhx-service-title{
   color:var(--lhx-service-color,var(--lhx-active-color))!important;
-  font-size:clamp(4.3rem,7.6vw,7.7rem)!important;
-  line-height:.88!important;
+  font-size:clamp(3.6rem,6.3vw,6.25rem)!important;
+  line-height:.9!important;
   text-shadow:0 0 28px color-mix(in srgb, var(--lhx-service-color,var(--lhx-active-color)) 22%, transparent)!important;
 }
 
@@ -5218,7 +5250,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 .lhx-service-card-landings .lhx-service-title,
 .lhx-service-card-experiences .lhx-service-title{
   color:var(--lhx-service-color)!important;
-  font-size:clamp(3.8rem,6.7vw,6.5rem)!important;
+  font-size:clamp(3.2rem,5.4vw,5.5rem)!important;
 }
 
 @media(max-width:1220px){
@@ -5232,12 +5264,12 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .lhx-service-title{
-    font-size:clamp(4rem,7.1vw,6.5rem)!important;
+    font-size:clamp(3.45rem,5.9vw,5.9rem)!important;
   }
 
   .lhx-service-card-landings .lhx-service-title,
   .lhx-service-card-experiences .lhx-service-title{
-    font-size:clamp(3.5rem,6.2vw,5.8rem)!important;
+    font-size:clamp(3.1rem,5.2vw,5.2rem)!important;
   }
 }
 
@@ -5333,8 +5365,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
   .lhx-title{
     margin-top:10px!important;
-    font-size:clamp(2.35rem,10.5vw,3.45rem)!important;
-    line-height:.98!important;
+    font-size:clamp(2.125rem,9.4vw,3rem)!important;
+    line-height:.96!important;
     letter-spacing:0!important;
   }
 
@@ -5409,14 +5441,14 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .lhx-service-title{
-    font-size:clamp(2.5rem,11.5vw,4rem)!important;
-    line-height:.92!important;
+    font-size:clamp(2.125rem,10vw,3.5rem)!important;
+    line-height:.94!important;
   }
 
   .lhx-service-card-landings .lhx-service-title,
   .lhx-service-card-experiences .lhx-service-title{
-    font-size:clamp(2.25rem,10.2vw,3.35rem)!important;
-    line-height:.94!important;
+    font-size:clamp(2.125rem,9vw,3rem)!important;
+    line-height:.96!important;
   }
 
   .lhx-shape-arc{
@@ -5427,10 +5459,10 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .lhx-shape-ribbon{
-    right:-22%!important;
-    top:48%!important;
-    width:86%!important;
-    height:48px!important;
+    right:-26%!important;
+    top:47%!important;
+    width:96%!important;
+    height:54px!important;
   }
 
   .lhx-shape-node{
@@ -5466,7 +5498,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .lhx-title{
-    font-size:clamp(2.3rem,10.2vw,3.1rem)!important;
+    font-size:clamp(2.125rem,9.2vw,2.85rem)!important;
   }
 
   .lhx-showcase{
@@ -5480,12 +5512,12 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .lhx-service-title{
-    font-size:clamp(2.5rem,11vw,3.55rem)!important;
+    font-size:clamp(2.125rem,9.8vw,3.35rem)!important;
   }
 
   .lhx-service-card-landings .lhx-service-title,
   .lhx-service-card-experiences .lhx-service-title{
-    font-size:clamp(2.15rem,9.8vw,3.1rem)!important;
+    font-size:clamp(2.125rem,8.8vw,2.9rem)!important;
   }
 }
 
