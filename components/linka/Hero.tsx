@@ -7,6 +7,8 @@ export default function Hero() {
       <div className="lhx-scene">
         <div className="lhx-color-field" aria-hidden="true">
           <span className="lhx-shape lhx-shape-arc" />
+          <span className="lhx-shape lhx-shape-ribbon" />
+          <span className="lhx-shape lhx-shape-node" />
           <span className="lhx-shape lhx-shape-green" />
         </div>
 
@@ -15,7 +17,7 @@ export default function Hero() {
 
           <h1 className="lhx-title">
             <span className="lhx-title-mask">
-              <span className="lhx-title-line lhx-title-line-a">Sites que marcam.</span>
+              <span className="lhx-title-line lhx-title-line-a">Sites que se destacam.</span>
             </span>
             <span className="lhx-title-mask">
               <span className="lhx-title-line lhx-title-line-b">Landing pages que convertem.</span>
@@ -29,8 +31,7 @@ export default function Hero() {
           </h1>
 
           <p className="lhx-body">
-            Criamos presença digital estratégica para transformar marcas em experiências que as
-            pessoas lembram.
+            Criamos presença digital estratégica para transformar marcas em experiências memoráveis.
           </p>
 
           <div className="lhx-actions">
@@ -49,29 +50,37 @@ export default function Hero() {
 
         <div className="lhx-showcase" aria-label="Serviços digitais da Linka">
           <div className="lhx-intro-card">
+            <span className="lhx-card-orbit" aria-hidden="true" />
+            <span className="lhx-card-progress" aria-hidden="true" />
             <p className="lhx-card-title">
               <span className="lhx-card-title-mask">
                 <span className="lhx-card-title-text">O que a Linka faz</span>
               </span>
               <span className="lhx-card-cursor" aria-hidden="true" />
             </p>
-            <span className="lhx-card-hint">Role para descobrir</span>
+            <span className="lhx-card-hint">ROLE PARA DESCOBRIR</span>
           </div>
 
           <div className="lhx-type-tunnel">
+            <span className="lhx-service-progress" aria-hidden="true" />
+
             <article className="lhx-service-card lhx-service-card-sites">
+              <span className="lhx-service-step" aria-hidden="true">01</span>
               <h2 className="lhx-service-title lhx-service-title-sites">SITES</h2>
             </article>
 
             <article className="lhx-service-card lhx-service-card-landings">
+              <span className="lhx-service-step" aria-hidden="true">02</span>
               <h2 className="lhx-service-title lhx-service-title-landings">LANDING PAGES</h2>
             </article>
 
             <article className="lhx-service-card lhx-service-card-experiences">
+              <span className="lhx-service-step" aria-hidden="true">03</span>
               <h2 className="lhx-service-title lhx-service-title-experiences">EXPERIÊNCIAS DIGITAIS</h2>
             </article>
 
             <article className="lhx-service-card lhx-service-card-bio">
+              <span className="lhx-service-step" aria-hidden="true">04</span>
               <h2 className="lhx-service-title lhx-service-title-bio">LINK NA BIO</h2>
             </article>
           </div>

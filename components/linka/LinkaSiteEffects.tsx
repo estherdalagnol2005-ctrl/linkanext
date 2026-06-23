@@ -11,17 +11,17 @@ const COPY = {
     title: "Linka Studio | Experiências Digitais",
     description: "A Linka cria sites, landing pages e experiências digitais com presença, clareza e valor.",
     heroKicker: "DESIGN · ESTRATÉGIA · TECNOLOGIA",
-    heroTitleLine1: "Sites que marcam.",
+    heroTitleLine1: "Sites que se destacam.",
     heroTitleLine2: "Landing pages que convertem.",
     heroTitleLine3: "Experiências digitais que",
     heroTitleEm: "conectam.",
     heroBody:
-      "Criamos presença digital estratégica para transformar marcas em experiências que as pessoas lembram.",
+      "Criamos presença digital estratégica para transformar marcas em experiências memoráveis.",
     heroCta: "Explorar projetos",
     heroContactCta: "Iniciar um projeto",
     heroServicesAria: "Serviços digitais da Linka",
     heroIntroTitle: "O que a Linka faz",
-    heroIntroHint: "Role para descobrir",
+    heroIntroHint: "ROLE PARA DESCOBRIR",
     heroService1Title: "SITES",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "EXPERIÊNCIAS DIGITAIS",
@@ -104,7 +104,7 @@ const COPY = {
     heroContactCta: "Start a project",
     heroServicesAria: "Linka digital services",
     heroIntroTitle: "What Linka does",
-    heroIntroHint: "Scroll to discover",
+    heroIntroHint: "SCROLL TO DISCOVER",
     heroService1Title: "WEBSITES",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "DIGITAL EXPERIENCES",
@@ -183,7 +183,7 @@ const COPY = {
     heroContactCta: "Iniciar un proyecto",
     heroServicesAria: "Servicios digitales de Linka",
     heroIntroTitle: "Lo que hace Linka",
-    heroIntroHint: "Desliza para descubrir",
+    heroIntroHint: "DESLIZA PARA DESCUBRIR",
     heroService1Title: "SITIOS",
     heroService2Title: "LANDING PAGES",
     heroService3Title: "EXPERIENCIAS DIGITALES",
@@ -669,10 +669,21 @@ function initParticles(addCleanup: (cleanup: () => void) => void) {
   });
 }
 
-function initHeader() {
+function initHeader(addCleanup: (cleanup: () => void) => void) {
   const header = document.querySelector<HTMLElement>("[data-linka-header-v11]");
   if (!header) return;
-  header.classList.remove("is-scrolled");
+
+  const updateHeaderState = () => {
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  };
+
+  updateHeaderState();
+  window.addEventListener("scroll", updateHeaderState, { passive: true });
+
+  addCleanup(() => {
+    window.removeEventListener("scroll", updateHeaderState);
+    header.classList.remove("is-scrolled");
+  });
 }
 
 function initHero(addCleanup: (cleanup: () => void) => void) {
@@ -693,14 +704,23 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
     const cardTitleText = hero.querySelector<HTMLElement>(".lhx-card-title-text");
     const cardCursor = hero.querySelector<HTMLElement>(".lhx-card-cursor");
     const cardHint = hero.querySelector<HTMLElement>(".lhx-card-hint");
+    const cardProgress = hero.querySelector<HTMLElement>(".lhx-card-progress");
     const serviceCards = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-service-card"));
     const serviceTitles = serviceCards
       .map((card) => card.querySelector<HTMLElement>(".lhx-service-title"))
       .filter(Boolean) as HTMLElement[];
+    const serviceSteps = serviceCards
+      .map((card) => card.querySelector<HTMLElement>(".lhx-service-step"))
+      .filter(Boolean) as HTMLElement[];
+    const serviceProgress = hero.querySelector<HTMLElement>(".lhx-service-progress");
     const arcShape = hero.querySelector<HTMLElement>(".lhx-shape-arc");
+    const ribbonShape = hero.querySelector<HTMLElement>(".lhx-shape-ribbon");
+    const nodeShape = hero.querySelector<HTMLElement>(".lhx-shape-node");
     const greenShape = hero.querySelector<HTMLElement>(".lhx-shape-green");
-    const shapes = [arcShape, greenShape].filter(Boolean) as HTMLElement[];
+    const shapes = [arcShape, ribbonShape, nodeShape, greenShape].filter(Boolean) as HTMLElement[];
     const arcTargets = arcShape ? [arcShape] : [];
+    const ribbonTargets = ribbonShape ? [ribbonShape] : [];
+    const nodeTargets = nodeShape ? [nodeShape] : [];
     const greenTargets = greenShape ? [greenShape] : [];
 
     if (
@@ -718,8 +738,11 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       !cardTitleText ||
       !cardCursor ||
       !cardHint ||
+      !cardProgress ||
+      !serviceProgress ||
       serviceCards.length !== 4 ||
-      serviceTitles.length !== 4
+      serviceTitles.length !== 4 ||
+      serviceSteps.length !== 4
     ) {
       return;
     }
@@ -728,7 +751,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
 
     const mm = gsap.matchMedia();
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealItems = [kicker, body, actions, showcase, tunnel, introCard, cardTitle, cardTitleText, cardCursor, cardHint, ...shapes].filter(Boolean) as HTMLElement[];
+    const revealItems = [kicker, body, actions, showcase, tunnel, introCard, cardTitle, cardTitleText, cardCursor, cardHint, cardProgress, serviceProgress, ...shapes].filter(Boolean) as HTMLElement[];
 
     function setServicesStart(isMobile: boolean) {
       gsap.set(tunnel, {
@@ -750,17 +773,31 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       });
 
       gsap.set(serviceTitles, { autoAlpha: 1, y: 0 });
+      gsap.set(serviceSteps, { autoAlpha: 1, y: 0 });
+      gsap.set(serviceProgress, {
+        autoAlpha: 0,
+        scaleX: 0,
+        transformOrigin: "0% 50%",
+      });
     }
 
     function showStatic() {
-      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...serviceCards, ...serviceTitles], {
+      gsap.set([scene, copy, title, ...titleLines, ...revealItems, ...serviceCards, ...serviceTitles, ...serviceSteps], {
         autoAlpha: 1,
         clearProps: "transform,opacity,visibility",
       });
+      hero.style.setProperty("--lhx-active-color", "#3478FF");
+      hero.style.setProperty("--lhx-active-soft", "#55C7FF");
       hero.classList.add("lhx-ready");
     }
 
     function addServiceSequence(timeline: gsap.core.Timeline, isMobile: boolean, offset: number) {
+      const servicePalette = [
+        { color: "#3478FF", soft: "#55C7FF" },
+        { color: "#B7FF32", soft: "#3478FF" },
+        { color: "#8458FF", soft: "#55C7FF" },
+        { color: "#55C7FF", soft: "#B7FF32" },
+      ];
       const segment = isMobile ? 1.04 : 1.08;
       const entryDuration = isMobile ? 0.3 : 0.32;
       const readDuration = segment * 0.35;
@@ -776,8 +813,19 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         const start = offset + index * segment;
         const readStart = start + entryDuration;
         const exitStart = readStart + readDuration;
+        const palette = servicePalette[index];
 
         timeline
+          .set(hero, {
+            "--lhx-active-color": palette.color,
+            "--lhx-active-soft": palette.soft,
+          }, start - 0.06)
+          .to(serviceProgress, {
+            autoAlpha: 1,
+            scaleX: (index + 1) / serviceCards.length,
+            duration: entryDuration + readDuration,
+            ease: "power1.out",
+          }, start)
           .set(card, {
             z: startZ,
             y: startY,
@@ -833,6 +881,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 108 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 8 });
+        gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.98 });
         setServicesStart(true);
 
@@ -845,7 +894,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46 }, 0.7)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.42, ease: "expo.out" }, 0.82)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.24, ease: "power2.out" }, 0.92)
-          .to(cardHint, { autoAlpha: 0.74, y: 0, duration: 0.32 }, 1.02);
+          .to(cardHint, { autoAlpha: 0.74, y: 0, duration: 0.32 }, 1.02)
+          .to(cardProgress, { autoAlpha: 1, scaleX: 1, duration: 0.36, ease: "power2.out" }, 1.02);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -864,6 +914,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(introCard, { y: -48, scale: 0.9, autoAlpha: 0, duration: 0.34, ease: "power1.inOut" }, 0.14)
           .to(showcase, { y: -18, scale: 1.02, duration: 4.7 }, 0)
           .to(arcTargets, { scale: 1.18, x: 16, y: -16, rotation: 10, duration: 4.7 }, 0)
+          .to(ribbonTargets, { scale: 1.08, x: -26, y: -20, rotation: -7, duration: 4.7 }, 0.04)
+          .to(nodeTargets, { scale: 1.12, x: 36, y: 52, duration: 4.7 }, 0.12)
           .to(greenTargets, { scale: 1.22, x: 88, y: 94, duration: 4.7 }, 0.34);
 
         addServiceSequence(scrollTl, true, 0.68);
@@ -883,6 +935,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 112 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
         gsap.set(cardHint, { autoAlpha: 0, y: 9 });
+        gsap.set(cardProgress, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
         gsap.set(shapes, { autoAlpha: 1, scale: 0.96 });
         setServicesStart(false);
 
@@ -895,7 +948,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(introCard, { autoAlpha: 1, y: 0, scale: 1, duration: 0.52 }, 0.74)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.46, ease: "expo.out" }, 0.88)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.26, ease: "power2.out" }, 1)
-          .to(cardHint, { autoAlpha: 0.72, y: 0, duration: 0.34 }, 1.1);
+          .to(cardHint, { autoAlpha: 0.72, y: 0, duration: 0.34 }, 1.1)
+          .to(cardProgress, { autoAlpha: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, 1.08);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -913,6 +967,8 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(introCard, { y: -74, scale: 0.9, autoAlpha: 0, duration: 0.36, ease: "power1.inOut" }, 0.16)
           .to(showcase, { y: -36, scale: 1.04, duration: 4.9 }, 0)
           .to(arcTargets, { scale: 1.22, x: 42, y: -28, rotation: 9, duration: 4.9 }, 0)
+          .to(ribbonTargets, { scale: 1.12, x: -64, y: -28, rotation: -8, duration: 4.9 }, 0.04)
+          .to(nodeTargets, { scale: 1.16, x: 72, y: 48, duration: 4.9 }, 0.12)
           .to(greenTargets, { scale: 1.24, x: 124, y: 72, duration: 4.9 }, 0.34);
 
         addServiceSequence(scrollTl, false, 0.74);
@@ -1583,7 +1639,7 @@ export default function LinkaSiteEffects() {
     };
 
     initParticles(addCleanup);
-    initHeader();
+    initHeader(addCleanup);
     initHero(addCleanup);
     initPortfolioIntro(addCleanup);
     initExperience(addCleanup, schedule);

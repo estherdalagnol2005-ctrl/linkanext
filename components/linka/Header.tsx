@@ -5,15 +5,15 @@ export default function Header() {
   return (
     <header className="linka-header-v11" data-linka-header-v11="">
       <div className="lh11-shell">
+        <span className="lh11-shell-line" aria-hidden="true" />
         <a aria-label="Back to the top" className="lh11-brand" href="#home">
           <span className="lh11-logo-aura" />
           <span className="lh11-logo-orbit" />
           <span className="lh11-logo-dot" />
-          <span className="lh11-logo-star star-a">✦</span>
-          <span className="lh11-logo-star star-b">✧</span>
           <img alt="Linka" src={LINKA_LOGO_URL} />
         </a>
 
+        <span className="lh11-status-dot" aria-hidden="true" />
         <LanguageSwitch />
       </div>
     </header>
