@@ -155,6 +155,13 @@
 
     <div class="linka-choice-prompt" aria-hidden="true">
       <div class="linka-choice-content">
+        <span class="linka-choice-orbit" aria-hidden="true">
+          <svg viewBox="0 0 560 250" focusable="false">
+            <ellipse class="linka-choice-orbit-main" cx="280" cy="125" rx="250" ry="91" pathLength="1"></ellipse>
+            <ellipse class="linka-choice-orbit-arc" cx="280" cy="125" rx="224" ry="108" pathLength="1"></ellipse>
+            <circle class="linka-choice-orbit-dot" cx="503" cy="91" r="4"></circle>
+          </svg>
+        </span>
         <span class="linka-choice-rule" aria-hidden="true"><i></i></span>
         <span class="escolha-projeto">ESCOLHA O PROJETO</span>
         <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
@@ -1182,13 +1189,72 @@
     z-index: 2;
     display: grid;
     justify-items: center;
-    width: clamp(320px, 29vw, 390px);
-    gap: 9px;
-    padding: 10px 18px;
+    width: clamp(500px, 42vw, 620px);
+    gap: 11px;
+    padding: 16px 24px;
     transform:
       translateY(calc(clamp(8px, 1.5vh, 18px) + var(--linka-choice-entry-y)))
       scale(var(--linka-choice-entry-scale));
     transform-origin: 50% 50%;
+  }
+
+  .linka-choice-orbit {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: min(560px, 100%);
+    aspect-ratio: 560 / 250;
+    pointer-events: none;
+    transform: translate(-50%, -49%) rotate(-5deg);
+  }
+
+  .linka-choice-orbit svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+  }
+
+  .linka-choice-orbit-main,
+  .linka-choice-orbit-arc {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .linka-choice-orbit-main {
+    stroke: rgba(111, 190, 255, 0.36);
+    stroke-width: 1.15;
+    filter: drop-shadow(0 0 5px rgba(72, 164, 255, 0.2));
+  }
+
+  .linka-choice-orbit-arc {
+    stroke: rgba(143, 210, 255, 0.2);
+    stroke-width: 0.8;
+    stroke-dasharray: 0.42 0.58;
+  }
+
+  .linka-choice-orbit-dot {
+    fill: #9bdd55;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(155, 221, 85, 0.55));
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-main {
+    animation: linka-choice-orbit-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+  }
+
+  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-arc {
+    animation: linka-choice-orbit-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  }
+
+  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-dot {
+    animation: linka-choice-orbit-dot-in 0.45s ease-out 0.62s forwards;
   }
 
   .linka-choice-rule {
@@ -1244,9 +1310,9 @@
     width: 100%;
     color: #f6f5f1;
     font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
-    font-size: clamp(32px, 2.75vw, 40px);
+    font-size: clamp(56px, 5vw, 72px);
     font-weight: 680;
-    line-height: 0.98;
+    line-height: 0.94;
     letter-spacing: -0.025em;
     text-wrap: balance;
   }
@@ -1263,10 +1329,19 @@
 
   .linka-choice-underline {
     display: block;
-    width: 108px;
+    width: 132px;
     height: 1px;
-    margin-top: 5px;
+    margin-top: 8px;
     background: linear-gradient(90deg, transparent, rgba(111, 190, 255, 0.88), transparent);
+  }
+
+  @keyframes linka-choice-orbit-draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes linka-choice-orbit-dot-in {
+    from { opacity: 0; transform: scale(0.55); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt {
@@ -1625,9 +1700,9 @@
     }
 
     .linka-choice-content {
-      width: min(218px, 60vw);
-      gap: 6px;
-      padding: 8px 10px;
+      width: min(300px, 82vw);
+      gap: 8px;
+      padding: 12px 14px;
       transform:
         translateY(calc(clamp(16px, 3vh, 28px) + var(--linka-choice-entry-y)))
         scale(var(--linka-choice-entry-scale));
@@ -1644,17 +1719,23 @@
       width: 100%;
       max-width: none;
       margin-inline: auto;
-      font-size: clamp(21px, 5.8vw, 25px);
-      line-height: 0.98;
+      font-size: clamp(34px, 10vw, 44px);
+      line-height: 0.94;
       letter-spacing: -0.02em;
     }
 
+    .linka-choice-orbit {
+      width: min(310px, 88vw);
+      transform: translate(-50%, -50%) rotate(-7deg);
+    }
+
     .linka-choice-rule {
-      width: 68px;
+      width: 76px;
     }
 
     .linka-choice-underline {
-      width: 82px;
+      width: 104px;
+      margin-top: 5px;
     }
 
     .linka-phone-screen .linka-device-return {
@@ -1728,8 +1809,20 @@
     .linka-card::before,
     .linka-orbit,
     .linka-tech-orbit,
-    .linka-tech-node {
+    .linka-tech-node,
+    .linka-choice-orbit-main,
+    .linka-choice-orbit-arc,
+    .linka-choice-orbit-dot {
       animation: none;
+    }
+
+    .linka-choice-orbit-main,
+    .linka-choice-orbit-arc {
+      stroke-dashoffset: 0;
+    }
+
+    .linka-choice-orbit-dot {
+      opacity: 1;
     }
   }
 </style>
