@@ -4765,7 +4765,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-header-v11{
   top:auto!important;
-  padding:max(14px, env(safe-area-inset-top)) clamp(12px,3vw,24px) 0!important;
+  padding:max(16px, env(safe-area-inset-top)) clamp(18px,3vw,28px) 0!important;
   position:relative!important;
   animation:none!important;
   transform:none!important;
@@ -4773,28 +4773,24 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-header-v11 .lh11-shell,
 .linka-header-v11.is-scrolled .lh11-shell{
-  width:min(860px,100%)!important;
-  min-height:64px!important;
-  padding:0 12px 0 18px!important;
-  gap:12px!important;
-  border-radius:18px!important;
+  width:min(900px,100%)!important;
+  min-height:68px!important;
+  padding:0 14px 0 22px!important;
+  gap:14px!important;
+  border-radius:22px!important;
   overflow:visible!important;
-  background:rgba(4,10,24,.82)!important;
-  border:1px solid rgba(85,199,255,.28)!important;
+  background:linear-gradient(120deg,rgba(15,17,42,.96),rgba(31,20,61,.94))!important;
+  border:1px solid rgba(85,199,255,.35)!important;
   box-shadow:
-    0 16px 44px rgba(0,0,0,.38),
-    inset 0 1px 0 rgba(255,255,255,.06)!important;
-  backdrop-filter:blur(12px)!important;
-  -webkit-backdrop-filter:blur(12px)!important;
-  transition:min-height .22s ease, width .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease!important;
+    0 14px 36px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+  transition:border-color .22s ease, box-shadow .22s ease!important;
 }
 
 .linka-header-v11 .lh11-shell::before{
-  inset:0!important;
-  border-radius:inherit!important;
-  background:
-    linear-gradient(90deg,rgba(52,120,255,.1),transparent 30%,transparent 70%,rgba(183,255,50,.07)),
-    rgba(7,26,58,.22)!important;
+  display:none!important;
 }
 
 .linka-header-v11 .lh11-shell::after{
@@ -4802,66 +4798,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .linka-header-v11.is-scrolled .lh11-shell{
-  width:min(780px,100%)!important;
-  min-height:58px!important;
-  background:rgba(4,10,24,.94)!important;
-  border-color:rgba(85,199,255,.36)!important;
-  box-shadow:
-    0 12px 34px rgba(0,0,0,.42),
-    inset 0 1px 0 rgba(255,255,255,.05)!important;
-}
-
-.lh11-shell-line{
-  position:absolute!important;
-  left:18px!important;
-  right:92px!important;
-  bottom:-1px!important;
-  height:1px!important;
-  border-radius:999px!important;
-  background:linear-gradient(90deg,rgba(52,120,255,.78),rgba(183,255,50,.72),transparent)!important;
-  pointer-events:none!important;
-}
-
-.lh11-build-modules{
-  position:absolute!important;
-  inset:0!important;
-  z-index:1!important;
-  overflow:hidden!important;
-  border-radius:inherit!important;
-  pointer-events:none!important;
-}
-
-.lh11-build-module{
-  position:absolute!important;
-  display:block!important;
-  background:linear-gradient(180deg,rgba(85,199,255,.72),rgba(52,120,255,.3))!important;
-  border:1px solid rgba(85,199,255,.38)!important;
-  box-shadow:0 0 12px rgba(85,199,255,.12)!important;
-}
-
-.lh11-build-module-a{
-  left:10px!important;
-  top:7px!important;
-  width:18px!important;
-  height:4px!important;
-  border-radius:4px 4px 1px 1px!important;
-}
-
-.lh11-build-module-b{
-  right:90px!important;
-  top:7px!important;
-  width:7px!important;
-  height:14px!important;
-  border-radius:4px 4px 2px 2px!important;
-}
-
-.lh11-build-module-c{
-  right:12px!important;
-  bottom:7px!important;
-  width:22px!important;
-  height:4px!important;
-  border-radius:1px 1px 4px 4px!important;
-  background:linear-gradient(90deg,rgba(52,120,255,.44),rgba(183,255,50,.72))!important;
+  width:min(900px,100%)!important;
+  min-height:68px!important;
 }
 
 .linka-header-v11 .lh11-nav,
@@ -4871,38 +4809,18 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .linka-header-v11 .lh11-brand{
-  width:132px!important;
-  height:52px!important;
+  width:128px!important;
+  height:50px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
 }
 
 .linka-header-v11 .lh11-brand img{
-  width:106px!important;
-  max-height:36px!important;
-  filter:
-    drop-shadow(0 10px 20px rgba(0,0,0,.34))
-    drop-shadow(0 0 10px rgba(85,199,255,.18))!important;
-}
-
-.linka-header-v11 .lh11-logo-aura{
-  width:112px!important;
-  height:34px!important;
-  filter:none!important;
-  background:linear-gradient(90deg,rgba(52,120,255,.14),rgba(183,255,50,.08))!important;
-}
-
-.linka-header-v11 .lh11-logo-orbit{
-  width:114px!important;
-  height:36px!important;
-  border-color:rgba(85,199,255,.32)!important;
-  animation:none!important;
-}
-
-.linka-header-v11 .lh11-logo-dot{
-  width:5px!important;
-  height:5px!important;
-  background:#B7FF32!important;
-  box-shadow:0 0 14px rgba(183,255,50,.5)!important;
-  animation:none!important;
+  width:104px!important;
+  max-height:35px!important;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,.3))!important;
 }
 
 .linka-header-v11 .lh11-logo-star{
@@ -4910,13 +4828,37 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .lh11-status-dot{
-  width:7px!important;
-  height:7px!important;
+  position:relative!important;
+  width:38px!important;
+  height:8px!important;
   margin-left:auto!important;
-  border-radius:999px!important;
   flex:0 0 auto!important;
-  background:#B7FF32!important;
-  box-shadow:0 0 16px rgba(183,255,50,.42)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.lh11-status-dot::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:23px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(132,88,255,.72));
+  transform:translateY(-50%);
+}
+
+.lh11-status-dot::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:50%;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#B7FF32;
+  box-shadow:0 0 12px rgba(183,255,50,.44);
+  transform:translateY(-50%);
 }
 
 .linka-header-v11 .linka-language-switch{
@@ -4926,7 +4868,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   z-index:20!important;
   width:auto!important;
   min-width:72px!important;
-  height:36px!important;
+  height:38px!important;
   margin-left:0!important;
   padding:0!important;
   font-size:9px!important;
@@ -4934,13 +4876,13 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-header-v11 .linka-language-switch .lls-trigger{
   min-width:72px!important;
-  height:36px!important;
-  padding:0 10px!important;
+  height:38px!important;
+  padding:0 11px!important;
   gap:6px!important;
-  border-radius:12px!important;
-  border-color:rgba(85,199,255,.24)!important;
-  background:rgba(7,26,58,.58)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+  border-radius:11px!important;
+  border-color:rgba(85,199,255,.28)!important;
+  background:rgba(3,7,18,.72)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
@@ -4952,7 +4894,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .linka-header-v11 .linka-language-switch .lls-globe{
-  font-size:13px!important;
+  font-size:12px!important;
   filter:none!important;
 }
 
@@ -4960,11 +4902,22 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   top:calc(100% + 8px)!important;
   right:0!important;
   z-index:100000!important;
-  border-radius:12px!important;
-  border-color:rgba(85,199,255,.24)!important;
-  background:rgba(4,10,24,.96)!important;
+  border-radius:13px!important;
+  border-color:rgba(85,199,255,.3)!important;
+  background:linear-gradient(145deg,rgba(11,16,36,.99),rgba(33,20,61,.98))!important;
+  box-shadow:0 18px 40px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.045)!important;
   backdrop-filter:blur(10px)!important;
   -webkit-backdrop-filter:blur(10px)!important;
+}
+
+.linka-header-v11 .linka-language-switch .lls-lang{
+  border-radius:9px!important;
+}
+
+.linka-header-v11 .linka-language-switch .lls-lang.is-active{
+  color:#F5F3EE!important;
+  background:rgba(183,255,50,.1)!important;
+  box-shadow:inset 3px 0 0 #B7FF32!important;
 }
 
 .linka-header-v11.has-language-menu-open,
@@ -5003,70 +4956,49 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   .linka-header-v11{
     position:relative!important;
     top:auto!important;
-    padding:max(10px, env(safe-area-inset-top)) 10px 0!important;
+    padding:max(12px, env(safe-area-inset-top)) 18px 0!important;
   }
 
   .linka-header-v11 .lh11-shell,
   .linka-header-v11.is-scrolled .lh11-shell{
-    width:min(430px,100%)!important;
-    min-height:58px!important;
-    padding:0 9px 0 12px!important;
-    gap:8px!important;
-    border-radius:16px!important;
+    width:100%!important;
+    min-height:72px!important;
+    padding:0 14px 0 18px!important;
+    gap:10px!important;
+    border-radius:20px!important;
     overflow:visible!important;
-    background:rgba(4,10,24,.9)!important;
+    background:linear-gradient(120deg,rgba(15,17,42,.97),rgba(31,20,61,.95))!important;
     backdrop-filter:none!important;
     -webkit-backdrop-filter:none!important;
   }
 
   .linka-header-v11.is-scrolled .lh11-shell{
-    width:min(410px,100%)!important;
-    min-height:54px!important;
-  }
-
-  .lh11-shell-line{
-    left:12px!important;
-    right:82px!important;
-  }
-
-  .lh11-build-module-a{
-    left:7px!important;
-    top:5px!important;
-  }
-
-  .lh11-build-module-b{
-    right:78px!important;
-    top:5px!important;
-  }
-
-  .lh11-build-module-c{
-    right:8px!important;
-    bottom:5px!important;
+    width:100%!important;
+    min-height:72px!important;
   }
 
   .linka-header-v11 .lh11-brand{
-    width:108px!important;
-    height:48px!important;
+    width:104px!important;
+    height:50px!important;
   }
 
   .linka-header-v11 .lh11-brand img{
-    width:90px!important;
-    max-height:32px!important;
-  }
-
-  .linka-header-v11 .lh11-logo-aura{
-    width:96px!important;
-    height:30px!important;
-  }
-
-  .linka-header-v11 .lh11-logo-orbit{
-    width:98px!important;
-    height:31px!important;
+    width:88px!important;
+    max-height:31px!important;
   }
 
   .lh11-status-dot{
-    width:6px!important;
-    height:6px!important;
+    width:32px!important;
+    height:8px!important;
+  }
+
+  .lh11-status-dot::before{
+    width:18px;
+  }
+
+  .lh11-status-dot::after{
+    width:6px;
+    height:6px;
   }
 
   .linka-header-v11 .linka-language-switch{
@@ -5074,22 +5006,23 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
     visibility:visible!important;
     transform:none!important;
     min-width:68px!important;
-    height:34px!important;
+    height:38px!important;
     font-size:8px!important;
   }
 
   .linka-header-v11 .linka-language-switch .lls-trigger{
     min-width:68px!important;
-    height:34px!important;
-    padding:0 9px!important;
+    height:38px!important;
+    padding:0 10px!important;
+    border-radius:11px!important;
   }
 
   .linka-header-v11 .linka-language-switch .lls-globe{
-    font-size:12px!important;
+    font-size:11px!important;
   }
 
   .linka-header-v11 .linka-language-switch .lls-menu{
-    background:rgba(4,10,24,.98)!important;
+    background:linear-gradient(145deg,rgba(11,16,36,.99),rgba(33,20,61,.99))!important;
     backdrop-filter:none!important;
     -webkit-backdrop-filter:none!important;
     width:min(158px, calc(100vw - 24px))!important;
@@ -5109,20 +5042,30 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 @media(max-width:380px){
   .linka-header-v11 .lh11-shell,
   .linka-header-v11.is-scrolled .lh11-shell{
-    min-height:56px!important;
+    min-height:70px!important;
+    padding-left:16px!important;
+    padding-right:12px!important;
   }
 
   .linka-header-v11 .lh11-brand{
-    width:98px!important;
+    width:94px!important;
   }
 
   .linka-header-v11 .lh11-brand img{
-    width:82px!important;
+    width:80px!important;
   }
 
   .linka-header-v11 .linka-language-switch,
   .linka-header-v11 .linka-language-switch .lls-trigger{
     min-width:66px!important;
-    height:32px!important;
+    height:36px!important;
+  }
+
+  .lh11-status-dot{
+    width:27px!important;
+  }
+
+  .lh11-status-dot::before{
+    width:14px;
   }
 }

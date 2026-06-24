@@ -712,32 +712,27 @@ function initHeader(addCleanup: (cleanup: () => void) => void) {
 
   header.classList.remove("is-scrolled");
   const shell = header.querySelector<HTMLElement>(".lh11-shell");
-  const modules = Array.from(header.querySelectorAll<HTMLElement>(".lh11-build-module"));
-  const line = header.querySelector<HTMLElement>(".lh11-shell-line");
   const brand = header.querySelector<HTMLElement>(".lh11-brand");
   const status = header.querySelector<HTMLElement>(".lh11-status-dot");
   const language = header.querySelector<HTMLElement>(".linka-language-switch");
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const staticItems = [shell, brand, language].filter(Boolean) as HTMLElement[];
-  const animatedItems = [line, status, ...modules].filter(Boolean) as HTMLElement[];
+  const items = [shell, brand, status, language].filter(Boolean) as HTMLElement[];
   const context = gsap.context(() => {
-    gsap.set(staticItems, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
-
-    if (prefersReduced || !shell || !line || !brand || !status || !language || modules.length !== 3) {
-      gsap.set(animatedItems, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
+    if (prefersReduced || !shell || !brand || !status || !language) {
+      gsap.set(items, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
       header.classList.add("lh11-built");
       return;
     }
 
-    gsap.set(modules, { autoAlpha: 0, y: -10, scaleY: 0.45, transformOrigin: "50% 100%" });
-    gsap.set(line, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
-    gsap.set(status, { autoAlpha: 0, scale: 0.35 });
+    gsap.set(shell, { y: -8 });
+    gsap.set([brand, language], { autoAlpha: 0.68, y: -4 });
+    gsap.set(status, { autoAlpha: 0, scale: 0.5, transformOrigin: "100% 50%" });
 
     gsap.timeline({ defaults: { ease: "power2.out" } })
-      .to(modules, { autoAlpha: 1, y: 0, scaleY: 1, duration: 0.24, stagger: 0.055 }, 0.04)
-      .to(line, { autoAlpha: 1, scaleX: 1, duration: 0.3 }, 0.14)
-      .to(status, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "back.out(1.5)" }, 0.36)
-      .add(() => header.classList.add("lh11-built"), 0.58);
+      .to(shell, { y: 0, duration: 0.34 }, 0)
+      .to([brand, language], { autoAlpha: 1, y: 0, duration: 0.34, stagger: 0.055 }, 0.08)
+      .to(status, { autoAlpha: 1, scale: 1, duration: 0.2 }, 0.36)
+      .add(() => header.classList.add("lh11-built"), 0.6);
   }, header);
 
   addCleanup(() => {
