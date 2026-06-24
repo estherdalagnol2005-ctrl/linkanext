@@ -1728,7 +1728,7 @@ body {
 }
 
 .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-  font-size:clamp(54px, 4.55vw, 68px)!important;
+  font-size:clamp(42px, 3vw, 46px)!important;
   line-height:.96!important;
 }
 
@@ -1792,8 +1792,8 @@ body {
   }
 
   .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-    font-size:clamp(34px, 9vw, 42px)!important;
-    line-height:.96!important;
+    font-size:clamp(28px, 7vw, 30px)!important;
+    line-height:.9!important;
   }
 }
 /* =========================================================
@@ -1904,7 +1904,7 @@ body {
   }
 
   .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-    font-size:clamp(34px, 9vw, 38px)!important;
+    font-size:clamp(28px, 7.5vw, 30px)!important;
   }
 
   .lv10-img{
