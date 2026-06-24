@@ -718,27 +718,26 @@ function initHeader(addCleanup: (cleanup: () => void) => void) {
   const status = header.querySelector<HTMLElement>(".lh11-status-dot");
   const language = header.querySelector<HTMLElement>(".linka-language-switch");
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const items = [shell, line, brand, status, language, ...modules].filter(Boolean) as HTMLElement[];
+  const staticItems = [shell, brand, language].filter(Boolean) as HTMLElement[];
+  const animatedItems = [line, status, ...modules].filter(Boolean) as HTMLElement[];
   const context = gsap.context(() => {
+    gsap.set(staticItems, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
+
     if (prefersReduced || !shell || !line || !brand || !status || !language || modules.length !== 3) {
-      gsap.set(items, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
+      gsap.set(animatedItems, { autoAlpha: 1, clearProps: "transform,opacity,visibility" });
       header.classList.add("lh11-built");
       return;
     }
 
-    gsap.set(shell, { autoAlpha: 0, y: -8 });
     gsap.set(modules, { autoAlpha: 0, y: -10, scaleY: 0.45, transformOrigin: "50% 100%" });
     gsap.set(line, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
-    gsap.set([brand, language], { autoAlpha: 0, y: -5 });
     gsap.set(status, { autoAlpha: 0, scale: 0.35 });
 
     gsap.timeline({ defaults: { ease: "power2.out" } })
-      .to(shell, { autoAlpha: 1, y: 0, duration: 0.24 }, 0)
-      .to(modules, { autoAlpha: 1, y: 0, scaleY: 1, duration: 0.24, stagger: 0.055 }, 0.12)
-      .to(line, { autoAlpha: 1, scaleX: 1, duration: 0.3 }, 0.2)
-      .to([brand, language], { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.06 }, 0.3)
-      .to(status, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "back.out(1.5)" }, 0.52)
-      .add(() => header.classList.add("lh11-built"), 0.7);
+      .to(modules, { autoAlpha: 1, y: 0, scaleY: 1, duration: 0.24, stagger: 0.055 }, 0.04)
+      .to(line, { autoAlpha: 1, scaleX: 1, duration: 0.3 }, 0.14)
+      .to(status, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "back.out(1.5)" }, 0.36)
+      .add(() => header.classList.add("lh11-built"), 0.58);
   }, header);
 
   addCleanup(() => {
@@ -1854,11 +1853,6 @@ function initLanguage(
     switcher.classList.toggle("is-open", isOpen);
     switcher.closest(".linka-header-v11")?.classList.toggle("has-language-menu-open", isOpen);
     trigger.setAttribute("aria-expanded", String(isOpen));
-    if (isOpen) {
-      window.requestAnimationFrame(() => {
-        switcher.querySelector<HTMLButtonElement>(".lls-lang.is-active")?.focus();
-      });
-    }
   };
   const closeMenu = () => setMenuOpen(false);
   const handleClick = (event: MouseEvent) => {

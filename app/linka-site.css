@@ -4969,7 +4969,9 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-header-v11.has-language-menu-open,
 .linka-header-v11.has-language-menu-open .lh11-shell,
-.linka-header-v11.has-language-menu-open .linka-language-switch{
+.linka-header-v11.has-language-menu-open .lh11-brand,
+.linka-header-v11.has-language-menu-open .linka-language-switch,
+.linka-header-v11.has-language-menu-open .lls-trigger{
   opacity:1!important;
   visibility:visible!important;
   transform:none!important;
@@ -4977,6 +4979,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-header-v11.has-language-menu-open .lh11-shell{
   overflow:visible!important;
+  filter:none!important;
 }
 
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
@@ -5010,9 +5013,10 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
     padding:0 9px 0 12px!important;
     gap:8px!important;
     border-radius:16px!important;
+    overflow:visible!important;
     background:rgba(4,10,24,.9)!important;
-    backdrop-filter:blur(10px)!important;
-    -webkit-backdrop-filter:blur(10px)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
   }
 
   .linka-header-v11.is-scrolled .lh11-shell{
@@ -5066,6 +5070,9 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .linka-header-v11 .linka-language-switch{
+    opacity:1!important;
+    visibility:visible!important;
+    transform:none!important;
     min-width:68px!important;
     height:34px!important;
     font-size:8px!important;
@@ -5082,10 +5089,20 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .linka-header-v11 .linka-language-switch .lls-menu{
+    background:rgba(4,10,24,.98)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
     width:min(158px, calc(100vw - 24px))!important;
     max-height:min(240px, calc(100dvh - 88px))!important;
     overflow-y:auto!important;
     overscroll-behavior:contain!important;
+  }
+
+  .linka-header-v11 .lh11-brand,
+  .linka-header-v11 .lh11-brand img,
+  .linka-header-v11 .lls-trigger{
+    opacity:1!important;
+    visibility:visible!important;
   }
 }
 
