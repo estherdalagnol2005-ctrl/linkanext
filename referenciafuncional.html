@@ -156,9 +156,11 @@
     <div class="linka-choice-prompt" aria-hidden="true">
       <div class="linka-choice-content">
         <span class="linka-choice-rule" aria-hidden="true"><i></i></span>
-        <span class="escolha-projeto">ESCOLHA O PROJETO</span>
-        <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
-        <span class="linka-choice-underline" aria-hidden="true"></span>
+        <div class="linka-choice-copy">
+          <span class="escolha-projeto">ESCOLHA O PROJETO</span>
+          <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
+          <span class="linka-choice-underline" aria-hidden="true"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -1189,14 +1191,27 @@
     gap: 4px;
     padding: 18px clamp(24px, 2.2vw, 32px);
     overflow: hidden;
-    border: 1px solid rgba(85, 199, 255, 0.38);
+    isolation: isolate;
+    border: 1px solid rgba(85, 199, 255, 0.36);
     border-radius: clamp(24px, 3vw, 36px);
     background:
-      radial-gradient(circle at 18% 12%, rgba(85, 199, 255, 0.12), transparent 38%),
-      linear-gradient(135deg, rgba(11, 29, 52, 0.97), rgba(4, 12, 25, 0.98));
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.008) 0,
+        rgba(255, 255, 255, 0.008) 1px,
+        transparent 1px,
+        transparent 5px
+      ),
+      radial-gradient(circle at 28% 18%, rgba(85, 199, 255, 0.13), transparent 38%),
+      linear-gradient(
+        118deg,
+        rgba(14, 39, 69, 0.98) 0%,
+        rgba(7, 25, 47, 0.99) 48%,
+        rgba(4, 14, 29, 0.99) 100%
+      );
     box-shadow:
-      0 24px 54px rgba(0, 0, 0, 0.42),
-      inset 0 1px rgba(209, 237, 255, 0.09),
+      0 16px 50px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
       inset 0 -1px rgba(52, 120, 255, 0.08);
     transform:
       translateY(var(--linka-choice-entry-y))
@@ -1207,6 +1222,23 @@
   .linka-choice-content::before {
     content: "";
     position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background:
+      linear-gradient(
+        115deg,
+        transparent 14%,
+        rgba(255, 255, 255, 0.03) 34%,
+        rgba(85, 199, 255, 0.045) 44%,
+        transparent 62%
+      );
+    pointer-events: none;
+  }
+
+  .linka-choice-content::after {
+    content: "";
+    position: absolute;
     inset: 7px;
     z-index: 0;
     border: 1px solid rgba(143, 210, 255, 0.055);
@@ -1214,23 +1246,26 @@
     pointer-events: none;
   }
 
-  .linka-choice-content::after {
-    content: "";
-    position: absolute;
-    right: clamp(22px, 2.4vw, 34px);
-    top: 16px;
-    z-index: 1;
-    width: 42px;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(85, 199, 255, 0.72), transparent);
-    pointer-events: none;
+  .linka-choice-copy {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    transform: translateY(10px);
   }
 
   .linka-choice-rule {
+    position: absolute;
+    left: 50%;
+    top: 12px;
+    z-index: 3;
     display: flex;
     align-items: center;
-    width: 78px;
-    height: 7px;
+    justify-content: center;
+    width: 112px;
+    height: 10px;
+    transform: translateX(-50%);
   }
 
   .linka-choice-rule::before,
@@ -1238,20 +1273,20 @@
     content: "";
     height: 1px;
     flex: 1;
-    background: rgba(111, 190, 255, 0.54);
+    background: rgba(111, 190, 255, 0.58);
   }
 
   .linka-choice-rule i {
-    width: 6px;
-    height: 6px;
-    margin: 0 8px;
+    width: 9px;
+    height: 9px;
+    margin: 0 10px;
     border: 0;
     border-radius: 50%;
     background: #b7ff32;
-    box-shadow: 0 0 9px rgba(183, 255, 50, 0.42);
+    box-shadow: 0 0 10px rgba(183, 255, 50, 0.36);
   }
 
-  .linka-choice-rule,
+  .linka-choice-copy,
   .linka-choice-prompt .escolha-projeto,
   .linka-choice-prompt .titulo-principal,
   .linka-choice-underline {
@@ -1669,21 +1704,31 @@
       min-height: 84px;
       gap: 2px;
       padding: 5px clamp(16px, 4vw, 20px);
+      overflow: visible;
       border-radius: clamp(20px, 6vw, 26px);
       transform:
         translateY(calc(clamp(12px, 2.5vh, 24px) + var(--linka-choice-entry-y)))
         scale(var(--linka-choice-entry-scale));
     }
 
+    .linka-choice-copy {
+      transform: translateY(6px);
+    }
+
     .linka-choice-content::before {
-      inset: 6px;
-      border-radius: calc(clamp(20px, 6vw, 26px) - 6px);
+      background:
+        linear-gradient(
+          115deg,
+          transparent 16%,
+          rgba(255, 255, 255, 0.024) 34%,
+          rgba(85, 199, 255, 0.038) 44%,
+          transparent 62%
+        );
     }
 
     .linka-choice-content::after {
-      right: 20px;
-      top: 14px;
-      width: 32px;
+      inset: 6px;
+      border-radius: calc(clamp(20px, 6vw, 26px) - 6px);
     }
 
     .linka-choice-prompt .escolha-projeto {
@@ -1713,11 +1758,15 @@
     }
 
     .linka-choice-rule {
-      position: absolute;
-      left: 50%;
-      top: 10px;
-      width: 68px;
-      transform: translateX(-50%);
+      width: 78px;
+      height: 8px;
+      top: -10px;
+    }
+
+    .linka-choice-rule i {
+      width: 8px;
+      height: 8px;
+      margin: 0 9px;
     }
 
     .linka-choice-underline {
