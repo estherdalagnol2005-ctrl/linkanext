@@ -154,9 +154,11 @@
     </div>
 
     <div class="linka-choice-prompt" aria-hidden="true">
-      <div class="linka-choice-content linka-choice-panel">
+      <div class="linka-choice-content">
+        <span class="linka-choice-rule" aria-hidden="true"><i></i></span>
         <span class="escolha-projeto">ESCOLHA O PROJETO</span>
         <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
+        <span class="linka-choice-underline" aria-hidden="true"></span>
       </div>
     </div>
   </div>
@@ -1174,146 +1176,97 @@
   }
 
   .linka-choice-content {
-    --linka-choice-beam-angle: 0deg;
     --linka-choice-entry-y: 0px;
     --linka-choice-entry-scale: 1;
     position: relative;
     z-index: 2;
     display: grid;
     justify-items: center;
-    width: clamp(330px, 30vw, 400px);
-    gap: 8px;
-    padding: 20px 22px 18px;
-    overflow: hidden;
-    border: 2px solid rgba(82, 169, 255, 0.62);
-    border-radius: 28px;
-    background:
-      radial-gradient(circle at 50% -18%, rgba(55, 137, 226, 0.24), transparent 48%),
-      linear-gradient(145deg, rgba(7, 24, 49, 0.97), rgba(1, 7, 17, 0.98) 68%),
-      #020915;
-    box-shadow:
-      0 26px 70px rgba(0, 0, 0, 0.58),
-      0 0 32px rgba(60, 151, 255, 0.28),
-      0 0 68px rgba(36, 116, 214, 0.14),
-      inset 0 1px rgba(205, 233, 255, 0.16),
-      inset 0 -1px rgba(39, 123, 218, 0.16),
-      inset 0 0 42px rgba(43, 132, 230, 0.10);
-    -webkit-backdrop-filter: blur(18px) saturate(126%);
-    backdrop-filter: blur(18px) saturate(126%);
+    width: clamp(320px, 29vw, 390px);
+    gap: 9px;
+    padding: 10px 18px;
     transform:
       translateY(calc(clamp(8px, 1.5vh, 18px) + var(--linka-choice-entry-y)))
       scale(var(--linka-choice-entry-scale));
     transform-origin: 50% 50%;
   }
 
-  .linka-choice-content::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    z-index: 1;
-    padding: 2px;
-    border-radius: inherit;
-    background: conic-gradient(
-      from var(--linka-choice-beam-angle),
-      transparent 0deg 250deg,
-      rgba(69, 160, 255, 0.10) 268deg,
-      rgba(111, 194, 255, 0.72) 290deg,
-      rgba(207, 239, 255, 0.98) 304deg,
-      rgba(91, 183, 255, 0.82) 318deg,
-      rgba(54, 143, 241, 0.14) 340deg,
-      transparent 360deg
-    );
-    filter: drop-shadow(0 0 5px rgba(91, 181, 255, 0.62));
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-    animation: linka-choice-border-beam 5s linear infinite;
+  .linka-choice-rule {
+    display: flex;
+    align-items: center;
+    width: 86px;
+    height: 7px;
   }
 
-  .linka-choice-content::after {
+  .linka-choice-rule::before,
+  .linka-choice-rule::after {
     content: "";
-    position: absolute;
-    inset: 2px;
-    z-index: 0;
-    border-radius: calc(28px - 3px);
-    background:
-      linear-gradient(115deg, rgba(137, 205, 255, 0.10), transparent 28% 72%, rgba(51, 139, 235, 0.08)),
-      radial-gradient(circle at 50% 0%, rgba(111, 190, 255, 0.19), transparent 48%),
-      radial-gradient(circle at 50% 112%, rgba(29, 100, 187, 0.12), transparent 52%);
-    box-shadow:
-      inset 0 1px rgba(225, 242, 255, 0.08),
-      inset 0 0 28px rgba(60, 151, 255, 0.055);
-    pointer-events: none;
+    height: 1px;
+    flex: 1;
+    background: rgba(111, 190, 255, 0.54);
   }
 
+  .linka-choice-rule i {
+    width: 5px;
+    height: 5px;
+    margin: 0 8px;
+    border: 1px solid rgba(155, 215, 255, 0.9);
+    border-radius: 50%;
+    background: rgba(7, 24, 49, 0.82);
+  }
+
+  .linka-choice-rule,
   .linka-choice-prompt .escolha-projeto,
-  .linka-choice-prompt .titulo-principal {
+  .linka-choice-prompt .titulo-principal,
+  .linka-choice-underline {
     position: relative;
     z-index: 2;
   }
 
-  .linka-choice-prompt .escolha-projeto,
   .linka-choice-prompt .titulo-principal {
-    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.90);
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.82);
   }
 
   .linka-choice-prompt .escolha-projeto {
     display: block;
     margin: 0;
     color: #9bd7ff;
-    background:
-      linear-gradient(
-        104deg,
-        #72bbff 0%,
-        #b8e4ff 24%,
-        #73c1ff 43%,
-        #f4fbff 51%,
-        #79c7ff 59%,
-        #a6dcff 100%
-      );
-    background-position: 110% 50%;
-    background-size: 250% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 7px rgba(93, 182, 255, 0.48));
     font-family: "Manrope", "Inter", system-ui, sans-serif;
-    font-size: clamp(23px, 2vw, 30px);
-    font-weight: 700;
+    font-size: clamp(10px, 0.75vw, 12px);
+    font-weight: 750;
     line-height: 1;
-    letter-spacing: 0.065em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .escolha-projeto {
-    animation: linka-choice-title-shine 6.4s ease-in-out infinite;
-  }
-
   .linka-choice-prompt .titulo-principal {
-    margin: 0;
+    margin: 2px 0 0;
     width: 100%;
+    color: #f6f5f1;
     font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
-    font-size: clamp(33px, 2.9vw, 43px);
-    font-weight: 700;
-    line-height: 0.94;
-    letter-spacing: -0.04em;
+    font-size: clamp(32px, 2.75vw, 40px);
+    font-weight: 680;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
   .linka-choice-prompt .titulo-principal em {
-    color: var(--linka-blue-bright);
+    color: #8fd2ff;
     font-style: normal;
   }
 
   .linka-choice-prompt .titulo-principal > span,
   .linka-choice-prompt .titulo-principal > em {
     display: block;
+  }
+
+  .linka-choice-underline {
+    display: block;
+    width: 108px;
+    height: 1px;
+    margin-top: 5px;
+    background: linear-gradient(90deg, transparent, rgba(111, 190, 255, 0.88), transparent);
   }
 
   .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt {
@@ -1672,27 +1625,18 @@
     }
 
     .linka-choice-content {
-      width: min(196px, 52vw);
-      gap: 3px;
-      padding: 7px 8px 7px;
-      border-color: rgba(88, 166, 255, 0.27);
-      border-radius: 20px;
-      box-shadow:
-        0 16px 38px rgba(0, 0, 0, 0.36),
-        0 0 17px rgba(88, 166, 255, 0.09),
-        inset 0 1px rgba(255, 255, 255, 0.06),
-        inset 0 0 22px rgba(63, 149, 255, 0.025);
-      -webkit-backdrop-filter: blur(12px) saturate(115%);
-      backdrop-filter: blur(12px) saturate(115%);
+      width: min(218px, 60vw);
+      gap: 6px;
+      padding: 8px 10px;
       transform:
         translateY(calc(clamp(16px, 3vh, 28px) + var(--linka-choice-entry-y)))
         scale(var(--linka-choice-entry-scale));
     }
 
     .linka-choice-prompt .escolha-projeto {
-      font-size: clamp(14px, 3.8vw, 16px);
+      font-size: clamp(8px, 2.2vw, 10px);
       line-height: 1;
-      letter-spacing: 0.035em;
+      letter-spacing: 0.11em;
       white-space: nowrap;
     }
 
@@ -1700,9 +1644,17 @@
       width: 100%;
       max-width: none;
       margin-inline: auto;
-      font-size: clamp(21px, 5.9vw, 25px);
-      line-height: 0.88;
-      letter-spacing: -0.035em;
+      font-size: clamp(21px, 5.8vw, 25px);
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+    }
+
+    .linka-choice-rule {
+      width: 68px;
+    }
+
+    .linka-choice-underline {
+      width: 82px;
     }
 
     .linka-phone-screen .linka-device-return {
@@ -1776,9 +1728,7 @@
     .linka-card::before,
     .linka-orbit,
     .linka-tech-orbit,
-    .linka-tech-node,
-    .linka-choice-content::before,
-    .linka-choice-prompt .escolha-projeto {
+    .linka-tech-node {
       animation: none;
     }
   }
