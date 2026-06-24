@@ -155,13 +155,6 @@
 
     <div class="linka-choice-prompt" aria-hidden="true">
       <div class="linka-choice-content">
-        <span class="linka-choice-orbit" aria-hidden="true">
-          <svg viewBox="0 0 560 250" focusable="false">
-            <ellipse class="linka-choice-orbit-main" cx="280" cy="125" rx="244" ry="86" pathLength="1"></ellipse>
-            <path class="linka-choice-orbit-arc" d="M 105 180 C 170 226, 383 229, 467 169" pathLength="1"></path>
-            <circle class="linka-choice-orbit-dot" cx="497" cy="87" r="4"></circle>
-          </svg>
-        </span>
         <span class="linka-choice-rule" aria-hidden="true"><i></i></span>
         <span class="escolha-projeto">ESCOLHA O PROJETO</span>
         <h2 class="titulo-principal"><span>que voc&ecirc;</span><em>quer ver</em></h2>
@@ -1188,72 +1181,49 @@
     position: relative;
     z-index: 2;
     display: grid;
+    box-sizing: border-box;
+    place-content: center;
     justify-items: center;
-    width: clamp(500px, 42vw, 620px);
-    gap: 11px;
-    padding: 16px 24px;
+    width: clamp(560px, 46vw, 720px);
+    min-height: clamp(190px, 25vh, 240px);
+    gap: 10px;
+    padding: clamp(36px, 2.8vw, 42px);
+    overflow: hidden;
+    border: 1px solid rgba(85, 199, 255, 0.38);
+    border-radius: clamp(24px, 3vw, 36px);
+    background:
+      radial-gradient(circle at 18% 12%, rgba(85, 199, 255, 0.12), transparent 38%),
+      linear-gradient(135deg, rgba(11, 29, 52, 0.97), rgba(4, 12, 25, 0.98));
+    box-shadow:
+      0 24px 54px rgba(0, 0, 0, 0.42),
+      inset 0 1px rgba(209, 237, 255, 0.09),
+      inset 0 -1px rgba(52, 120, 255, 0.08);
     transform:
       translateY(calc(clamp(8px, 1.5vh, 18px) + var(--linka-choice-entry-y)))
       scale(var(--linka-choice-entry-scale));
     transform-origin: 50% 50%;
   }
 
-  .linka-choice-orbit {
+  .linka-choice-content::before {
+    content: "";
     position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 1;
-    width: min(540px, 100%);
-    aspect-ratio: 560 / 250;
+    inset: 7px;
+    z-index: 0;
+    border: 1px solid rgba(143, 210, 255, 0.055);
+    border-radius: calc(clamp(24px, 3vw, 36px) - 7px);
     pointer-events: none;
-    transform: translate(-50%, -49%) rotate(-5deg);
   }
 
-  .linka-choice-orbit svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    fill: none;
-  }
-
-  .linka-choice-orbit-main,
-  .linka-choice-orbit-arc {
-    vector-effect: non-scaling-stroke;
-    stroke-linecap: round;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-
-  .linka-choice-orbit-main {
-    stroke: rgba(111, 190, 255, 0.42);
-    stroke-width: 1.1;
-    filter: drop-shadow(0 0 4px rgba(72, 164, 255, 0.18));
-  }
-
-  .linka-choice-orbit-arc {
-    stroke: rgba(143, 210, 255, 0.24);
-    stroke-width: 0.85;
-  }
-
-  .linka-choice-orbit-dot {
-    fill: #9bdd55;
-    opacity: 0;
-    filter: drop-shadow(0 0 4px rgba(155, 221, 85, 0.55));
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-
-  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-main {
-    animation: linka-choice-orbit-draw 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
-  }
-
-  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-arc {
-    animation: linka-choice-orbit-draw 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-  }
-
-  .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt .linka-choice-orbit-dot {
-    animation: linka-choice-orbit-dot-in 0.45s ease-out 0.62s forwards;
+  .linka-choice-content::after {
+    content: "";
+    position: absolute;
+    right: clamp(24px, 3vw, 42px);
+    top: 20px;
+    z-index: 1;
+    width: 52px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(85, 199, 255, 0.72), transparent);
+    pointer-events: none;
   }
 
   .linka-choice-rule {
@@ -1272,12 +1242,13 @@
   }
 
   .linka-choice-rule i {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     margin: 0 8px;
-    border: 1px solid rgba(155, 215, 255, 0.9);
+    border: 0;
     border-radius: 50%;
-    background: rgba(7, 24, 49, 0.82);
+    background: #b7ff32;
+    box-shadow: 0 0 9px rgba(183, 255, 50, 0.42);
   }
 
   .linka-choice-rule,
@@ -1332,15 +1303,6 @@
     height: 1px;
     margin-top: 8px;
     background: linear-gradient(90deg, transparent, rgba(111, 190, 255, 0.88), transparent);
-  }
-
-  @keyframes linka-choice-orbit-draw {
-    to { stroke-dashoffset: 0; }
-  }
-
-  @keyframes linka-choice-orbit-dot-in {
-    from { opacity: 0; transform: scale(0.55); }
-    to { opacity: 1; transform: scale(1); }
   }
 
   .linka-stage.is-choice-menu:not(.is-project-open) + .linka-choice-prompt {
@@ -1699,12 +1661,25 @@
     }
 
     .linka-choice-content {
-      width: min(300px, 82vw);
-      gap: 8px;
-      padding: 12px 14px;
+      width: min(84vw, 420px);
+      min-height: clamp(165px, 22vh, 200px);
+      gap: 10px;
+      padding: clamp(26px, 7vw, 34px);
+      border-radius: clamp(22px, 7vw, 28px);
       transform:
         translateY(calc(clamp(16px, 3vh, 28px) + var(--linka-choice-entry-y)))
         scale(var(--linka-choice-entry-scale));
+    }
+
+    .linka-choice-content::before {
+      inset: 6px;
+      border-radius: calc(clamp(22px, 7vw, 28px) - 6px);
+    }
+
+    .linka-choice-content::after {
+      right: 24px;
+      top: 16px;
+      width: 38px;
     }
 
     .linka-choice-prompt .escolha-projeto {
@@ -1722,11 +1697,6 @@
       font-size: clamp(34px, 9vw, 42px);
       line-height: 0.96;
       letter-spacing: -0.02em;
-    }
-
-    .linka-choice-orbit {
-      width: min(310px, 88vw);
-      transform: translate(-50%, -50%) rotate(-7deg);
     }
 
     .linka-choice-rule {
@@ -1809,20 +1779,8 @@
     .linka-card::before,
     .linka-orbit,
     .linka-tech-orbit,
-    .linka-tech-node,
-    .linka-choice-orbit-main,
-    .linka-choice-orbit-arc,
-    .linka-choice-orbit-dot {
+    .linka-tech-node {
       animation: none;
-    }
-
-    .linka-choice-orbit-main,
-    .linka-choice-orbit-arc {
-      stroke-dashoffset: 0;
-    }
-
-    .linka-choice-orbit-dot {
-      opacity: 1;
     }
   }
 </style>
