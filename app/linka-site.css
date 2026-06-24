@@ -1728,8 +1728,8 @@ body {
 }
 
 .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-  font-size:clamp(56px, 5vw, 72px)!important;
-  line-height:.94!important;
+  font-size:clamp(54px, 4.55vw, 68px)!important;
+  line-height:.96!important;
 }
 
 @media(min-width:768px){
@@ -1792,8 +1792,8 @@ body {
   }
 
   .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-    font-size:clamp(34px, 10vw, 44px)!important;
-    line-height:.94!important;
+    font-size:clamp(34px, 9vw, 42px)!important;
+    line-height:.96!important;
   }
 }
 /* =========================================================
@@ -1904,7 +1904,7 @@ body {
   }
 
   .linka-portfolio-mount .linka-choice-prompt .titulo-principal{
-    font-size:clamp(34px, 10vw, 40px)!important;
+    font-size:clamp(34px, 9vw, 38px)!important;
   }
 
   .lv10-img{

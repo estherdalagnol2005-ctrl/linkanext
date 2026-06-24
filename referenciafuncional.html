@@ -157,9 +157,9 @@
       <div class="linka-choice-content">
         <span class="linka-choice-orbit" aria-hidden="true">
           <svg viewBox="0 0 560 250" focusable="false">
-            <ellipse class="linka-choice-orbit-main" cx="280" cy="125" rx="250" ry="91" pathLength="1"></ellipse>
-            <ellipse class="linka-choice-orbit-arc" cx="280" cy="125" rx="224" ry="108" pathLength="1"></ellipse>
-            <circle class="linka-choice-orbit-dot" cx="503" cy="91" r="4"></circle>
+            <ellipse class="linka-choice-orbit-main" cx="280" cy="125" rx="244" ry="86" pathLength="1"></ellipse>
+            <path class="linka-choice-orbit-arc" d="M 105 180 C 170 226, 383 229, 467 169" pathLength="1"></path>
+            <circle class="linka-choice-orbit-dot" cx="497" cy="87" r="4"></circle>
           </svg>
         </span>
         <span class="linka-choice-rule" aria-hidden="true"><i></i></span>
@@ -1203,7 +1203,7 @@
     left: 50%;
     top: 50%;
     z-index: 1;
-    width: min(560px, 100%);
+    width: min(540px, 100%);
     aspect-ratio: 560 / 250;
     pointer-events: none;
     transform: translate(-50%, -49%) rotate(-5deg);
@@ -1226,15 +1226,14 @@
   }
 
   .linka-choice-orbit-main {
-    stroke: rgba(111, 190, 255, 0.36);
-    stroke-width: 1.15;
-    filter: drop-shadow(0 0 5px rgba(72, 164, 255, 0.2));
+    stroke: rgba(111, 190, 255, 0.42);
+    stroke-width: 1.1;
+    filter: drop-shadow(0 0 4px rgba(72, 164, 255, 0.18));
   }
 
   .linka-choice-orbit-arc {
-    stroke: rgba(143, 210, 255, 0.2);
-    stroke-width: 0.8;
-    stroke-dasharray: 0.42 0.58;
+    stroke: rgba(143, 210, 255, 0.24);
+    stroke-width: 0.85;
   }
 
   .linka-choice-orbit-dot {
@@ -1295,13 +1294,13 @@
 
   .linka-choice-prompt .escolha-projeto {
     display: block;
-    margin: 0;
+    margin: 0 0 2px;
     color: #9bd7ff;
     font-family: "Manrope", "Inter", system-ui, sans-serif;
-    font-size: clamp(10px, 0.75vw, 12px);
-    font-weight: 750;
+    font-size: clamp(20px, 1.55vw, 24px);
+    font-weight: 700;
     line-height: 1;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.075em;
     text-transform: uppercase;
   }
 
@@ -1310,9 +1309,9 @@
     width: 100%;
     color: #f6f5f1;
     font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
-    font-size: clamp(56px, 5vw, 72px);
-    font-weight: 680;
-    line-height: 0.94;
+    font-size: clamp(54px, 4.55vw, 68px);
+    font-weight: 650;
+    line-height: 0.96;
     letter-spacing: -0.025em;
     text-wrap: balance;
   }
@@ -1709,9 +1708,10 @@
     }
 
     .linka-choice-prompt .escolha-projeto {
-      font-size: clamp(8px, 2.2vw, 10px);
+      margin-bottom: 1px;
+      font-size: clamp(14px, 4vw, 17px);
       line-height: 1;
-      letter-spacing: 0.11em;
+      letter-spacing: 0.065em;
       white-space: nowrap;
     }
 
@@ -1719,8 +1719,8 @@
       width: 100%;
       max-width: none;
       margin-inline: auto;
-      font-size: clamp(34px, 10vw, 44px);
-      line-height: 0.94;
+      font-size: clamp(34px, 9vw, 42px);
+      line-height: 0.96;
       letter-spacing: -0.02em;
     }
 
