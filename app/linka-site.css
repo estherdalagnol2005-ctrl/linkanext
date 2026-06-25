@@ -1382,7 +1382,7 @@ body {
 
   .lhx-showcase{
     min-height:clamp(300px,38svh,390px)!important;
-    margin-top:-50px!important;
+    margin-top:-14px!important;
     perspective:720px!important;
   }
 
@@ -1451,7 +1451,7 @@ body {
 @media(max-width:380px){
   .lhx-title{font-size:clamp(34px,10.2vw,40px)!important;}
   .lhx-body{max-width:326px!important;}
-  .lhx-showcase{min-height:300px!important;margin-top:-58px!important;}
+  .lhx-showcase{min-height:300px!important;margin-top:-18px!important;}
   .lhx-intro-card{width:min(100%,318px)!important;min-height:146px!important;}
   .lhx-card-title{font-size:clamp(27px,7.6vw,34px)!important;}
   .lhx-type-tunnel{height:306px!important;}
