@@ -1,64 +1,10 @@
-import { existsSync, readdirSync } from "fs";
-import { createRequire } from "module";
-import path from "path";
+import {
+  getCountryCallingCode,
+  isValidPhoneNumber,
+  parsePhoneNumber,
+} from "libphonenumber-js/min";
+import type { CountryCode } from "libphonenumber-js/min";
 import { NextResponse } from "next/server";
-
-type ParsedPhoneNumber = {
-  country?: string;
-  countryCallingCode: string;
-  isValid: () => boolean;
-};
-
-type PhoneNumberUtilities = {
-  getCountryCallingCode: (country: string) => string;
-  isValidPhoneNumber: (phone: string, country: string) => boolean;
-  parsePhoneNumber: (phone: string) => ParsedPhoneNumber | undefined;
-};
-
-let phoneUtilities: PhoneNumberUtilities | null = null;
-
-function resolvePhoneLibraryPath() {
-  const nodeModulesPath = path.join(process.cwd(), "node_modules");
-  const directPath = path.join(nodeModulesPath, "libphonenumber-js", "min", "index.cjs");
-
-  if (existsSync(directPath)) {
-    return directPath;
-  }
-
-  const pnpmPath = path.join(nodeModulesPath, ".pnpm");
-  if (existsSync(pnpmPath)) {
-    const libDirectory = readdirSync(pnpmPath).find((name) =>
-      name.startsWith("libphonenumber-js@"),
-    );
-
-    if (libDirectory) {
-      const nestedPath = path.join(
-        pnpmPath,
-        libDirectory,
-        "node_modules",
-        "libphonenumber-js",
-        "min",
-        "index.cjs",
-      );
-
-      if (existsSync(nestedPath)) {
-        return nestedPath;
-      }
-    }
-  }
-
-  throw new Error("Phone validation library not found");
-}
-
-function getPhoneUtilities() {
-  if (!phoneUtilities) {
-    const phoneLibraryPath = resolvePhoneLibraryPath();
-    const phoneLibraryRequire = createRequire(phoneLibraryPath);
-    phoneUtilities = phoneLibraryRequire(phoneLibraryPath) as PhoneNumberUtilities;
-  }
-
-  return phoneUtilities;
-}
 
 type LeadLanguage = "pt" | "en" | "es";
 
@@ -178,12 +124,7 @@ function validatePayload(payload: LeadPayload) {
   }
 
   if (payload.pais && /^[A-Z]{2}$/.test(payload.pais)) {
-    const {
-      getCountryCallingCode,
-      isValidPhoneNumber,
-      parsePhoneNumber,
-    } = getPhoneUtilities();
-    const country = payload.pais;
+    const country = payload.pais as CountryCode;
     let expectedCallingCode = "";
 
     try {

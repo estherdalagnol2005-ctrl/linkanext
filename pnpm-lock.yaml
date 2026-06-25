@@ -14,6 +14,9 @@ importers:
       lenis:
         specifier: latest
         version: 1.3.23(react@19.2.7)
+      libphonenumber-js:
+        specifier: ^1.13.7
+        version: 1.13.7
       next:
         specifier: latest
         version: 16.2.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
