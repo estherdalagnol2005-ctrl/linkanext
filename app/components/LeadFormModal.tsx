@@ -17,7 +17,7 @@ import {
 } from "react-phone-number-input";
 import type { Country } from "react-phone-number-input";
 
-type LeadFormLanguage = "pt" | "en";
+type LeadFormLanguage = "pt" | "en" | "es";
 
 type LeadFormData = {
   nome: string;
@@ -271,6 +271,80 @@ const FORM_TRANSLATIONS = {
       investmentRequired: "Choose an investment range.",
     },
   },
+  es: {
+    closeLabel: "Cerrar formulario",
+    progressAria: (step, total) => `Etapa ${step} de ${total}`,
+    progressLabel: "Etapa",
+    stepLabel: (step) => `Etapa ${step}`,
+    intro: {
+      kicker: "Calificación Linka",
+      title: "¿Creamos algo increíble para tu negocio?",
+      description:
+        "Responde algunas preguntas rápidas para entender el mejor camino para tu presencia digital.",
+      button: "Comenzar",
+    },
+    success: {
+      kicker: "Datos recibidos",
+      title: "Perfecto. La próxima etapa está casi lista.",
+      description:
+        "Por ahora, tus datos quedan solo en el navegador. Pronto, este flujo se conectará con los horarios de Linka.",
+      button: "Cerrar",
+    },
+    fields: {
+      nameTitle: "¿Cómo debemos llamarte?",
+      nameLabel: "Nombre",
+      namePlaceholder: "Tu nombre",
+      contactTitle: "¿Cuál es el mejor contacto?",
+      emailLabel: "Correo electrónico",
+      emailPlaceholder: "tu@empresa.com",
+      countryLabel: "País",
+      countryPlaceholder: "Selecciona el país",
+      countrySearchLabel: "Buscar país",
+      countrySearchPlaceholder: "Escribe el país o código",
+      countryNoResults: "No se encontraron países.",
+      selectedCountryAria: (name, code) => `${name}, código ${code}. Cambiar país.`,
+      phoneLabel: "Teléfono",
+      phonePlaceholder: "Número con código de área",
+      phoneHint: "Elige el país y completa el número. Se guardará en formato internacional.",
+      businessTitle: "Sobre el negocio",
+      businessLabel: "Negocio o sector",
+      businessPlaceholder: "Ej.: clínica, tienda, profesional independiente",
+      serviceLegend: "Servicio que buscas",
+      investmentTitle: "Rango de inversión",
+      investmentLegend: "Elige una referencia inicial",
+    },
+    buttons: {
+      back: "Volver",
+      continue: "Continuar",
+      submit: "Ver horarios disponibles",
+    },
+    services: [
+      { label: "Creación de sitio web", value: "site" },
+      { label: "Landing page", value: "landing-page" },
+      { label: "Tráfico pago", value: "trafego-pago" },
+      { label: "Sitio web + tráfico", value: "site-trafego" },
+      { label: "Posicionamiento digital", value: "posicionamento-digital" },
+      { label: "Aún no lo sé", value: "nao-sei" },
+    ],
+    investments: [
+      { label: "Rango inicial", value: "inicial", helper: "Un proyecto enfocado para empezar con claridad." },
+      { label: "Rango intermedio", value: "intermediaria", helper: "Más estrategia y acabado visual." },
+      { label: "Rango avanzado", value: "avancada", helper: "Una experiencia más completa y personalizada." },
+      { label: "Inversión mayor", value: "maior", helper: "Un proyecto robusto, con más profundidad." },
+      { label: "Aún no lo definí", value: "nao-defini", helper: "Podemos orientar el mejor rango después." },
+    ],
+    errors: {
+      nameRequired: "Ingresa tu nombre.",
+      emailRequired: "Ingresa tu correo electrónico.",
+      emailInvalid: "Usa un correo electrónico válido.",
+      countryRequired: "Selecciona el país del teléfono.",
+      phoneRequired: "Ingresa tu teléfono.",
+      phoneInvalid: "Usa un teléfono válido para el país seleccionado.",
+      businessRequired: "Ingresa tu negocio o sector.",
+      serviceRequired: "Elige un servicio.",
+      investmentRequired: "Elige un rango de inversión.",
+    },
+  },
 } satisfies Record<LeadFormLanguage, FormTranslation>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -308,7 +382,8 @@ function getFlagEmoji(country: Country) {
 
 function getCountryNameFormatter(language: LeadFormLanguage) {
   try {
-    return new Intl.DisplayNames([language === "pt" ? "pt-BR" : "en"], { type: "region" });
+    const locale = language === "pt" ? "pt-BR" : language;
+    return new Intl.DisplayNames([locale], { type: "region" });
   } catch {
     return null;
   }
@@ -334,7 +409,10 @@ function getNormalizedPhone(countryCode: string, phone: string) {
   const candidate = buildPhoneCandidate(country, phone);
   if (!candidate || !isValidPhoneNumber(candidate, country)) return "";
 
-  return parsePhoneNumber(candidate, country)?.number ?? "";
+  const parsedPhone = parsePhoneNumber(candidate, country);
+  if (parsedPhone?.country !== country) return "";
+
+  return parsedPhone.number ?? "";
 }
 
 export default function LeadFormModal({ isOpen, language, onClose }: LeadFormModalProps) {
@@ -372,7 +450,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           searchValue: stripDiacritics(`${name} ${country} ${callingCode}`),
         };
       })
-      .sort((a, b) => a.name.localeCompare(b.name, language === "pt" ? "pt-BR" : "en"));
+      .sort((a, b) => a.name.localeCompare(b.name, language === "pt" ? "pt-BR" : language));
   }, [countryNameFormatter, language]);
 
   const selectedCountry = useMemo(
@@ -543,6 +621,8 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
 
   const selectCountry = (country: Country) => {
     const codigoPais = `+${getCountryCallingCode(country)}`;
+    const phoneIsCompatible = !formData.telefone.trim() || Boolean(getNormalizedPhone(country, formData.telefone));
+
     setFormData((current) => ({
       ...current,
       pais: country,
@@ -552,6 +632,11 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     setErrors((current) => {
       const nextErrors = { ...current };
       delete nextErrors.pais;
+      if (phoneIsCompatible) {
+        delete nextErrors.telefone;
+      } else {
+        nextErrors.telefone = "phoneInvalid";
+      }
       return nextErrors;
     });
     setCountrySearch("");

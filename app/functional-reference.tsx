@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-type LeadFormLanguage = "pt" | "en";
+type LeadFormLanguage = "pt" | "en" | "es";
 
 type FunctionalReferenceProps = {
   markup: string;
@@ -32,7 +32,13 @@ const LEAD_FORM_CTA_SELECTOR = [
 ].join(", ");
 
 function normalizeLeadFormLanguage(value: string | null | undefined): LeadFormLanguage {
-  return value === "pt" ? "pt" : "en";
+  const normalizedValue = value?.toLowerCase();
+
+  if (normalizedValue?.startsWith("pt")) return "pt";
+  if (normalizedValue?.startsWith("en")) return "en";
+  if (normalizedValue?.startsWith("es")) return "es";
+
+  return "en";
 }
 
 function readCurrentLeadFormLanguage(): LeadFormLanguage {
