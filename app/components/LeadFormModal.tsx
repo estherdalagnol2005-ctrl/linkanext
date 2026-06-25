@@ -31,6 +31,17 @@ type LeadFormData = {
   investimento: string;
 };
 
+type LeadSubmissionStatus = "idle" | "submitting" | "error" | "success";
+
+type LeadSubmissionPayload = LeadFormData & {
+  idioma: LeadFormLanguage;
+  origem: "site-linka";
+  pageUrl: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+};
+
 type LeadFormErrorKey =
   | "nameRequired"
   | "emailRequired"
@@ -72,6 +83,12 @@ type FormTranslation = {
     title: string;
     description: string;
     button: string;
+  };
+  submission: {
+    sending: string;
+    error: string;
+    retry: string;
+    redirecting: string;
   };
   fields: {
     nameTitle: string;
@@ -141,6 +158,12 @@ const FORM_TRANSLATIONS = {
       description:
         "Nesta fase, seus dados ficam apenas no navegador. Em breve, este fluxo sera conectado aos horarios da Linka.",
       button: "Fechar",
+    },
+    submission: {
+      sending: "Enviando...",
+      error: "Nao foi possivel enviar seus dados agora. Verifique a conexao e tente novamente.",
+      retry: "Tentar novamente",
+      redirecting: "Tudo certo. Estamos abrindo a agenda da Linka.",
     },
     fields: {
       nameTitle: "Como devemos chamar voce?",
@@ -216,6 +239,12 @@ const FORM_TRANSLATIONS = {
         "For now, your details stay only in the browser. Soon, this flow will connect to Linka scheduling.",
       button: "Close",
     },
+    submission: {
+      sending: "Sending...",
+      error: "We could not send your details right now. Check your connection and try again.",
+      retry: "Try again",
+      redirecting: "All set. We are opening Linka scheduling.",
+    },
     fields: {
       nameTitle: "What should we call you?",
       nameLabel: "Name",
@@ -290,6 +319,12 @@ const FORM_TRANSLATIONS = {
         "Por ahora, tus datos quedan solo en el navegador. Pronto, este flujo se conectará con los horarios de Linka.",
       button: "Cerrar",
     },
+    submission: {
+      sending: "Enviando...",
+      error: "No fue posible enviar tus datos ahora. Revisa la conexion e intentalo nuevamente.",
+      retry: "Intentarlo nuevamente",
+      redirecting: "Todo listo. Estamos abriendo la agenda de Linka.",
+    },
     fields: {
       nameTitle: "¿Cómo debemos llamarte?",
       nameLabel: "Nombre",
@@ -357,14 +392,27 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(", ");
 
-function handleLeadComplete(data: LeadFormData) {
-  if (process.env.NODE_ENV !== "production") {
-    console.info("[Linka lead form]", data);
-  }
-}
-
 function getFirstError(errors: LeadFormErrors) {
   return Object.keys(errors)[0] as keyof LeadFormData | undefined;
+}
+
+function getUrlParam(searchParams: URLSearchParams, key: string) {
+  return searchParams.get(key)?.trim().slice(0, 180) ?? "";
+}
+
+function buildLeadPayload(data: LeadFormData, language: LeadFormLanguage): LeadSubmissionPayload {
+  const currentUrl = window.location.href;
+  const searchParams = new URL(currentUrl).searchParams;
+
+  return {
+    ...data,
+    idioma: language,
+    origem: "site-linka",
+    pageUrl: currentUrl,
+    utmSource: getUrlParam(searchParams, "utm_source"),
+    utmMedium: getUrlParam(searchParams, "utm_medium"),
+    utmCampaign: getUrlParam(searchParams, "utm_campaign"),
+  };
 }
 
 function stripDiacritics(value: string) {
@@ -421,6 +469,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   const [isComplete, setIsComplete] = useState(false);
   const [formData, setFormData] = useState<LeadFormData>(INITIAL_DATA);
   const [errors, setErrors] = useState<LeadFormErrors>({});
+  const [submissionStatus, setSubmissionStatus] = useState<LeadSubmissionStatus>("idle");
   const [isCountryListOpen, setIsCountryListOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -431,6 +480,8 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   const overlayRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef(0);
   const actionLockedRef = useRef(false);
+  const redirectTimeoutRef = useRef<number | null>(null);
+  const submissionLockedRef = useRef(false);
 
   const copy = FORM_TRANSLATIONS[language];
   const progressPercent = useMemo(() => `${Math.round((step / TOTAL_STEPS) * 100)}%`, [step]);
@@ -467,6 +518,10 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
 
   useEffect(() => {
     setIsMounted(true);
+
+    return () => {
+      if (redirectTimeoutRef.current) window.clearTimeout(redirectTimeoutRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -479,6 +534,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     setStep(1);
     setErrors({});
     setFormData(INITIAL_DATA);
+    setSubmissionStatus("idle");
     setIsCountryListOpen(false);
     setCountrySearch("");
     setIsComplete(false);
@@ -597,6 +653,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   }, [isCountryListOpen]);
 
   const updateField = (field: keyof LeadFormData, value: string) => {
+    if (submissionStatus === "error") setSubmissionStatus("idle");
     setFormData((current) => ({ ...current, [field]: value }));
     setErrors((current) => {
       if (!current[field]) return current;
@@ -607,6 +664,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   };
 
   const updatePhone = (value: string) => {
+    if (submissionStatus === "error") setSubmissionStatus("idle");
     setFormData((current) => {
       const telefoneE164 = getNormalizedPhone(current.pais, value);
       return { ...current, telefone: value, telefoneE164 };
@@ -620,6 +678,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   };
 
   const selectCountry = (country: Country) => {
+    if (submissionStatus === "error") setSubmissionStatus("idle");
     const codigoPais = `+${getCountryCallingCode(country)}`;
     const phoneIsCompatible = !formData.telefone.trim() || Boolean(getNormalizedPhone(country, formData.telefone));
 
@@ -698,8 +757,47 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     });
   };
 
-  const goNext = () => {
+  const submitLead = async (completedData: LeadFormData) => {
+    if (submissionLockedRef.current || submissionStatus === "submitting" || submissionStatus === "success") return;
+
+    submissionLockedRef.current = true;
+    setSubmissionStatus("submitting");
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildLeadPayload(completedData, language)),
+      });
+
+      const result = (await response.json().catch(() => null)) as { ok?: boolean } | null;
+      if (!response.ok || !result?.ok) {
+        throw new Error("lead_submit_failed");
+      }
+
+      setSubmissionStatus("success");
+      setIsComplete(true);
+
+      const bookingUrl = process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL;
+      if (bookingUrl && !redirectTimeoutRef.current) {
+        redirectTimeoutRef.current = window.setTimeout(() => {
+          window.location.assign(bookingUrl);
+        }, 900);
+      }
+    } catch {
+      setSubmissionStatus("error");
+      window.requestAnimationFrame(() => {
+        overlayRef.current?.querySelector<HTMLElement>("[data-lead-submit]")?.focus({ preventScroll: false });
+      });
+    } finally {
+      submissionLockedRef.current = false;
+    }
+  };
+
+  const goNext = async () => {
     if (actionLockedRef.current) return;
+    if (submissionStatus === "submitting") return;
+
     actionLockedRef.current = true;
     window.setTimeout(() => {
       actionLockedRef.current = false;
@@ -741,8 +839,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     };
 
     setFormData(completedData);
-    handleLeadComplete(completedData);
-    setIsComplete(true);
+    await submitLead(completedData);
   };
 
   const goBack = () => {
@@ -752,18 +849,19 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
       actionLockedRef.current = false;
     }, 220);
     setErrors({});
+    if (submissionStatus === "error") setSubmissionStatus("idle");
     setStep((current) => current - 1);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    goNext();
+    void goNext();
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      goNext();
+      void goNext();
     }
   };
 
@@ -914,6 +1012,9 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           <span className="linka-lead-kicker">{copy.success.kicker}</span>
           <h2 id="linka-lead-modal-title">{copy.success.title}</h2>
           <p>{copy.success.description}</p>
+          {submissionStatus === "success" && process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL ? (
+            <p className="linka-lead-hint">{copy.submission.redirecting}</p>
+          ) : null}
           <button className="linka-lead-primary" data-lead-autofocus onClick={onClose} type="button">
             {copy.success.button}
           </button>
@@ -927,7 +1028,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           <span className="linka-lead-kicker">{copy.intro.kicker}</span>
           <h2 id="linka-lead-modal-title">{copy.intro.title}</h2>
           <p>{copy.intro.description}</p>
-          <button className="linka-lead-primary" data-lead-autofocus onClick={goNext} type="button">
+          <button className="linka-lead-primary" data-lead-autofocus onClick={() => void goNext()} type="button">
             {copy.intro.button}
           </button>
         </div>
@@ -1052,12 +1153,35 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           </div>
         ) : null}
 
+        {submissionStatus === "error" ? (
+          <p className="linka-lead-error" id="lead-submit-error">
+            {copy.submission.error}
+          </p>
+        ) : null}
+
         <div className="linka-lead-actions">
-          <button className="linka-lead-secondary" disabled={step <= 1} onClick={goBack} type="button">
+          <button
+            className="linka-lead-secondary"
+            disabled={step <= 1 || submissionStatus === "submitting"}
+            onClick={goBack}
+            type="button"
+          >
             {copy.buttons.back}
           </button>
-          <button className="linka-lead-primary" type="submit">
-            {step === TOTAL_STEPS ? copy.buttons.submit : copy.buttons.continue}
+          <button
+            aria-describedby={submissionStatus === "error" ? "lead-submit-error" : undefined}
+            className="linka-lead-primary"
+            data-lead-submit
+            disabled={submissionStatus === "submitting"}
+            type="submit"
+          >
+            {submissionStatus === "submitting"
+              ? copy.submission.sending
+              : submissionStatus === "error"
+                ? copy.submission.retry
+                : step === TOTAL_STEPS
+                  ? copy.buttons.submit
+                  : copy.buttons.continue}
           </button>
         </div>
       </form>
