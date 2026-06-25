@@ -1,4 +1,64 @@
+import { existsSync, readdirSync } from "fs";
+import { createRequire } from "module";
+import path from "path";
 import { NextResponse } from "next/server";
+
+type ParsedPhoneNumber = {
+  country?: string;
+  countryCallingCode: string;
+  isValid: () => boolean;
+};
+
+type PhoneNumberUtilities = {
+  getCountryCallingCode: (country: string) => string;
+  isValidPhoneNumber: (phone: string, country: string) => boolean;
+  parsePhoneNumber: (phone: string) => ParsedPhoneNumber | undefined;
+};
+
+let phoneUtilities: PhoneNumberUtilities | null = null;
+
+function resolvePhoneLibraryPath() {
+  const nodeModulesPath = path.join(process.cwd(), "node_modules");
+  const directPath = path.join(nodeModulesPath, "libphonenumber-js", "min", "index.cjs");
+
+  if (existsSync(directPath)) {
+    return directPath;
+  }
+
+  const pnpmPath = path.join(nodeModulesPath, ".pnpm");
+  if (existsSync(pnpmPath)) {
+    const libDirectory = readdirSync(pnpmPath).find((name) =>
+      name.startsWith("libphonenumber-js@"),
+    );
+
+    if (libDirectory) {
+      const nestedPath = path.join(
+        pnpmPath,
+        libDirectory,
+        "node_modules",
+        "libphonenumber-js",
+        "min",
+        "index.cjs",
+      );
+
+      if (existsSync(nestedPath)) {
+        return nestedPath;
+      }
+    }
+  }
+
+  throw new Error("Phone validation library not found");
+}
+
+function getPhoneUtilities() {
+  if (!phoneUtilities) {
+    const phoneLibraryPath = resolvePhoneLibraryPath();
+    const phoneLibraryRequire = createRequire(phoneLibraryPath);
+    phoneUtilities = phoneLibraryRequire(phoneLibraryPath) as PhoneNumberUtilities;
+  }
+
+  return phoneUtilities;
+}
 
 type LeadLanguage = "pt" | "en" | "es";
 
@@ -18,6 +78,10 @@ type LeadPayload = {
   utmSource: string;
   utmMedium: string;
   utmCampaign: string;
+};
+
+type LeadWebhookPayload = LeadPayload & {
+  receivedAt: string;
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -113,6 +177,47 @@ function validatePayload(payload: LeadPayload) {
     errors.push("codigoPais is invalid");
   }
 
+  if (payload.pais && /^[A-Z]{2}$/.test(payload.pais)) {
+    const {
+      getCountryCallingCode,
+      isValidPhoneNumber,
+      parsePhoneNumber,
+    } = getPhoneUtilities();
+    const country = payload.pais;
+    let expectedCallingCode = "";
+
+    try {
+      expectedCallingCode = getCountryCallingCode(country);
+    } catch {
+      errors.push("pais is invalid");
+    }
+
+    if (expectedCallingCode) {
+      const expectedCodigoPais = `+${expectedCallingCode}`;
+      const parsedPhone = parsePhoneNumber(payload.telefoneE164);
+
+      if (payload.codigoPais && payload.codigoPais !== expectedCodigoPais) {
+        errors.push("codigoPais does not match pais");
+      }
+
+      if (!payload.telefoneE164 || !parsedPhone || !parsedPhone.isValid()) {
+        errors.push("telefoneE164 is invalid");
+      } else {
+        if (!isValidPhoneNumber(payload.telefoneE164, country)) {
+          errors.push("telefoneE164 is invalid for pais");
+        }
+
+        if (parsedPhone.country !== country) {
+          errors.push("telefoneE164 country does not match pais");
+        }
+
+        if (`+${parsedPhone.countryCallingCode}` !== payload.codigoPais) {
+          errors.push("telefoneE164 calling code does not match codigoPais");
+        }
+      }
+    }
+  }
+
   try {
     if (payload.pageUrl) new URL(payload.pageUrl);
   } catch {
@@ -152,12 +257,16 @@ export async function POST(request: Request) {
 
   const abortController = new AbortController();
   const timeout = setTimeout(() => abortController.abort(), WEBHOOK_TIMEOUT_MS);
+  const webhookPayload: LeadWebhookPayload = {
+    ...payload,
+    receivedAt: new Date().toISOString(),
+  };
 
   try {
     const webhookResponse = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(webhookPayload),
       signal: abortController.signal,
     });
 

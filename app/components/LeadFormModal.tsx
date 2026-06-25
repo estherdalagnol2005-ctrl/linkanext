@@ -82,6 +82,7 @@ type FormTranslation = {
     kicker: string;
     title: string;
     description: string;
+    fallbackDescription: string;
     button: string;
   };
   submission: {
@@ -154,9 +155,11 @@ const FORM_TRANSLATIONS = {
     },
     success: {
       kicker: "Dados recebidos",
-      title: "Perfeito. A proxima etapa esta quase pronta.",
+      title: "Tudo certo. Recebemos suas informações.",
       description:
-        "Nesta fase, seus dados ficam apenas no navegador. Em breve, este fluxo sera conectado aos horarios da Linka.",
+        "Agora vamos abrir a agenda da Linka para você escolher o melhor horário para nossa conversa.",
+      fallbackDescription:
+        "Recebemos suas informações, mas a agenda ainda não está disponível. A Linka entrará em contato para combinar o melhor horário.",
       button: "Fechar",
     },
     submission: {
@@ -234,9 +237,11 @@ const FORM_TRANSLATIONS = {
     },
     success: {
       kicker: "Details received",
-      title: "Perfect. The next step is almost ready.",
+      title: "All set. We received your information.",
       description:
-        "For now, your details stay only in the browser. Soon, this flow will connect to Linka scheduling.",
+        "We will now open Linka’s calendar so you can choose the best time for our conversation.",
+      fallbackDescription:
+        "We received your information, but the calendar is not available yet. Linka will contact you to choose the best time.",
       button: "Close",
     },
     submission: {
@@ -314,9 +319,11 @@ const FORM_TRANSLATIONS = {
     },
     success: {
       kicker: "Datos recibidos",
-      title: "Perfecto. La próxima etapa está casi lista.",
+      title: "Todo listo. Recibimos tu información.",
       description:
-        "Por ahora, tus datos quedan solo en el navegador. Pronto, este flujo se conectará con los horarios de Linka.",
+        "Ahora abriremos la agenda de Linka para que elijas el mejor horario para nuestra conversación.",
+      fallbackDescription:
+        "Recibimos tu información, pero la agenda aún no está disponible. Linka se pondrá en contacto para elegir el mejor horario.",
       button: "Cerrar",
     },
     submission: {
@@ -1011,7 +1018,11 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
         <div className="linka-lead-panel linka-lead-panel-success">
           <span className="linka-lead-kicker">{copy.success.kicker}</span>
           <h2 id="linka-lead-modal-title">{copy.success.title}</h2>
-          <p>{copy.success.description}</p>
+          <p>
+            {process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL
+              ? copy.success.description
+              : copy.success.fallbackDescription}
+          </p>
           {submissionStatus === "success" && process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL ? (
             <p className="linka-lead-hint">{copy.submission.redirecting}</p>
           ) : null}
