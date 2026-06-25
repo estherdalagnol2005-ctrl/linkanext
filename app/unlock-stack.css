@@ -981,9 +981,10 @@
   }
 
   .lhx-showcase{
+    display:block!important;
     flex:1 1 auto!important;
     min-height:430px!important;
-    margin-top:-4px!important;
+    margin-top:28px!important;
     perspective:760px!important;
   }
 
@@ -1013,8 +1014,9 @@
   }
 
   .lhx-portal{
-    left:0!important;
-    top:0!important;
+    position:relative!important;
+    left:auto!important;
+    top:auto!important;
     width:min(328px,94%)!important;
     min-height:132px!important;
     padding:12px 70px 14px 15px!important;
@@ -1262,10 +1264,6 @@
 
   .lhx-body{
     max-width:315px!important;
-  }
-
-  .lhx-showcase{
-    margin-top:10px!important;
   }
 
   .lhx-collection{
