@@ -12,7 +12,8 @@
     "lenis": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-phone-number-input": "^3.4.17"
   },
   "devDependencies": {
     "@types/node": "latest",

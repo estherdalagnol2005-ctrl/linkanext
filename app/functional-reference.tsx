@@ -12,11 +12,15 @@ declare global {
   }
 }
 
+type LeadFormLanguage = "pt" | "en";
+
 type FunctionalReferenceProps = {
   markup: string;
   scripts: string[];
   styles: string;
 };
+
+const LANGUAGE_STORAGE_KEY = "linka-language-v2";
 
 const LEAD_FORM_CTA_SELECTOR = [
   "a.lhx-link",
@@ -27,12 +31,31 @@ const LEAD_FORM_CTA_SELECTOR = [
   "a.lnt3-cta",
 ].join(", ");
 
+function normalizeLeadFormLanguage(value: string | null | undefined): LeadFormLanguage {
+  return value === "pt" ? "pt" : "en";
+}
+
+function readCurrentLeadFormLanguage(): LeadFormLanguage {
+  const currentLanguage = window.LINKA_I18N?.current?.();
+  if (currentLanguage) return normalizeLeadFormLanguage(currentLanguage);
+
+  try {
+    const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (storedLanguage) return normalizeLeadFormLanguage(storedLanguage);
+  } catch {
+    // Keep the same default as the site language bootstrap when storage is unavailable.
+  }
+
+  return normalizeLeadFormLanguage(document.documentElement.lang);
+}
+
 export default function FunctionalReference({
   markup,
   scripts,
   styles,
 }: FunctionalReferenceProps) {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const [leadFormLanguage, setLeadFormLanguage] = useState<LeadFormLanguage>("en");
   const leadFormOpenerRef = useRef<HTMLElement | null>(null);
 
   const closeLeadForm = useCallback(() => {
@@ -79,6 +102,41 @@ export default function FunctionalReference({
   }, [scripts]);
 
   useEffect(() => {
+    const syncLeadFormLanguage = () => {
+      setLeadFormLanguage(readCurrentLeadFormLanguage());
+    };
+
+    syncLeadFormLanguage();
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === LANGUAGE_STORAGE_KEY) syncLeadFormLanguage();
+    };
+
+    const handleLanguageClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (!target.closest(".lls-lang[data-language]")) return;
+
+      window.requestAnimationFrame(syncLeadFormLanguage);
+    };
+
+    const languageObserver = new MutationObserver(syncLeadFormLanguage);
+    languageObserver.observe(document.documentElement, {
+      attributeFilter: ["lang"],
+      attributes: true,
+    });
+
+    window.addEventListener("storage", handleStorage);
+    document.addEventListener("click", handleLanguageClick);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      document.removeEventListener("click", handleLanguageClick);
+      languageObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     const openLeadFormFromCta = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -113,7 +171,7 @@ export default function FunctionalReference({
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
       <div dangerouslySetInnerHTML={{ __html: markup }} />
-      <LeadFormModal isOpen={isLeadFormOpen} onClose={closeLeadForm} />
+      <LeadFormModal isOpen={isLeadFormOpen} language={leadFormLanguage} onClose={closeLeadForm} />
     </>
   );
 }
