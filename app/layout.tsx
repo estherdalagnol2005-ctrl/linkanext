@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           rel="stylesheet"
         />
       </head>
-      <body>
+      <body className="linka-preload-lock">
         <LenisProvider />
         {children}
       </body>

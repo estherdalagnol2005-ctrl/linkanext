@@ -564,8 +564,6 @@ function adaptPortfolioBehavior(source: string) {
 }
 
 function deferMainVideoSources(markup: string) {
-  if (markup.includes("data-linka-build")) return markup;
-
   return markup.replace(
     /<video\b(?=[^>]*\bclass="[^"]*\blinka-main-video\b)[^>]*>/gi,
     (videoTag) => videoTag.replace(/\ssrc="[^"]*"/i, ""),
@@ -583,7 +581,7 @@ function extractReference(source: string) {
     (match) => match[1],
   )
     .filter((script) => !script.includes("revealQuatorzeVideo"))
-    .map((script) => (script.includes("function initLinkaHero") ? adaptPortfolioBehavior(script) : script));
+    .map(adaptPortfolioBehavior);
   const markup = deferMainVideoSources(
     normalizedSource
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")

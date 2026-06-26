@@ -9,14 +9,11 @@ import { LINKA_PRELOADER_LOGO_URL } from "./constants";
 declare global {
   interface Window {
     __LINKA_PRELOADER_DONE__?: boolean;
-    __LINKA_PRELOADER_RELEASE__?: () => void;
-    __LINKA_PRELOADER_TIMEOUT_ID__?: number;
   }
 }
 
 const MIN_DURATION = 1200;
 const MAX_DURATION = 6000;
-const EMERGENCY_RELEASE_DURATION = 7800;
 const PRELOADER_DONE_EVENT = "linka:preloader:done";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -180,12 +177,7 @@ export default function Preloader() {
     gsap.registerPlugin(ScrollTrigger);
 
     if (window.__LINKA_PRELOADER_DONE__) {
-      if (window.__LINKA_PRELOADER_TIMEOUT_ID__) {
-        window.clearTimeout(window.__LINKA_PRELOADER_TIMEOUT_ID__);
-        window.__LINKA_PRELOADER_TIMEOUT_ID__ = undefined;
-      }
       document.body.classList.remove("linka-preload-lock");
-      document.body.classList.add("linka-preloaded");
       setIsVisible(false);
       return;
     }
@@ -207,10 +199,6 @@ export default function Preloader() {
       didFinishReveal = true;
       cancelled = true;
 
-      if (window.__LINKA_PRELOADER_TIMEOUT_ID__) {
-        window.clearTimeout(window.__LINKA_PRELOADER_TIMEOUT_ID__);
-        window.__LINKA_PRELOADER_TIMEOUT_ID__ = undefined;
-      }
       window.clearTimeout(revealFallbackTimer);
       window.cancelAnimationFrame(progressFrame);
       completeProgressRef.current = null;
@@ -322,9 +310,8 @@ export default function Preloader() {
     };
 
     finishTimer = window.setTimeout(() => {
-      window.__LINKA_PRELOADER_RELEASE__?.();
-      finishReveal();
-    }, EMERGENCY_RELEASE_DURATION);
+      progressTargetRef.current = 100;
+    }, MAX_DURATION);
 
     run();
 
