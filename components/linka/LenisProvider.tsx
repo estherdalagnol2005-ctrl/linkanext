@@ -34,7 +34,8 @@ export default function LenisProvider() {
     const touchPointer = window.matchMedia(TOUCH_POINTER_QUERY);
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY);
     let refreshFrame: number | null = null;
-    let preloaderDone = window.__LINKA_PRELOADER_DONE__ === true;
+    let preloaderDone =
+      window.__LINKA_PRELOADER_DONE__ === true || !document.querySelector(".linka-preloader");
 
     const shouldUseSmoothScroll = () => finePointer.matches && !touchPointer.matches && !reducedMotion.matches;
 

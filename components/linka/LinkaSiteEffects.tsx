@@ -1762,7 +1762,7 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   }
 
   if (firstPortfolioVideo) {
-    if (window.__LINKA_PRELOADER_DONE__) {
+    if (window.__LINKA_PRELOADER_DONE__ || !document.querySelector(".linka-preloader")) {
       preloaderDoneFrame = window.requestAnimationFrame(preloadFirstPortfolioVideo);
     } else {
       window.addEventListener("linka:preloader:done", preloadFirstPortfolioVideo, { once: true });

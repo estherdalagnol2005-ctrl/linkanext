@@ -4458,33 +4458,6 @@ html.linka-doc-paused .lk5-particle{
   }
 }
 
-body.linka-preload-lock{
-  height:100vh!important;
-  overflow:hidden!important;
-  touch-action:none;
-}
-
-body.linka-preload-lock .linka-page > :not(.linka-preloader){
-  visibility:hidden!important;
-}
-
-body.linka-preload-timeout{
-  height:auto!important;
-  overflow:auto!important;
-  touch-action:auto!important;
-}
-
-body.linka-preload-timeout .linka-page > :not(.linka-preloader){
-  visibility:visible!important;
-}
-
-body.linka-preload-timeout .linka-preloader{
-  display:none!important;
-  opacity:0!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-}
-
 .linka-preloader,
 .linka-preloader *{
   box-sizing:border-box;
