@@ -80,12 +80,29 @@ const COPY = {
     closeAria: "Fechar desconto",
     techAria: "Tecnologias utilizadas pela Linka",
     platformsAria: "Plataformas de inteligência artificial, tráfego e comunicação",
-    portfolioIntroKicker: "PORTF\u00d3LIO SELECIONADO",
-    portfolioIntroTitle: "Projetos que <em>ganham vida.</em>",
-    portfolioIntroBody: "Sites pensados para transformar marcas em experi\u00eancias digitais memor\u00e1veis.",
-    portfolioChoiceKicker: "ESCOLHA O PROJETO",
-    portfolioChoiceTitleStart: "que voc\u00ea",
-    portfolioChoiceTitleEm: "quer ver",
+    portfolioIntroKicker: "PORTF\u00d3LIO EM MOVIMENTO",
+    portfolioIntroTitle: "Experi\u00eancias que <em>ganham forma.</em>",
+    portfolioIntroBody: "Cada projeto une estrat\u00e9gia, identidade, experi\u00eancia e convers\u00e3o.",
+    portfolioBuildStatus: "PROJETO PRONTO",
+    portfolioBuildTitle: "4 / 4 m\u00f3dulos conectados",
+    portfolioBuildBody:
+      "Da estrat\u00e9gia \u00e0 convers\u00e3o, cada camada constr\u00f3i uma experi\u00eancia que funciona.",
+    portfolioActiveProject: "Projeto ativo",
+    portfolioProgress: "Progresso",
+    portfolioSelected: "Projeto selecionado",
+    portfolioExploreProject: "Explorar o projeto",
+    portfolioDevicePair: "Desktop + mobile",
+    portfolioModule1Title: "ESTRAT\u00c9GIA",
+    portfolioModule1Body: "Dire\u00e7\u00e3o definida",
+    portfolioModule2Title: "IDENTIDADE",
+    portfolioModule2Body: "A marca ganha forma",
+    portfolioModule3Title: "EXPERI\u00caNCIA",
+    portfolioModule3Body: "Intera\u00e7\u00f5es com prop\u00f3sito",
+    portfolioModule4Title: "CONVERS\u00c3O",
+    portfolioModule4Body: "Pronto para gerar resultado",
+    portfolioChoiceKicker: "PROJETO PRONTO",
+    portfolioChoiceTitleStart: "4 / 4",
+    portfolioChoiceTitleEm: "m\u00f3dulos",
     portfolioViewProject: "Ver projeto",
     portfolioBackProjects: "Voltar aos projetos",
     portfolioExperience: "EXPERI\u00caNCIA DIGITAL",
@@ -167,12 +184,28 @@ const COPY = {
     closeAria: "Close discount",
     techAria: "Technologies used by Linka",
     platformsAria: "Artificial intelligence, advertising and communication platforms",
-    portfolioIntroKicker: "SELECTED WORK",
-    portfolioIntroTitle: "Projects brought <em>to life.</em>",
-    portfolioIntroBody: "Websites designed to turn brands into memorable digital experiences.",
-    portfolioChoiceKicker: "CHOOSE A PROJECT",
-    portfolioChoiceTitleStart: "you want to",
-    portfolioChoiceTitleEm: "explore",
+    portfolioIntroKicker: "PORTFOLIO IN MOTION",
+    portfolioIntroTitle: "Experiences taking <em>shape.</em>",
+    portfolioIntroBody: "Every project brings together strategy, identity, experience and conversion.",
+    portfolioBuildStatus: "PROJECT COMPLETE",
+    portfolioBuildTitle: "4 / 4 modules connected",
+    portfolioBuildBody: "From strategy to conversion, every layer builds an experience that works.",
+    portfolioActiveProject: "Active project",
+    portfolioProgress: "Progress",
+    portfolioSelected: "Project selected",
+    portfolioExploreProject: "Explore the project",
+    portfolioDevicePair: "Desktop + mobile",
+    portfolioModule1Title: "STRATEGY",
+    portfolioModule1Body: "Direction defined",
+    portfolioModule2Title: "IDENTITY",
+    portfolioModule2Body: "The brand takes shape",
+    portfolioModule3Title: "EXPERIENCE",
+    portfolioModule3Body: "Purposeful interactions",
+    portfolioModule4Title: "CONVERSION",
+    portfolioModule4Body: "Ready to deliver results",
+    portfolioChoiceKicker: "PROJECT COMPLETE",
+    portfolioChoiceTitleStart: "4 / 4",
+    portfolioChoiceTitleEm: "modules",
     portfolioViewProject: "View project",
     portfolioBackProjects: "Back to projects",
     portfolioExperience: "DIGITAL EXPERIENCE",
@@ -253,12 +286,29 @@ const COPY = {
     closeAria: "Cerrar descuento",
     techAria: "Tecnologías utilizadas por Linka",
     platformsAria: "Plataformas de inteligencia artificial, publicidad y comunicación",
-    portfolioIntroKicker: "PORTAFOLIO SELECCIONADO",
-    portfolioIntroTitle: "Proyectos que <em>cobran vida.</em>",
-    portfolioIntroBody: "Sitios web diseñados para transformar marcas en experiencias digitales memorables.",
-    portfolioChoiceKicker: "ELIGE EL PROYECTO",
-    portfolioChoiceTitleStart: "que quieres",
-    portfolioChoiceTitleEm: "explorar",
+    portfolioIntroKicker: "PORTAFOLIO EN MOVIMIENTO",
+    portfolioIntroTitle: "Experiencias que <em>toman forma.</em>",
+    portfolioIntroBody: "Cada proyecto re\u00fane estrategia, identidad, experiencia y conversi\u00f3n.",
+    portfolioBuildStatus: "PROYECTO COMPLETO",
+    portfolioBuildTitle: "4 / 4 m\u00f3dulos conectados",
+    portfolioBuildBody:
+      "De la estrategia a la conversi\u00f3n, cada capa construye una experiencia que funciona.",
+    portfolioActiveProject: "Proyecto activo",
+    portfolioProgress: "Progreso",
+    portfolioSelected: "Proyecto seleccionado",
+    portfolioExploreProject: "Explorar el proyecto",
+    portfolioDevicePair: "Desktop + mobile",
+    portfolioModule1Title: "ESTRATEGIA",
+    portfolioModule1Body: "Direcci\u00f3n definida",
+    portfolioModule2Title: "IDENTIDAD",
+    portfolioModule2Body: "La marca toma forma",
+    portfolioModule3Title: "EXPERIENCIA",
+    portfolioModule3Body: "Interacciones con prop\u00f3sito",
+    portfolioModule4Title: "CONVERSI\u00d3N",
+    portfolioModule4Body: "Listo para generar resultados",
+    portfolioChoiceKicker: "PROYECTO COMPLETO",
+    portfolioChoiceTitleStart: "4 / 4",
+    portfolioChoiceTitleEm: "m\u00f3dulos",
     portfolioViewProject: "Ver proyecto",
     portfolioBackProjects: "Volver a proyectos",
     portfolioExperience: "EXPERIENCIA DIGITAL",
@@ -465,6 +515,30 @@ function applyLanguage(nextLang: Language) {
   setText(".linka-portfolio-kicker", copy.portfolioIntroKicker);
   setHtml(".linka-portfolio-intro h2", copy.portfolioIntroTitle);
   setText(".linka-portfolio-intro p", copy.portfolioIntroBody);
+
+  setAttributeForAll("[data-linka-build]", "aria-label", copy.techAria);
+  setText(".linka-build-status", copy.portfolioBuildStatus);
+  setText(".linka-build-title", copy.portfolioBuildTitle);
+  setText(".linka-build-copy", copy.portfolioBuildBody);
+  setText(".linka-build-project-label", copy.portfolioActiveProject);
+  setText(".linka-build-progress-label", copy.portfolioProgress);
+  setText(".linka-build-count", copy.portfolioChoiceTitleStart);
+  setText(".linka-build-action-state", copy.portfolioSelected);
+  setText(".linka-build-action-link", copy.portfolioExploreProject);
+  setTextForAll(".linka-project-option small", copy.portfolioDevicePair);
+  setAttributeForAll(".linka-build-progress", "aria-label", `${copy.portfolioProgress}: 100%`);
+
+  const portfolioModules = [
+    { index: 1, title: copy.portfolioModule1Title, body: copy.portfolioModule1Body },
+    { index: 2, title: copy.portfolioModule2Title, body: copy.portfolioModule2Body },
+    { index: 3, title: copy.portfolioModule3Title, body: copy.portfolioModule3Body },
+    { index: 4, title: copy.portfolioModule4Title, body: copy.portfolioModule4Body },
+  ];
+
+  portfolioModules.forEach(({ index, title, body }) => {
+    setText(`.linka-build-module[data-build-module="${index}"] .linka-build-module-title`, title);
+    setText(`.linka-build-module[data-build-module="${index}"] .linka-build-module-helper`, body);
+  });
 
   setText(".linka-choice-prompt .escolha-projeto", copy.portfolioChoiceKicker);
   setText(".linka-choice-prompt .titulo-principal > span", copy.portfolioChoiceTitleStart);
@@ -1317,6 +1391,123 @@ function initPortfolioIntro(addCleanup: (cleanup: () => void) => void) {
   });
 }
 
+function initPortfolioBuild(addCleanup: (cleanup: () => void) => void, schedule: (callback: () => void, delay: number) => void) {
+  function prepareVideo(video: HTMLVideoElement | null) {
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("loop", "");
+    video.setAttribute("preload", "auto");
+    video.setAttribute("disablepictureinpicture", "");
+    video.setAttribute("controlslist", "nodownload noplaybackrate nofullscreen");
+    video.removeAttribute("controls");
+  }
+
+  function playVideo(video: HTMLVideoElement | null) {
+    if (!video || document.hidden) return;
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === "function") playPromise.catch(() => undefined);
+  }
+
+  function setVideoSource(video: HTMLVideoElement | null, source: string | null | undefined) {
+    if (!video || !source) return;
+
+    prepareVideo(video);
+
+    if (video.getAttribute("src") !== source) {
+      video.classList.remove("is-ready");
+      video.parentElement?.classList.remove("is-video-ready");
+      video.setAttribute("data-src", source);
+      video.setAttribute("src", source);
+      video.load();
+    }
+
+    playVideo(video);
+  }
+
+  function updateBuildAction(root: HTMLElement, url: string | null | undefined) {
+    const actionLink = root.querySelector<HTMLAnchorElement>("[data-build-action-link]");
+    const actionState = root.querySelector<HTMLElement>("[data-build-action-state]");
+    const hasUrl = Boolean(url?.trim());
+
+    if (!actionLink || !actionState) return;
+
+    if (hasUrl && url) {
+      actionLink.hidden = false;
+      actionLink.href = url;
+      actionState.hidden = true;
+      return;
+    }
+
+    actionLink.hidden = true;
+    actionLink.removeAttribute("href");
+    actionState.hidden = false;
+  }
+
+  function selectBuildProject(option: HTMLElement) {
+    const root = option.closest<HTMLElement>("[data-linka-build]");
+    if (!root) return;
+
+    const options = Array.from(root.querySelectorAll<HTMLElement>("[data-project-option]"));
+    options.forEach((item) => {
+      const isActive = item === option;
+      item.classList.toggle("is-active", isActive);
+      item.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+
+    const projectName = root.querySelector<HTMLElement>("[data-build-active-project]");
+    if (projectName) projectName.textContent = option.dataset.projectTitle || "Marcenaria";
+
+    setVideoSource(
+      root.querySelector<HTMLVideoElement>('[data-project-screen="desktop"]'),
+      option.dataset.desktopSrc,
+    );
+    setVideoSource(
+      root.querySelector<HTMLVideoElement>('[data-project-screen="mobile"]'),
+      option.dataset.mobileSrc,
+    );
+    updateBuildAction(root, option.dataset.projectUrl);
+  }
+
+  function syncBuildProjects() {
+    document.querySelectorAll<HTMLElement>("[data-linka-build]").forEach((root) => {
+      const activeOption =
+        root.querySelector<HTMLElement>(".linka-project-option.is-active") ??
+        root.querySelector<HTMLElement>("[data-project-option]");
+      if (activeOption) selectBuildProject(activeOption);
+    });
+  }
+
+  const handleProjectClick = (event: MouseEvent) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const option = target.closest<HTMLElement>("[data-project-option]");
+    if (!option?.closest("[data-linka-build]")) return;
+    selectBuildProject(option);
+  };
+
+  const observer = new MutationObserver(syncBuildProjects);
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  document.addEventListener("click", handleProjectClick);
+  syncBuildProjects();
+  schedule(syncBuildProjects, 250);
+  schedule(syncBuildProjects, 1000);
+
+  addCleanup(() => {
+    observer.disconnect();
+    document.removeEventListener("click", handleProjectClick);
+  });
+}
+
 function initExperience(addCleanup: (cleanup: () => void) => void, schedule: (callback: () => void, delay: number) => void) {
   document.querySelectorAll<HTMLElement>("[data-lov64]").forEach((root) => {
     if (root.dataset.lov67Booted === "true") return;
@@ -1910,6 +2101,7 @@ export default function LinkaSiteEffects() {
     initHeader(addCleanup);
     initHero(addCleanup);
     initPortfolioIntro(addCleanup);
+    initPortfolioBuild(addCleanup, schedule);
     initExperience(addCleanup, schedule);
     initMarquee(addCleanup);
     initViewportPerformance(addCleanup);
