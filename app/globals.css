@@ -1,1 +1,5 @@
 /* Os estilos visuais permanecem na fonte de verdade: referenciafuncional.html. */
+
+.linka-header {
+  display: none !important;
+}
