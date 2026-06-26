@@ -220,6 +220,10 @@
   text-align: center;
 }
 
+.linka-lead-panel > .linka-lead-primary {
+  margin-top: 26px;
+}
+
 .linka-lead-panel-success {
   min-height: min(340px, calc(100dvh - 128px));
 }
@@ -273,10 +277,15 @@
   gap: 18px;
 }
 
-.linka-lead-field,
-.linka-lead-fieldset {
+.linka-lead-field {
   display: grid;
   gap: 9px;
+  min-width: 0;
+}
+
+.linka-lead-fieldset {
+  display: grid;
+  gap: 10px;
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -288,6 +297,8 @@
   color: rgba(231, 244, 255, 0.82);
   font: 850 12px/1.2 "Manrope", Arial, sans-serif;
   letter-spacing: 0.08em;
+  margin: 0 0 18px;
+  padding: 0;
   text-transform: uppercase;
 }
 
