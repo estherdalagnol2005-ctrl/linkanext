@@ -73,7 +73,17 @@ export default function FunctionalReference({
     window.ScrollTrigger = ScrollTrigger;
 
     const scriptCleanups = scripts
-      .map((script) => Function(script)())
+      .map((script, index) => {
+        try {
+          return Function(script)();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (process.env.NODE_ENV !== "production") {
+            console.error(`[Linka portfolio] Extracted script ${index + 1} failed: ${message}`, error);
+          }
+          return undefined;
+        }
+      })
       .filter((cleanup): cleanup is () => void => typeof cleanup === "function");
 
     const portfolioStage = document.querySelector<HTMLElement>(".linka-stage");
@@ -103,7 +113,16 @@ export default function FunctionalReference({
 
     return () => {
       portfolioStage?.removeEventListener("click", forwardReturnButtonClick, true);
-      scriptCleanups.reverse().forEach((cleanup) => cleanup());
+      scriptCleanups.reverse().forEach((cleanup, index) => {
+        try {
+          cleanup();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (process.env.NODE_ENV !== "production") {
+            console.error(`[Linka portfolio] Extracted script cleanup ${index + 1} failed: ${message}`, error);
+          }
+        }
+      });
     };
   }, [scripts]);
 
