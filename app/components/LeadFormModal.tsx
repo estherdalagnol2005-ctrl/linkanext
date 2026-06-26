@@ -479,6 +479,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
   const countryPickerRef = useRef<HTMLDivElement>(null);
   const countryListOpenRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef(0);
   const actionLockedRef = useRef(false);
   const redirectTimeoutRef = useRef<number | null>(null);
@@ -557,6 +558,12 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     };
 
     scrollPositionRef.current = window.scrollY;
+    const activeLenis = window.__LINKA_LENIS__?.instance as
+      | { start?: () => void; stop?: () => void }
+      | undefined;
+    const shouldRestartLenis = Boolean(activeLenis?.stop);
+    activeLenis?.stop?.();
+
     html.classList.add("linka-lead-html-locked");
     html.style.overflow = "hidden";
     body.classList.add("linka-lead-page-locked");
@@ -566,6 +573,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
     body.style.left = "0";
     body.style.right = "0";
     body.style.width = "100%";
+    const overlayElement = overlayRef.current;
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -600,10 +608,98 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
       }
     };
 
+    const normalizeWheelDelta = (event: WheelEvent) => {
+      if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * 40;
+      if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+        return event.deltaY * (contentRef.current?.clientHeight ?? window.innerHeight);
+      }
+
+      return event.deltaY;
+    };
+
+    const canScroll = (element: HTMLElement, deltaY: number) => {
+      if (deltaY < 0) return element.scrollTop > 0;
+      if (deltaY > 0) return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
+      return false;
+    };
+
+    const scrollContentBy = (deltaY: number) => {
+      const content = contentRef.current;
+      if (!content || deltaY === 0) return false;
+
+      const maxScrollTop = Math.max(0, content.scrollHeight - content.clientHeight);
+      if (!maxScrollTop) return false;
+
+      const nextScrollTop = Math.min(maxScrollTop, Math.max(0, content.scrollTop + deltaY));
+      if (nextScrollTop === content.scrollTop) return false;
+
+      content.scrollTop = nextScrollTop;
+      return true;
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      const target = event.target;
+      const content = contentRef.current;
+      if (!(target instanceof Element) || !content) return;
+
+      const nestedScrollable = target.closest<HTMLElement>(".linka-lead-country-list");
+      const deltaY = normalizeWheelDelta(event);
+
+      if (nestedScrollable && canScroll(nestedScrollable, deltaY)) {
+        event.stopPropagation();
+        return;
+      }
+
+      if (content.contains(target)) {
+        event.stopPropagation();
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      scrollContentBy(deltaY);
+    };
+
+    const handleScrollKeys = (event: globalThis.KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+
+      const target = event.target;
+      if (!(target instanceof HTMLElement) || !overlayElement?.contains(target)) return;
+      if (target.closest(".linka-lead-country-list")) return;
+
+      const isEditableTarget =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLSelectElement ||
+        target instanceof HTMLTextAreaElement ||
+        target.isContentEditable;
+      const isButtonTarget = target instanceof HTMLButtonElement;
+      if (isEditableTarget && (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === " ")) return;
+      if (isButtonTarget && event.key === " ") return;
+
+      const content = contentRef.current;
+      const pageDelta = content ? Math.max(120, content.clientHeight * 0.82) : 320;
+      const deltas: Record<string, number> = {
+        ArrowDown: 48,
+        ArrowUp: -48,
+        PageDown: pageDelta,
+        PageUp: -pageDelta,
+        " ": event.shiftKey ? -pageDelta : pageDelta,
+      };
+      const deltaY = deltas[event.key];
+      if (deltaY === undefined) return;
+
+      event.preventDefault();
+      scrollContentBy(deltaY);
+    };
+
     document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleScrollKeys);
+    overlayElement?.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleScrollKeys);
+      overlayElement?.removeEventListener("wheel", handleWheel);
       html.classList.remove("linka-lead-html-locked");
       body.classList.remove("linka-lead-page-locked");
       html.style.overflow = previousStyles.htmlOverflow;
@@ -614,6 +710,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
       body.style.right = previousStyles.right;
       body.style.width = previousStyles.width;
       window.scrollTo(0, scrollPositionRef.current);
+      if (shouldRestartLenis) activeLenis?.start?.();
     };
   }, [isOpen, onClose]);
 
@@ -953,7 +1050,9 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           <span className="linka-lead-country-placeholder">{copy.fields.countryPlaceholder}</span>
         )}
         <span aria-hidden="true" className="linka-lead-country-chevron">
-          v
+          <svg focusable="false" viewBox="0 0 12 8">
+            <path d="M1 6.5 6 1.5 11 6.5" />
+          </svg>
         </span>
       </button>
 
@@ -1233,7 +1332,7 @@ export default function LeadFormModal({ isOpen, language, onClose }: LeadFormMod
           </div>
         ) : null}
 
-        <div className="linka-lead-content" key={isComplete ? "complete" : step}>
+        <div className="linka-lead-content" key={isComplete ? "complete" : step} ref={contentRef} tabIndex={-1}>
           {renderStep()}
         </div>
       </div>

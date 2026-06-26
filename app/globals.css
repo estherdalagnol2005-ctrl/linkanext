@@ -33,8 +33,7 @@
     max(16px, env(safe-area-inset-right))
     max(18px, env(safe-area-inset-bottom))
     max(16px, env(safe-area-inset-left));
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   color: #f7fbff;
   background: transparent;
   animation: linka-lead-overlay-in 260ms ease-out both;
@@ -49,6 +48,7 @@
   isolation: isolate;
   width: min(760px, 100%);
   max-height: calc(100dvh - 36px);
+  min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   padding: clamp(26px, 4.8vw, 56px);
@@ -192,6 +192,7 @@
   position: relative;
   z-index: 2;
   min-height: 0;
+  max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   touch-action: pan-y;
@@ -207,6 +208,7 @@
 .linka-lead-form,
 .linka-lead-step {
   width: min(560px, 100%);
+  min-height: 0;
   margin: 0 auto;
 }
 
@@ -413,8 +415,33 @@
 }
 
 .linka-lead-country-chevron {
+  width: 14px;
+  height: 14px;
+  display: inline-grid;
+  place-items: center;
   color: #b7ff32;
-  font: 950 12px/1 "Manrope", Arial, sans-serif;
+  pointer-events: none;
+  transform: rotate(180deg);
+  transition: transform 180ms ease;
+}
+
+.linka-lead-country-chevron svg {
+  width: 12px;
+  height: 8px;
+  display: block;
+  overflow: visible;
+}
+
+.linka-lead-country-chevron path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.linka-lead-country-trigger[aria-expanded="true"] .linka-lead-country-chevron {
+  transform: rotate(0deg);
 }
 
 .linka-lead-country-menu {
@@ -797,6 +824,7 @@
   .linka-lead-close,
   .linka-lead-option,
   .linka-lead-country-trigger,
+  .linka-lead-country-chevron,
   .linka-lead-country-option,
   .linka-lead-primary,
   .linka-lead-secondary {
