@@ -1,4 +1,4 @@
-import PortfolioReferencePage from "../../app/portfolio-reference-page";
+import PortfolioBuildPrototype from "./PortfolioBuildPrototype";
 
 export default function PortfolioSection() {
   return (
@@ -17,7 +17,7 @@ export default function PortfolioSection() {
         </p>
       </div>
 
-      <PortfolioReferencePage />
+      <PortfolioBuildPrototype />
       <style>{`
         .linka-portfolio-mount {
           position: relative;
