@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const projects = [
   {
@@ -36,6 +38,8 @@ const projects = [
 ];
 
 const SWIPE_THRESHOLD = 42;
+
+gsap.registerPlugin(ScrollTrigger);
 
 function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
@@ -121,6 +125,100 @@ export default function PortfolioBuildPrototype() {
     };
   }, [activeIndex, playProjectVideos]);
 
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      gsap.set(
+        [
+          ".linka-portfolio-kicker",
+          ".linka-portfolio-intro h2",
+          ".linka-portfolio-intro p",
+          ".lpb-drag-hint",
+          ".lpb-notebook",
+          ".lpb-phone",
+          ".lpb-project-meta",
+          ".lpb-controls",
+          ".lpb-glow",
+        ],
+        { autoAlpha: 1, clearProps: "transform,filter" },
+      );
+      return;
+    }
+
+    const context = gsap.context(() => {
+      const mount = section.closest(".linka-portfolio-mount") ?? section;
+      const introItems = [
+        mount.querySelector(".linka-portfolio-kicker"),
+        mount.querySelector(".linka-portfolio-intro h2"),
+        mount.querySelector(".linka-portfolio-intro p"),
+      ].filter(Boolean);
+
+      const timeline = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: mount,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      timeline
+        .fromTo(
+          introItems,
+          { autoAlpha: 0, y: 22 },
+          { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.09, clearProps: "opacity,visibility,transform" },
+        )
+        .fromTo(
+          ".lpb-drag-hint",
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.46, clearProps: "opacity,visibility,transform" },
+          "-=0.24",
+        )
+        .fromTo(
+          ".lpb-notebook",
+          { autoAlpha: 0, y: 34, scale: 0.95 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.78 },
+          "-=0.16",
+        )
+        .fromTo(
+          ".lpb-phone",
+          { autoAlpha: 0, x: 28, y: 18, scale: 0.96 },
+          { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.62 },
+          "-=0.5",
+        )
+        .fromTo(
+          ".lpb-project-meta",
+          { autoAlpha: 0, y: 16 },
+          { autoAlpha: 1, y: 0, duration: 0.48, clearProps: "opacity,visibility,transform" },
+          "-=0.3",
+        )
+        .fromTo(
+          ".lpb-controls",
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.42, clearProps: "opacity,visibility,transform" },
+          "-=0.32",
+        );
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: mount,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.65,
+          },
+        })
+        .to(".lpb-notebook", { y: -12, ease: "none" }, 0)
+        .to(".lpb-phone", { y: -22, x: 8, ease: "none" }, 0)
+        .to(".lpb-glow", { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
+    }, section);
+
+    return () => context.revert();
+  }, []);
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (!sectionRef.current) return;
@@ -152,6 +250,7 @@ export default function PortfolioBuildPrototype() {
   return (
     <section className="lpb-section" aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
       <div className="lpb-shell">
+        <div className="lpb-glow" aria-hidden="true" />
         <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
 
         <div

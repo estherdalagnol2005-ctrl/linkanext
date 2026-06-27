@@ -1544,7 +1544,7 @@ body {
   box-sizing:border-box;
   width:min(800px,100%);
   margin:0 auto;
-  padding:100px 24px 22px;
+  padding:86px 24px 8px;
   text-align:center;
   position:relative;
   z-index:3;
@@ -1560,7 +1560,7 @@ body {
 
 .linka-portfolio-intro h2{
   max-width:780px;
-  margin:18px auto 0;
+  margin:12px auto 0;
   color:#fff;
   font-family:"Space Grotesk",Manrope,sans-serif;
   font-size:clamp(40px, 4vw, 52px);
@@ -1579,7 +1579,7 @@ body {
 
 .linka-portfolio-intro p{
   max-width:620px;
-  margin:18px auto 0;
+  margin:12px auto 0;
   color:rgba(255,255,255,.72);
   font:680 16px/1.72 Manrope,Arial,sans-serif;
 }
@@ -1891,7 +1891,7 @@ body {
 
 .linka-portfolio-mount .lpb-phone-block{
   height:92px;
-  margin-top:16px;
+  margin-top:10px;
   border-radius:18px;
   background:linear-gradient(135deg,rgba(125,211,252,.16),rgba(139,92,246,.12));
   border:1px solid rgba(255,255,255,.08);
@@ -1900,7 +1900,7 @@ body {
 .linka-portfolio-mount .lpb-phone-button{
   width:70%;
   height:24px;
-  margin:18px auto 0;
+  margin:12px auto 0;
   background:linear-gradient(90deg,rgba(139,255,79,.76),rgba(125,211,252,.68));
 }
 
@@ -2136,7 +2136,7 @@ body {
     width:100%;
     max-width:100%;
     margin-inline:auto;
-    padding:76px 20px 14px;
+    padding:64px 20px 4px;
     text-align:center;
   }
 
@@ -2149,7 +2149,7 @@ body {
     width:100%;
     max-width:360px;
     margin-inline:auto;
-    margin-top:15px;
+    margin-top:12px;
     font-size:34px;
     line-height:1.05;
     letter-spacing:0;
@@ -2165,7 +2165,7 @@ body {
     width:100%;
     max-width:340px;
     margin-inline:auto;
-    margin-top:15px;
+    margin-top:12px;
     font-size:14px;
     line-height:1.64;
     text-align:center;
@@ -2217,7 +2217,7 @@ body {
     order:2;
     width:100%;
     min-height:300px;
-    margin-top:2px;
+    margin-top:0;
   }
 
   .linka-portfolio-mount .lpb-devices::before{
@@ -2331,7 +2331,7 @@ body {
 }
 
 .linka-portfolio-mount .lpb-section{
-  padding:34px 18px 116px;
+  padding:8px 18px 92px;
   overflow:hidden;
   cursor:default;
   user-select:none;
@@ -2348,7 +2348,7 @@ body {
 
 .linka-portfolio-mount .lpb-shell{
   width:min(1180px,100%);
-  min-height:660px;
+  min-height:586px;
   margin:0 auto;
   display:block;
   position:relative;
@@ -2357,6 +2357,10 @@ body {
 }
 
 .linka-portfolio-mount .lpb-shell::before{
+  display:none;
+}
+
+.linka-portfolio-mount .lpb-glow{
   content:"";
   position:absolute;
   inset:2% -8% 8%;
@@ -2366,13 +2370,13 @@ body {
     radial-gradient(circle at 68% 36%,rgba(139,92,246,.2),transparent 36%),
     radial-gradient(circle at 50% 88%,rgba(139,255,79,.08),transparent 42%);
   filter:blur(22px);
-  opacity:.9;
+  opacity:.86;
   pointer-events:none;
 }
 
 .linka-portfolio-mount .lpb-drag-hint{
   position:absolute;
-  top:2px;
+  top:0;
   left:50%;
   z-index:5;
   transform:translateX(-50%);
@@ -2388,7 +2392,7 @@ body {
 }
 
 .linka-portfolio-mount .lpb-gallery{
-  height:560px;
+  height:492px;
   position:relative;
   transform-style:preserve-3d;
   perspective:1500px;
@@ -2399,7 +2403,7 @@ body {
 
 .linka-portfolio-mount .lpb-project-layer{
   position:absolute;
-  inset:54px 4% 22px;
+  inset:34px 4% 10px;
   display:grid;
   place-items:center;
   opacity:0;
@@ -2434,7 +2438,7 @@ body {
 
 .linka-portfolio-mount .lpb-devices{
   width:min(900px,100%);
-  min-height:440px;
+  min-height:392px;
   position:relative;
   display:flex;
   align-items:center;
@@ -2576,7 +2580,7 @@ body {
   position:relative;
   z-index:12;
   width:min(560px,100%);
-  margin:-2px auto 0;
+  margin:-12px auto 0;
   display:grid;
   gap:8px;
   text-align:center;
@@ -2599,7 +2603,7 @@ body {
 
 .linka-portfolio-mount .lpb-controls{
   width:min(360px,100%);
-  margin:18px auto 0;
+  margin:12px auto 0;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2700,18 +2704,18 @@ body {
 
 @media(max-width:767px){
   .linka-portfolio-mount .lpb-section{
-    padding:20px 0 86px;
+    padding:4px 0 72px;
   }
 
   .linka-portfolio-mount .lpb-shell{
     width:100%;
-    min-height:590px;
+    min-height:506px;
     perspective:1050px;
   }
 
-  .linka-portfolio-mount .lpb-shell::before{
+  .linka-portfolio-mount .lpb-glow{
     inset:4% -28% 14%;
-    opacity:.82;
+    opacity:.76;
   }
 
   .linka-portfolio-mount .lpb-drag-hint{
@@ -2720,12 +2724,12 @@ body {
   }
 
   .linka-portfolio-mount .lpb-gallery{
-    height:390px;
+    height:330px;
     perspective:1000px;
   }
 
   .linka-portfolio-mount .lpb-project-layer{
-    inset:48px 0 20px;
+    inset:30px 0 8px;
   }
 
   .linka-portfolio-mount .lpb-project-layer.is-active{
@@ -2742,7 +2746,7 @@ body {
 
   .linka-portfolio-mount .lpb-devices{
     width:100%;
-    min-height:286px;
+    min-height:254px;
     display:grid;
     place-items:center;
   }
@@ -2798,7 +2802,8 @@ body {
 
   .linka-portfolio-mount .lpb-project-meta{
     width:min(330px,92%);
-    margin:-8px auto 0;
+    margin:-16px auto 0;
+    gap:6px;
   }
 
   .linka-portfolio-mount .lpb-project-meta strong{
@@ -2807,7 +2812,7 @@ body {
 
   .linka-portfolio-mount .lpb-controls{
     width:min(300px,90%);
-    margin-top:16px;
+    margin-top:10px;
     gap:10px;
   }
 
@@ -2817,6 +2822,13 @@ body {
     height:40px;
     min-height:40px;
     padding:0;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .linka-portfolio-mount .lpb-project-layer.is-active,
+  .linka-portfolio-mount .lpb-project-video{
+    animation:none!important;
   }
 }
 html,body{max-width:100%!important;overflow-x:clip!important}
@@ -3231,7 +3243,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   display:block;
   object-fit:contain;
   filter:invert(1) brightness(1.12) drop-shadow(0 0 8px rgba(125,211,252,.08));
-  opacity:.9;
+  opacity:.86;
 }
 
 .lov64-experience-box{
@@ -3881,7 +3893,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lkss3-row-b{
-    margin-top:16px;
+    margin-top:10px;
   }
 
   .lkss3-item{
@@ -3969,7 +3981,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 .lp8-stage{
   width:min(600px,100%);
-  height:560px;
+  height:492px;
   position:relative;
 }
 
@@ -4103,7 +4115,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 .lp8-discount small{
   display:inline-flex;
-  margin-top:16px;
+  margin-top:10px;
   padding:8px 13px;
   border-radius:999px;
   background:rgba(125,211,252,.10);
@@ -4628,11 +4640,11 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 @media(max-width:380px){
   .lp8-visual{
-    min-height:390px;
+    min-height:330px;
   }
 
   .lp8-stage{
-    height:390px;
+    height:330px;
   }
 
   .lp8-core{
@@ -5008,7 +5020,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 @keyframes lnt3CtaSweep{
   0%,56%{left:-48%;opacity:0;}
-  68%{opacity:.9;}
+  68%{opacity:.86;}
   100%{left:118%;opacity:0;}
 }
 
