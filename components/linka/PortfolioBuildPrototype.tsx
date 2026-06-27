@@ -1,3 +1,40 @@
+"use client";
+
+import { useState } from "react";
+
+const projects = [
+  {
+    id: "marcenaria",
+    name: "Marcenaria",
+    desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenariadesktopmp4.mp4",
+    mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenaria.mp4",
+  },
+  {
+    id: "nutricionista",
+    name: "Nutricionista",
+    desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
+    mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionista.mp4",
+  },
+  {
+    id: "casa-sea",
+    name: "Casa Sea",
+    desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
+    mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
+  },
+  {
+    id: "barbearia",
+    name: "Barbearia",
+    desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbeariadesktop-1.mp4",
+    mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbearia.mp4",
+  },
+  {
+    id: "quatorze",
+    name: "Quatorze",
+    desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
+    mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
+  },
+];
+
 const modules = [
   {
     index: "01",
@@ -22,6 +59,9 @@ const modules = [
 ];
 
 export default function PortfolioBuildPrototype() {
+  const [activeProjectId, setActiveProjectId] = useState(projects[0].id);
+  const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
+
   return (
     <section className="lpb-section" aria-label="Experiência em construção">
       <div className="lpb-shell">
@@ -33,18 +73,17 @@ export default function PortfolioBuildPrototype() {
                 <span />
                 <span />
               </div>
-              <div className="lpb-wireframe lpb-wireframe-hero" />
-              <div className="lpb-wireframe-row">
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className="lpb-wireframe-grid">
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
+              <video
+                key={`${activeProject.id}-desktop`}
+                className="lpb-project-video"
+                src={activeProject.desktopVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label={`Projeto ${activeProject.name} no notebook`}
+              />
             </div>
             <div className="lpb-notebook-base" />
           </div>
@@ -52,11 +91,17 @@ export default function PortfolioBuildPrototype() {
           <div className="lpb-phone">
             <div className="lpb-phone-screen">
               <div className="lpb-phone-notch" />
-              <div className="lpb-phone-line is-bright" />
-              <div className="lpb-phone-block" />
-              <div className="lpb-phone-line" />
-              <div className="lpb-phone-line is-short" />
-              <div className="lpb-phone-button" />
+              <video
+                key={`${activeProject.id}-mobile`}
+                className="lpb-project-video"
+                src={activeProject.mobileVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label={`Projeto ${activeProject.name} no celular`}
+              />
             </div>
           </div>
         </div>
@@ -73,6 +118,20 @@ export default function PortfolioBuildPrototype() {
             <div className="lpb-progress" aria-label="Progresso 100%">
               <span />
             </div>
+          </div>
+
+          <div className="lpb-selector" aria-label="Selecionar projeto">
+            {projects.map((project) => (
+              <button
+                className={project.id === activeProject.id ? "lpb-project-tab is-active" : "lpb-project-tab"}
+                key={project.id}
+                onClick={() => setActiveProjectId(project.id)}
+                type="button"
+                aria-pressed={project.id === activeProject.id}
+              >
+                {project.name}
+              </button>
+            ))}
           </div>
 
           <div className="lpb-modules" aria-label="Módulos conectados">

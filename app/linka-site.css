@@ -1660,6 +1660,8 @@ body {
 .linka-portfolio-mount .lpb-notebook-screen{
   aspect-ratio:16/10;
   padding:18px;
+  display:flex;
+  flex-direction:column;
   border:1px solid rgba(255,255,255,.16);
   border-radius:24px 24px 16px 16px;
   background:
@@ -1669,6 +1671,7 @@ body {
     inset 0 0 0 1px rgba(255,255,255,.05),
     inset 0 0 44px rgba(125,211,252,.08),
     0 0 46px rgba(125,211,252,.16);
+  overflow:hidden;
 }
 
 .linka-portfolio-mount .lpb-notebook-base{
@@ -1682,6 +1685,7 @@ body {
 
 .linka-portfolio-mount .lpb-window-bar{
   height:24px;
+  flex:0 0 auto;
   display:flex;
   align-items:center;
   gap:8px;
@@ -1699,6 +1703,22 @@ body {
 .linka-portfolio-mount .lpb-window-bar span:nth-child(2){
   background:rgba(139,255,79,.72);
   box-shadow:0 0 14px rgba(139,255,79,.35);
+}
+
+.linka-portfolio-mount .lpb-project-video{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:0;
+  border:0;
+  border-radius:18px;
+  object-fit:cover;
+  background:#02070d;
+}
+
+.linka-portfolio-mount .lpb-project-video::-webkit-media-controls,
+.linka-portfolio-mount .lpb-project-video::-webkit-media-controls-start-playback-button{
+  display:none!important;
 }
 
 .linka-portfolio-mount .lpb-wireframe,
@@ -1775,6 +1795,13 @@ body {
     linear-gradient(155deg,rgba(7,17,32,.98),rgba(16,31,55,.98) 58%,rgba(25,14,49,.98));
   border:1px solid rgba(125,211,252,.12);
   position:relative;
+  overflow:hidden;
+}
+
+.linka-portfolio-mount .lpb-phone-screen .lpb-project-video{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
 }
 
 .linka-portfolio-mount .lpb-phone-notch{
@@ -1786,6 +1813,7 @@ body {
   border-radius:999px;
   background:rgba(255,255,255,.2);
   transform:translateX(-50%);
+  z-index:2;
 }
 
 .linka-portfolio-mount .lpb-phone-line,
@@ -1889,6 +1917,50 @@ body {
   border-radius:inherit;
   background:linear-gradient(90deg,#8bff4f,#7dd3fc 58%,#a78bfa);
   box-shadow:0 0 22px rgba(125,211,252,.28);
+}
+
+.linka-portfolio-mount .lpb-selector{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.052),rgba(255,255,255,.024));
+}
+
+.linka-portfolio-mount .lpb-project-tab{
+  appearance:none;
+  flex:1 1 auto;
+  min-width:max-content;
+  min-height:36px;
+  padding:0 13px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  color:rgba(255,255,255,.68);
+  cursor:pointer;
+  font:850 11px/1 Manrope,Arial,sans-serif;
+  letter-spacing:.04em;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    box-shadow .18s ease;
+}
+
+.linka-portfolio-mount .lpb-project-tab:hover,
+.linka-portfolio-mount .lpb-project-tab:focus-visible{
+  border-color:rgba(125,211,252,.36);
+  color:#fff;
+  outline:none;
+}
+
+.linka-portfolio-mount .lpb-project-tab.is-active{
+  border-color:rgba(139,255,79,.48);
+  background:linear-gradient(90deg,rgba(139,255,79,.18),rgba(125,211,252,.12));
+  color:#fff;
+  box-shadow:0 0 22px rgba(139,255,79,.12);
 }
 
 .linka-portfolio-mount .lpb-modules{
@@ -2034,7 +2106,7 @@ body {
   }
 
   .linka-portfolio-mount .lpb-devices{
-    order:2;
+    order:3;
     width:100%;
     min-height:300px;
     margin-top:2px;
@@ -2063,6 +2135,10 @@ body {
   .linka-portfolio-mount .lpb-window-bar span{
     width:6px;
     height:6px;
+  }
+
+  .linka-portfolio-mount .lpb-project-video{
+    border-radius:12px;
   }
 
   .linka-portfolio-mount .lpb-wireframe-row{
@@ -2099,6 +2175,10 @@ body {
     border-radius:17px;
   }
 
+  .linka-portfolio-mount .lpb-phone-screen .lpb-project-video{
+    border-radius:inherit;
+  }
+
   .linka-portfolio-mount .lpb-phone-block{
     height:58px;
     margin-top:12px;
@@ -2115,8 +2195,22 @@ body {
     margin-top:12px;
   }
 
+  .linka-portfolio-mount .lpb-selector{
+    order:2;
+    width:100%;
+    gap:7px;
+    padding:9px;
+    border-radius:17px;
+  }
+
+  .linka-portfolio-mount .lpb-project-tab{
+    min-height:34px;
+    padding-inline:11px;
+    font-size:10.5px;
+  }
+
   .linka-portfolio-mount .lpb-modules{
-    order:3;
+    order:4;
     width:100%;
     grid-template-columns:1fr;
     gap:10px;
