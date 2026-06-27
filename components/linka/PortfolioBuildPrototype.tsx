@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type SyntheticEvent, useEffect, useRef, useState } from "react";
 
 const projects = [
   {
@@ -38,34 +38,76 @@ const projects = [
 const modules = [
   {
     index: "01",
-    title: "ESTRATÉGIA",
-    description: "Direção definida",
+    id: "strategy",
+    className: "is-strategy",
+    title: "Estratégia",
+    description: "A direção que organiza todo o projeto.",
+    progress: 25,
   },
   {
     index: "02",
-    title: "IDENTIDADE",
-    description: "A marca ganha forma",
+    id: "identity",
+    className: "is-identity",
+    title: "Identidade",
+    description: "A marca começa a ganhar personalidade.",
+    progress: 50,
   },
   {
     index: "03",
-    title: "EXPERIÊNCIA",
-    description: "Interações com propósito",
+    id: "experience",
+    className: "is-experience",
+    title: "Experiência",
+    description: "Cada interação passa a ter propósito.",
+    progress: 75,
   },
   {
     index: "04",
-    title: "CONVERSÃO",
-    description: "Pronto para gerar resultado",
+    id: "conversion",
+    className: "is-conversion",
+    title: "Conversão",
+    description: "O projeto fica pronto para gerar resultado.",
+    progress: 100,
   },
 ];
 
 export default function PortfolioBuildPrototype() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [activeProjectId, setActiveProjectId] = useState(projects[0].id);
+  const [activeModuleId, setActiveModuleId] = useState(modules[0].id);
   const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
+  const activeModule = modules.find((module) => module.id === activeModuleId) ?? modules[0];
+
+  function playVideo(video: HTMLVideoElement) {
+    video.muted = true;
+    video.defaultMuted = true;
+
+    const playback = video.play();
+    void playback.catch(() => undefined);
+  }
+
+  function playProjectVideos() {
+    const videos = sectionRef.current?.querySelectorAll<HTMLVideoElement>(".lpb-project-video") ?? [];
+    videos.forEach(playVideo);
+  }
+
+  function handleVideoReady(event: SyntheticEvent<HTMLVideoElement>) {
+    playVideo(event.currentTarget);
+  }
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(playProjectVideos);
+    const retry = window.setTimeout(playProjectVideos, 240);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(retry);
+    };
+  }, [activeProjectId]);
 
   return (
-    <section className="lpb-section" aria-label="Experiência em construção">
+    <section className="lpb-section" aria-label="Experiência em construção" ref={sectionRef}>
       <div className="lpb-shell">
-        <div className="lpb-devices" aria-hidden="true">
+        <div className={`lpb-devices ${activeModule.className}`} aria-hidden="true">
           <div className="lpb-notebook">
             <div className="lpb-notebook-screen">
               <div className="lpb-window-bar">
@@ -83,6 +125,8 @@ export default function PortfolioBuildPrototype() {
                 playsInline
                 preload="metadata"
                 aria-label={`Projeto ${activeProject.name} no notebook`}
+                onCanPlay={handleVideoReady}
+                onLoadedData={handleVideoReady}
               />
             </div>
             <div className="lpb-notebook-base" />
@@ -101,6 +145,8 @@ export default function PortfolioBuildPrototype() {
                 playsInline
                 preload="metadata"
                 aria-label={`Projeto ${activeProject.name} no celular`}
+                onCanPlay={handleVideoReady}
+                onLoadedData={handleVideoReady}
               />
             </div>
           </div>
@@ -109,15 +155,31 @@ export default function PortfolioBuildPrototype() {
         <div className="lpb-content">
           <div className="lpb-panel">
             <span className="lpb-eyebrow">EXPERIÊNCIA EM CONSTRUÇÃO</span>
-            <strong className="lpb-status">4 / 4 módulos conectados</strong>
-            <p>
-              Cada camada transforma uma ideia
-              <br />
-              em uma experiência digital completa.
-            </p>
-            <div className="lpb-progress" aria-label="Progresso 100%">
-              <span />
+            <div className="lpb-active-copy" key={activeModule.id}>
+              <strong className="lpb-status">{activeModule.title}</strong>
+              <p>{activeModule.description}</p>
             </div>
+            <div className="lpb-progress" aria-label={`Progresso ${activeModule.progress}%`}>
+              <span style={{ width: `${activeModule.progress}%` }} />
+            </div>
+          </div>
+
+          <div className="lpb-steps" aria-label="Etapas da experiência">
+            {modules.map((module) => (
+              <button
+                className={`lpb-step ${module.className} ${module.id === activeModule.id ? "is-active" : ""}`}
+                key={module.id}
+                onClick={() => {
+                  setActiveModuleId(module.id);
+                  playProjectVideos();
+                }}
+                type="button"
+                aria-pressed={module.id === activeModule.id}
+              >
+                <span>{module.index}</span>
+                {module.title}
+              </button>
+            ))}
           </div>
 
           <div className="lpb-selector" aria-label="Selecionar projeto">
@@ -125,24 +187,15 @@ export default function PortfolioBuildPrototype() {
               <button
                 className={project.id === activeProject.id ? "lpb-project-tab is-active" : "lpb-project-tab"}
                 key={project.id}
-                onClick={() => setActiveProjectId(project.id)}
+                onClick={() => {
+                  setActiveProjectId(project.id);
+                  playProjectVideos();
+                }}
                 type="button"
                 aria-pressed={project.id === activeProject.id}
               >
                 {project.name}
               </button>
-            ))}
-          </div>
-
-          <div className="lpb-modules" aria-label="Módulos conectados">
-            {modules.map((module) => (
-              <article className="lpb-module" key={module.index}>
-                <span>{module.index}</span>
-                <div>
-                  <h3>{module.title}</h3>
-                  <p>{module.description}</p>
-                </div>
-              </article>
             ))}
           </div>
         </div>
