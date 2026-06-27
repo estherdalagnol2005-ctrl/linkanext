@@ -1,6 +1,6 @@
 "use client";
 
-import { type SyntheticEvent, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const projects = [
   {
@@ -35,47 +35,33 @@ const projects = [
   },
 ];
 
-const modules = [
-  {
-    index: "01",
-    id: "strategy",
-    className: "is-strategy",
-    title: "Estratégia",
-    description: "A direção que organiza todo o projeto.",
-    progress: 25,
-  },
-  {
-    index: "02",
-    id: "identity",
-    className: "is-identity",
-    title: "Identidade",
-    description: "A marca começa a ganhar personalidade.",
-    progress: 50,
-  },
-  {
-    index: "03",
-    id: "experience",
-    className: "is-experience",
-    title: "Experiência",
-    description: "Cada interação passa a ter propósito.",
-    progress: 75,
-  },
-  {
-    index: "04",
-    id: "conversion",
-    className: "is-conversion",
-    title: "Conversão",
-    description: "O projeto fica pronto para gerar resultado.",
-    progress: 100,
-  },
-];
+const SWIPE_THRESHOLD = 42;
+
+type VisibleProject = {
+  offset: -1 | 0 | 1;
+  project: (typeof projects)[number];
+};
+
+function wrapIndex(index: number) {
+  return (index + projects.length) % projects.length;
+}
 
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeProjectId, setActiveProjectId] = useState(projects[0].id);
-  const [activeModuleId, setActiveModuleId] = useState(modules[0].id);
-  const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
-  const activeModule = modules.find((module) => module.id === activeModuleId) ?? modules[0];
+  const dragStartX = useRef<number | null>(null);
+  const dragDeltaX = useRef(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const activeProject = projects[activeIndex];
+
+  const visibleProjects = useMemo<VisibleProject[]>(
+    () => [
+      { offset: -1, project: projects[wrapIndex(activeIndex - 1)] },
+      { offset: 0, project: activeProject },
+      { offset: 1, project: projects[wrapIndex(activeIndex + 1)] },
+    ],
+    [activeIndex, activeProject],
+  );
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
@@ -85,13 +71,49 @@ export default function PortfolioBuildPrototype() {
     void playback.catch(() => undefined);
   }
 
-  function playProjectVideos() {
+  const playProjectVideos = useCallback(() => {
     const videos = sectionRef.current?.querySelectorAll<HTMLVideoElement>(".lpb-project-video") ?? [];
     videos.forEach(playVideo);
+  }, []);
+
+  const changeProject = useCallback(
+    (direction: -1 | 1) => {
+      setHasInteracted(true);
+      setActiveIndex((currentIndex) => wrapIndex(currentIndex + direction));
+    },
+    [],
+  );
+
+  function handlePointerDown(event: React.PointerEvent<HTMLElement>) {
+    dragStartX.current = event.clientX;
+    dragDeltaX.current = 0;
+    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function handleVideoReady(event: SyntheticEvent<HTMLVideoElement>) {
-    playVideo(event.currentTarget);
+  function handlePointerMove(event: React.PointerEvent<HTMLElement>) {
+    if (dragStartX.current === null) return;
+    dragDeltaX.current = event.clientX - dragStartX.current;
+  }
+
+  function handlePointerUp(event: React.PointerEvent<HTMLElement>) {
+    if (dragStartX.current === null) return;
+
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    const distance = dragDeltaX.current;
+    dragStartX.current = null;
+    dragDeltaX.current = 0;
+
+    if (Math.abs(distance) < SWIPE_THRESHOLD) return;
+    changeProject(distance < 0 ? 1 : -1);
+  }
+
+  function handlePointerCancel(event: React.PointerEvent<HTMLElement>) {
+    if (dragStartX.current !== null) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    dragStartX.current = null;
+    dragDeltaX.current = 0;
   }
 
   useEffect(() => {
@@ -102,102 +124,117 @@ export default function PortfolioBuildPrototype() {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(retry);
     };
-  }, [activeProjectId]);
+  }, [activeIndex, playProjectVideos]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (!sectionRef.current) return;
+      if (!sectionRef.current.matches(":hover") && document.activeElement !== sectionRef.current) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        changeProject(1);
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        changeProject(-1);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [changeProject]);
 
   return (
-    <section className="lpb-section" aria-label="Experiência em construção" ref={sectionRef}>
+    <section
+      className="lpb-section"
+      aria-label="Portfólio visual de projetos"
+      ref={sectionRef}
+      tabIndex={0}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+    >
       <div className="lpb-shell">
-        <div className={`lpb-devices ${activeModule.className}`} aria-hidden="true">
-          <div className="lpb-notebook">
-            <div className="lpb-notebook-screen">
-              <div className="lpb-window-bar">
-                <span />
-                <span />
-                <span />
-              </div>
-              <video
-                key={`${activeProject.id}-desktop`}
-                className="lpb-project-video"
-                src={activeProject.desktopVideo}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-label={`Projeto ${activeProject.name} no notebook`}
-                onCanPlay={handleVideoReady}
-                onLoadedData={handleVideoReady}
-              />
-            </div>
-            <div className="lpb-notebook-base" />
-          </div>
+        <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
 
-          <div className="lpb-phone">
-            <div className="lpb-phone-screen">
-              <div className="lpb-phone-notch" />
-              <video
-                key={`${activeProject.id}-mobile`}
-                className="lpb-project-video"
-                src={activeProject.mobileVideo}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-label={`Projeto ${activeProject.name} no celular`}
-                onCanPlay={handleVideoReady}
-                onLoadedData={handleVideoReady}
-              />
-            </div>
-          </div>
+        <div className="lpb-gallery" aria-live="polite">
+          {visibleProjects.map(({ offset, project }) => (
+            <article
+              className={`lpb-project-layer ${offset === 0 ? "is-active" : ""} ${
+                offset < 0 ? "is-previous" : offset > 0 ? "is-next" : ""
+              }`}
+              data-offset={offset}
+              key={`${project.id}-${offset}`}
+              aria-hidden={offset !== 0}
+            >
+              <div className="lpb-devices">
+                <div className="lpb-notebook">
+                  <div className="lpb-notebook-screen">
+                    <div className="lpb-window-bar">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <video
+                      key={`${project.id}-desktop`}
+                      className="lpb-project-video"
+                      src={project.desktopVideo}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={`Projeto ${project.name} no notebook`}
+                      onCanPlay={(event) => playVideo(event.currentTarget)}
+                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                    />
+                  </div>
+                  <div className="lpb-notebook-base" />
+                </div>
+
+                <div className="lpb-phone">
+                  <div className="lpb-phone-screen">
+                    <div className="lpb-phone-notch" />
+                    <video
+                      key={`${project.id}-mobile`}
+                      className="lpb-project-video"
+                      src={project.mobileVideo}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={`Projeto ${project.name} no celular`}
+                      onCanPlay={(event) => playVideo(event.currentTarget)}
+                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
 
-        <div className="lpb-content">
-          <div className="lpb-panel">
-            <span className="lpb-eyebrow">EXPERIÊNCIA EM CONSTRUÇÃO</span>
-            <div className="lpb-active-copy" key={activeModule.id}>
-              <strong className="lpb-status">{activeModule.title}</strong>
-              <p>{activeModule.description}</p>
-            </div>
-            <div className="lpb-progress" aria-label={`Progresso ${activeModule.progress}%`}>
-              <span style={{ width: `${activeModule.progress}%` }} />
-            </div>
-          </div>
+        <div className="lpb-project-meta">
+          <span>{String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+          <strong>{activeProject.name}</strong>
+        </div>
 
-          <div className="lpb-steps" aria-label="Etapas da experiência">
-            {modules.map((module) => (
-              <button
-                className={`lpb-step ${module.className} ${module.id === activeModule.id ? "is-active" : ""}`}
-                key={module.id}
-                onClick={() => {
-                  setActiveModuleId(module.id);
-                  playProjectVideos();
-                }}
-                type="button"
-                aria-pressed={module.id === activeModule.id}
-              >
-                <span>{module.index}</span>
-                {module.title}
-              </button>
+        <div className="lpb-controls" aria-label="Navegar projetos">
+          <button type="button" aria-label="Projeto anterior" onClick={() => changeProject(-1)}>
+            Anterior
+          </button>
+          <div className="lpb-dots" aria-hidden="true">
+            {projects.map((project, index) => (
+              <span className={index === activeIndex ? "is-active" : ""} key={project.id} />
             ))}
           </div>
-
-          <div className="lpb-selector" aria-label="Selecionar projeto">
-            {projects.map((project) => (
-              <button
-                className={project.id === activeProject.id ? "lpb-project-tab is-active" : "lpb-project-tab"}
-                key={project.id}
-                onClick={() => {
-                  setActiveProjectId(project.id);
-                  playProjectVideos();
-                }}
-                type="button"
-                aria-pressed={project.id === activeProject.id}
-              >
-                {project.name}
-              </button>
-            ))}
-          </div>
+          <button type="button" aria-label="Próximo projeto" onClick={() => changeProject(1)}>
+            Próximo
+          </button>
         </div>
       </div>
     </section>
