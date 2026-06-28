@@ -52,6 +52,9 @@ type ProjectPose = {
 const ORBIT_STEP = 360 / projects.length;
 const SWIPE_THRESHOLD = 42;
 const DRAG_ROTATION_SPEED = 0.28;
+const DESKTOP_ORBIT_DURATION = 44;
+const MOBILE_ORBIT_DURATION = 40;
+const AUTO_RESUME_DELAY = 800;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -171,6 +174,7 @@ export default function PortfolioBuildPrototype() {
   const pendingClickIndex = useRef<number | null>(null);
   const ignoreClick = useRef(false);
   const switchTimeout = useRef<number | null>(null);
+  const autoResumeTimeout = useRef<number | null>(null);
   const autoOrbitTween = useRef<gsap.core.Tween | null>(null);
   const snapOrbitTween = useRef<gsap.core.Tween | null>(null);
   const orbitProxy = useRef({ angle: 0 });
@@ -183,6 +187,8 @@ export default function PortfolioBuildPrototype() {
   const shouldAnimateOrbitReturn = useRef(false);
   const activeIndexRef = useRef(0);
   const modeRef = useRef<PortfolioMode>("orbit");
+  const isSwitchingRef = useRef(false);
+  const isPointerDownRef = useRef(false);
   const isCompactRef = useRef(false);
   const reduceMotionRef = useRef(false);
 
@@ -195,6 +201,11 @@ export default function PortfolioBuildPrototype() {
   const activeProject = projects[activeIndex];
   const showsOrbit = mode === "orbit" || mode === "opening";
   const showsProject = mode === "focus" || mode === "closing";
+
+  const updateSwitchingState = useCallback((nextState: boolean) => {
+    isSwitchingRef.current = nextState;
+    setIsSwitching(nextState);
+  }, []);
 
   const setActiveProject = useCallback((index: number) => {
     const nextIndex = wrapIndex(index);
@@ -299,17 +310,74 @@ export default function PortfolioBuildPrototype() {
     }
 
     switchTimeout.current = window.setTimeout(() => {
-      setIsSwitching(false);
+      updateSwitchingState(false);
       switchTimeout.current = null;
     }, 360);
+  }, [updateSwitchingState]);
+
+  const clearAutoOrbitResume = useCallback(() => {
+    if (autoResumeTimeout.current !== null) {
+      window.clearTimeout(autoResumeTimeout.current);
+      autoResumeTimeout.current = null;
+    }
   }, []);
 
   const stopAutoOrbit = useCallback(() => {
+    clearAutoOrbitResume();
+
     if (autoOrbitTween.current) {
       autoOrbitTween.current.kill();
       autoOrbitTween.current = null;
     }
-  }, []);
+  }, [clearAutoOrbitResume]);
+
+  const startAutoOrbit = useCallback(() => {
+    clearAutoOrbitResume();
+
+    if (autoOrbitTween.current) {
+      autoOrbitTween.current.kill();
+      autoOrbitTween.current = null;
+    }
+
+    if (
+      reduceMotionRef.current ||
+      !sectionRef.current ||
+      modeRef.current !== "orbit" ||
+      isSwitchingRef.current ||
+      isPointerDownRef.current
+    ) {
+      return;
+    }
+
+    orbitProxy.current.angle = orbitAngleRef.current;
+    autoOrbitTween.current = gsap.to(orbitProxy.current, {
+      angle: "-=360",
+      duration: isCompactRef.current ? MOBILE_ORBIT_DURATION : DESKTOP_ORBIT_DURATION,
+      ease: "none",
+      repeat: -1,
+      overwrite: true,
+      onUpdate: () => renderOrbitAtAngle(orbitProxy.current.angle, true),
+    });
+  }, [clearAutoOrbitResume, renderOrbitAtAngle]);
+
+  const scheduleAutoOrbitResume = useCallback(() => {
+    clearAutoOrbitResume();
+
+    if (
+      reduceMotionRef.current ||
+      !sectionRef.current ||
+      modeRef.current !== "orbit" ||
+      isSwitchingRef.current ||
+      isPointerDownRef.current
+    ) {
+      return;
+    }
+
+    autoResumeTimeout.current = window.setTimeout(() => {
+      autoResumeTimeout.current = null;
+      startAutoOrbit();
+    }, AUTO_RESUME_DELAY);
+  }, [clearAutoOrbitResume, startAutoOrbit]);
 
   const markInteraction = useCallback(() => {
     setHasInteracted(true);
@@ -380,12 +448,17 @@ export default function PortfolioBuildPrototype() {
       markInteraction();
       const nextIndex = wrapIndex(getNearestProjectIndex(orbitAngleRef.current) + direction);
 
-      setIsSwitching(true);
+      updateSwitchingState(true);
       setActiveProject(nextIndex);
-      snapOrbitToProject(nextIndex, modeRef.current === "orbit" ? 0.5 : 0.42, modeRef.current === "orbit");
+      snapOrbitToProject(
+        nextIndex,
+        modeRef.current === "orbit" ? 0.5 : 0.42,
+        modeRef.current === "orbit",
+        scheduleAutoOrbitResume,
+      );
       clearSwitchState();
     },
-    [clearSwitchState, markInteraction, setActiveProject, snapOrbitToProject],
+    [clearSwitchState, markInteraction, scheduleAutoOrbitResume, setActiveProject, snapOrbitToProject, updateSwitchingState],
   );
 
   const openProject = useCallback(
@@ -393,10 +466,10 @@ export default function PortfolioBuildPrototype() {
       if (modeRef.current !== "orbit") return;
 
       markInteraction();
-      returnOrbitAngleRef.current = orbitAngleRef.current;
+      returnOrbitAngleRef.current = getShortestTargetAngle(orbitAngleRef.current, -wrapIndex(index) * ORBIT_STEP);
       modeRef.current = "opening";
       setMode("opening");
-      setIsSwitching(true);
+      updateSwitchingState(true);
       setActiveProject(index);
 
       if (isCompact) {
@@ -408,7 +481,7 @@ export default function PortfolioBuildPrototype() {
         });
       }
     },
-    [isCompact, markInteraction, setActiveProject],
+    [isCompact, markInteraction, setActiveProject, updateSwitchingState],
   );
 
   const selectProject = useCallback(
@@ -431,11 +504,10 @@ export default function PortfolioBuildPrototype() {
   const returnToOrbit = useCallback(() => {
     if (modeRef.current !== "focus") return;
 
-    markInteraction();
     modeRef.current = "closing";
     setMode("closing");
-    setIsSwitching(true);
-  }, [markInteraction]);
+    updateSwitchingState(true);
+  }, [updateSwitchingState]);
 
   function getProjectIndexFromPoint(target: EventTarget | null, clientX: number, clientY: number) {
     const directCard =
@@ -475,6 +547,7 @@ export default function PortfolioBuildPrototype() {
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (modeRef.current !== "orbit") return;
 
+    isPointerDownRef.current = true;
     const currentAngle = orbitAngleRef.current;
     setOrbitAngle(currentAngle);
     if (!isCompactRef.current) {
@@ -529,6 +602,8 @@ export default function PortfolioBuildPrototype() {
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStartX.current === null) return;
 
+    isPointerDownRef.current = false;
+
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -570,7 +645,7 @@ export default function PortfolioBuildPrototype() {
       const targetIndex = getNearestProjectIndex(projectedAngle);
       const targetAngle = getShortestTargetAngle(currentAngle, -targetIndex * ORBIT_STEP);
 
-      snapOrbitToProject(targetIndex, getSnapDuration(currentAngle, targetAngle), true);
+      snapOrbitToProject(targetIndex, getSnapDuration(currentAngle, targetAngle), true, scheduleAutoOrbitResume);
       return;
     }
 
@@ -580,6 +655,8 @@ export default function PortfolioBuildPrototype() {
   }
 
   function handlePointerCancel(event: React.PointerEvent<HTMLDivElement>) {
+    isPointerDownRef.current = false;
+
     if (dragStartX.current !== null && event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -591,7 +668,7 @@ export default function PortfolioBuildPrototype() {
         renderOrbitAtAngle(pendingOrbitAngle.current, true);
       }
 
-      snapOrbitToProject(getNearestProjectIndex(orbitAngleRef.current), 0.45, true);
+      snapOrbitToProject(getNearestProjectIndex(orbitAngleRef.current), 0.45, true, scheduleAutoOrbitResume);
     }
 
     dragStartX.current = null;
@@ -677,7 +754,7 @@ export default function PortfolioBuildPrototype() {
     if (reduceMotionRef.current) {
       modeRef.current = "focus";
       setMode("focus");
-      setIsSwitching(false);
+      updateSwitchingState(false);
       return undefined;
     }
 
@@ -690,7 +767,7 @@ export default function PortfolioBuildPrototype() {
       if (!selectedCard) {
         modeRef.current = "focus";
         setMode("focus");
-        setIsSwitching(false);
+        updateSwitchingState(false);
         return;
       }
 
@@ -717,7 +794,7 @@ export default function PortfolioBuildPrototype() {
             onComplete: () => {
               modeRef.current = "focus";
               setMode("focus");
-              setIsSwitching(false);
+              updateSwitchingState(false);
             },
           });
         },
@@ -725,7 +802,7 @@ export default function PortfolioBuildPrototype() {
     }, section);
 
     return () => context.revert();
-  }, [mode]);
+  }, [mode, updateSwitchingState]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -736,7 +813,7 @@ export default function PortfolioBuildPrototype() {
       shouldAnimateOrbitReturn.current = false;
       modeRef.current = "orbit";
       setMode("orbit");
-      setIsSwitching(false);
+      updateSwitchingState(false);
       return undefined;
     }
 
@@ -759,13 +836,13 @@ export default function PortfolioBuildPrototype() {
           shouldAnimateOrbitReturn.current = true;
           modeRef.current = "orbit";
           setMode("orbit");
-          setIsSwitching(false);
+          updateSwitchingState(false);
         },
       });
     }, section);
 
     return () => context.revert();
-  }, [applyOrbitAngle, mode]);
+  }, [applyOrbitAngle, mode, updateSwitchingState]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -774,15 +851,35 @@ export default function PortfolioBuildPrototype() {
     shouldAnimateOrbitReturn.current = false;
 
     const context = gsap.context(() => {
+      const returnItems = [
+        section.querySelector(".lpb-drag-hint"),
+        section.querySelector(".lpb-mobile-orbit-stage"),
+        ...Array.from(section.querySelectorAll(".lpb-orbit-card")),
+      ].filter(Boolean);
+
+      if (returnItems.length === 0) {
+        startAutoOrbit();
+        return;
+      }
+
       gsap.fromTo(
-        [section.querySelector(".lpb-drag-hint"), ...Array.from(section.querySelectorAll(".lpb-orbit-card"))].filter(Boolean),
+        returnItems,
         { autoAlpha: 0, y: 10, scale: 0.96 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 0.28, stagger: 0.025, ease: "power2.out", clearProps: "opacity,visibility,transform" },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.28,
+          stagger: 0.025,
+          ease: "power2.out",
+          clearProps: "opacity,visibility,transform",
+          onComplete: startAutoOrbit,
+        },
       );
     }, section);
 
     return () => context.revert();
-  }, [mode]);
+  }, [mode, startAutoOrbit]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -867,15 +964,7 @@ export default function PortfolioBuildPrototype() {
       }, section);
     }
 
-    const autoOrbitDuration = window.matchMedia("(max-width: 767px)").matches ? 54 : 44;
-
-    autoOrbitTween.current = gsap.to(orbitProxy.current, {
-      angle: "-=360",
-      duration: autoOrbitDuration,
-      ease: "none",
-      repeat: -1,
-      onUpdate: () => renderOrbitAtAngle(orbitProxy.current.angle, true),
-    });
+    startAutoOrbit();
 
     return () => {
       stopAutoOrbit();
@@ -892,7 +981,7 @@ export default function PortfolioBuildPrototype() {
 
       context?.revert();
     };
-  }, [renderOrbitAtAngle, stopAutoOrbit]);
+  }, [startAutoOrbit, stopAutoOrbit]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -951,8 +1040,10 @@ export default function PortfolioBuildPrototype() {
       if (switchTimeout.current !== null) {
         window.clearTimeout(switchTimeout.current);
       }
+
+      clearAutoOrbitResume();
     };
-  }, []);
+  }, [clearAutoOrbitResume]);
 
   return (
     <section className={`lpb-section is-${mode}`} aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
