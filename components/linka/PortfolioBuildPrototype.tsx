@@ -63,6 +63,10 @@ function normalizeAngle(angle: number) {
   return ((((angle + 180) % 360) + 360) % 360) - 180;
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 function getShortestTargetAngle(currentAngle: number, targetAngle: number) {
   return currentAngle + normalizeAngle(targetAngle - currentAngle);
 }
@@ -93,12 +97,34 @@ function getRelativeOffset(index: number, activeIndex: number) {
   return offset;
 }
 
+function getMobileOrbitPose(index: number, orbitAngle: number, stageWidth: number): ProjectPose {
+  const safeWidth = clamp(stageWidth, 320, 460);
+  const angle = normalizeAngle(index * ORBIT_STEP + orbitAngle);
+  const radians = (angle * Math.PI) / 180;
+  const side = Math.sin(radians);
+  const depth = Math.cos(radians);
+  const frontness = (depth + 1) / 2;
+  const xRadius = clamp(safeWidth * 0.29, 96, 122);
+  const zRadius = clamp(safeWidth * 0.5, 160, 212);
+
+  return {
+    x: side * xRadius,
+    y: -8 + Math.abs(side) * 10 + (1 - frontness) * 28,
+    z: depth * zRadius - zRadius * 0.42,
+    rotateY: angle * -0.68,
+    scale: 0.48 + frontness * 0.5,
+    opacity: 0.28 + frontness * 0.72,
+    zIndex: 20 + Math.round(frontness * 80),
+  };
+}
+
 function getProjectPose(
   index: number,
   activeIndex: number,
   orbitAngle: number,
   mode: PortfolioMode,
   isCompact: boolean,
+  mobileOrbitWidth = 390,
 ): ProjectPose {
   if (mode === "opening") {
     const offset = getRelativeOffset(index, activeIndex);
@@ -116,19 +142,23 @@ function getProjectPose(
     };
   }
 
+  if (isCompact) {
+    return getMobileOrbitPose(index, orbitAngle, mobileOrbitWidth);
+  }
+
   const angle = normalizeAngle(index * ORBIT_STEP + orbitAngle);
   const radians = (angle * Math.PI) / 180;
   const frontness = (Math.cos(radians) + 1) / 2;
   const side = Math.sin(radians);
-  const xRadius = isCompact ? 128 : 310;
-  const zRadius = isCompact ? 172 : 430;
+  const xRadius = 310;
+  const zRadius = 430;
 
   return {
     x: side * xRadius,
-    y: Math.abs(side) * (isCompact ? 13 : 24) + (1 - frontness) * (isCompact ? 9 : 20),
-    z: Math.cos(radians) * zRadius - (isCompact ? 96 : 250),
+    y: Math.abs(side) * 24 + (1 - frontness) * 20,
+    z: Math.cos(radians) * zRadius - 250,
     rotateY: angle * -0.52,
-    scale: (isCompact ? 0.52 : 0.54) + frontness * (isCompact ? 0.45 : 0.48),
+    scale: 0.54 + frontness * 0.48,
     opacity: 0.22 + frontness * 0.78,
     zIndex: Math.round(frontness * 50),
   };
@@ -154,9 +184,15 @@ function readCardIndex(card: HTMLButtonElement | null) {
 
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
+  const orbitStageRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef<number | null>(null);
+  const dragStartY = useRef<number | null>(null);
   const dragStartAngle = useRef(0);
   const dragDeltaX = useRef(0);
+  const dragHasHorizontalIntent = useRef(false);
+  const dragVelocity = useRef(0);
+  const lastDragX = useRef(0);
+  const lastDragTime = useRef(0);
   const pendingClickIndex = useRef<number | null>(null);
   const ignoreClick = useRef(false);
   const switchTimeout = useRef<number | null>(null);
@@ -164,10 +200,16 @@ export default function PortfolioBuildPrototype() {
   const snapOrbitTween = useRef<gsap.core.Tween | null>(null);
   const orbitProxy = useRef({ angle: 0 });
   const orbitAngleRef = useRef(0);
+  const pendingOrbitAngle = useRef(0);
+  const orbitFrame = useRef<number | null>(null);
+  const orbitCardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const mobileOrbitWidthRef = useRef(390);
+  const visualActiveIndexRef = useRef(0);
   const returnOrbitAngleRef = useRef(0);
   const shouldAnimateOrbitReturn = useRef(false);
   const activeIndexRef = useRef(0);
   const modeRef = useRef<PortfolioMode>("orbit");
+  const isCompactRef = useRef(false);
   const reduceMotionRef = useRef(false);
 
   const [mode, setMode] = useState<PortfolioMode>("orbit");
@@ -176,6 +218,7 @@ export default function PortfolioBuildPrototype() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
+  const [mobileOrbitWidth, setMobileOrbitWidth] = useState(390);
   const activeProject = projects[activeIndex];
   const showsOrbit = mode === "orbit" || mode === "opening";
   const showsProject = mode === "focus" || mode === "closing";
@@ -183,20 +226,92 @@ export default function PortfolioBuildPrototype() {
   const setActiveProject = useCallback((index: number) => {
     const nextIndex = wrapIndex(index);
     activeIndexRef.current = nextIndex;
+    visualActiveIndexRef.current = nextIndex;
     setActiveIndex(nextIndex);
   }, []);
 
-  const applyOrbitAngle = useCallback(
-    (nextAngle: number, updateActiveProject = true) => {
+  const writeCardPose = useCallback((card: HTMLButtonElement, pose: ProjectPose) => {
+    card.style.setProperty("--lpb-card-x", `${pose.x.toFixed(2)}px`);
+    card.style.setProperty("--lpb-card-y", `${pose.y.toFixed(2)}px`);
+    card.style.setProperty("--lpb-card-z", `${pose.z.toFixed(2)}px`);
+    card.style.setProperty("--lpb-card-rotate-y", `${pose.rotateY.toFixed(2)}deg`);
+    card.style.setProperty("--lpb-card-scale", pose.scale.toFixed(3));
+    card.style.setProperty("--lpb-card-opacity", pose.opacity.toFixed(3));
+    card.style.setProperty("--lpb-card-z-index", String(pose.zIndex));
+  }, []);
+
+  const setVisualActiveProject = useCallback((index: number) => {
+    orbitCardRefs.current.forEach((card, cardIndex) => {
+      if (!card) return;
+
+      card.classList.toggle("is-selected", cardIndex === index);
+    });
+
+    visualActiveIndexRef.current = index;
+  }, []);
+
+  const renderOrbitAtAngle = useCallback(
+    (nextAngle: number, updateVisualProject = true) => {
       orbitAngleRef.current = nextAngle;
       orbitProxy.current.angle = nextAngle;
+      pendingOrbitAngle.current = nextAngle;
+
+      if (modeRef.current !== "orbit") return;
+
+      orbitCardRefs.current.forEach((card, index) => {
+        if (!card) return;
+
+        writeCardPose(
+          card,
+          getProjectPose(index, activeIndexRef.current, nextAngle, "orbit", isCompactRef.current, mobileOrbitWidthRef.current),
+        );
+      });
+
+      if (updateVisualProject) {
+        setVisualActiveProject(getNearestProjectIndex(nextAngle));
+      }
+    },
+    [setVisualActiveProject, writeCardPose],
+  );
+
+  const scheduleOrbitRender = useCallback(
+    (nextAngle: number) => {
+      pendingOrbitAngle.current = nextAngle;
+
+      if (orbitFrame.current !== null) return;
+
+      orbitFrame.current = window.requestAnimationFrame(() => {
+        orbitFrame.current = null;
+        renderOrbitAtAngle(pendingOrbitAngle.current, true);
+      });
+    },
+    [renderOrbitAtAngle],
+  );
+
+  const commitOrbitAngle = useCallback(
+    (nextAngle: number, updateActiveProject = true) => {
+      if (orbitFrame.current !== null) {
+        window.cancelAnimationFrame(orbitFrame.current);
+        orbitFrame.current = null;
+      }
+
+      renderOrbitAtAngle(nextAngle, updateActiveProject);
       setOrbitAngle(nextAngle);
 
       if (updateActiveProject) {
-        setActiveProject(getNearestProjectIndex(nextAngle));
+        const nearestProject = getNearestProjectIndex(nextAngle);
+        setVisualActiveProject(nearestProject);
+        setActiveProject(nearestProject);
       }
     },
-    [setActiveProject],
+    [renderOrbitAtAngle, setActiveProject, setVisualActiveProject],
+  );
+
+  const applyOrbitAngle = useCallback(
+    (nextAngle: number, updateActiveProject = true) => {
+      commitOrbitAngle(nextAngle, updateActiveProject);
+    },
+    [commitOrbitAngle],
   );
 
   const clearSwitchState = useCallback(() => {
@@ -222,6 +337,18 @@ export default function PortfolioBuildPrototype() {
     stopAutoOrbit();
   }, [stopAutoOrbit]);
 
+  function getDragRotationSpeed() {
+    if (!isCompactRef.current) return DRAG_ROTATION_SPEED;
+
+    const stageWidth = clamp(mobileOrbitWidthRef.current || window.innerWidth || 390, 320, 460);
+    return ORBIT_STEP / Math.max(104, stageWidth * 0.3);
+  }
+
+  function getSnapDuration(currentAngle: number, targetAngle: number) {
+    const distance = Math.abs(targetAngle - currentAngle);
+    return clamp(0.4 + Math.min(distance / 180, 1) * 0.25, 0.4, 0.65);
+  }
+
   const snapOrbitToProject = useCallback(
     (index: number, duration = 0.52, updateActiveProject = true) => {
       const targetAngle = getShortestTargetAngle(orbitAngleRef.current, -wrapIndex(index) * ORBIT_STEP);
@@ -231,23 +358,25 @@ export default function PortfolioBuildPrototype() {
       }
 
       if (reduceMotionRef.current) {
-        applyOrbitAngle(targetAngle, updateActiveProject);
+        commitOrbitAngle(targetAngle, updateActiveProject);
         return;
       }
+
+      orbitProxy.current.angle = orbitAngleRef.current;
 
       snapOrbitTween.current = gsap.to(orbitProxy.current, {
         angle: targetAngle,
         duration,
         ease: "power3.out",
         overwrite: true,
-        onUpdate: () => applyOrbitAngle(orbitProxy.current.angle, updateActiveProject),
+        onUpdate: () => renderOrbitAtAngle(orbitProxy.current.angle, updateActiveProject),
         onComplete: () => {
-          applyOrbitAngle(targetAngle, updateActiveProject);
+          commitOrbitAngle(targetAngle, updateActiveProject);
           snapOrbitTween.current = null;
         },
       });
     },
-    [applyOrbitAngle],
+    [commitOrbitAngle, renderOrbitAtAngle],
   );
 
   function playVideo(video: HTMLVideoElement) {
@@ -268,7 +397,7 @@ export default function PortfolioBuildPrototype() {
       if (modeRef.current !== "orbit") return;
 
       markInteraction();
-      const nextIndex = wrapIndex(activeIndexRef.current + direction);
+      const nextIndex = wrapIndex(getNearestProjectIndex(orbitAngleRef.current) + direction);
 
       setIsSwitching(true);
       setActiveProject(nextIndex);
@@ -358,12 +487,25 @@ export default function PortfolioBuildPrototype() {
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (modeRef.current !== "orbit") return;
 
+    const currentAngle = orbitAngleRef.current;
+    setOrbitAngle(currentAngle);
+    setActiveProject(getNearestProjectIndex(currentAngle));
     markInteraction();
+
+    if (snapOrbitTween.current) {
+      snapOrbitTween.current.kill();
+      snapOrbitTween.current = null;
+    }
 
     pendingClickIndex.current = getProjectIndexFromPoint(event.target, event.clientX, event.clientY);
     dragStartX.current = event.clientX;
+    dragStartY.current = event.clientY;
     dragStartAngle.current = orbitAngleRef.current;
     dragDeltaX.current = 0;
+    dragHasHorizontalIntent.current = false;
+    dragVelocity.current = 0;
+    lastDragX.current = event.clientX;
+    lastDragTime.current = event.timeStamp || performance.now();
     ignoreClick.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
   }
@@ -372,9 +514,25 @@ export default function PortfolioBuildPrototype() {
     if (dragStartX.current === null) return;
 
     dragDeltaX.current = event.clientX - dragStartX.current;
+    const dragDeltaY = event.clientY - (dragStartY.current ?? event.clientY);
+
+    if (!dragHasHorizontalIntent.current) {
+      if (Math.abs(dragDeltaY) > 10 && Math.abs(dragDeltaY) > Math.abs(dragDeltaX.current) * 1.2) return;
+      if (Math.abs(dragDeltaX.current) <= 4) return;
+
+      dragHasHorizontalIntent.current = true;
+    }
 
     if (modeRef.current === "orbit") {
-      applyOrbitAngle(dragStartAngle.current + dragDeltaX.current * DRAG_ROTATION_SPEED, true);
+      const dragSpeed = getDragRotationSpeed();
+      const now = event.timeStamp || performance.now();
+      const elapsed = Math.max(16, now - lastDragTime.current);
+
+      dragVelocity.current = ((event.clientX - lastDragX.current) * dragSpeed) / elapsed;
+      lastDragX.current = event.clientX;
+      lastDragTime.current = now;
+
+      scheduleOrbitRender(dragStartAngle.current + dragDeltaX.current * dragSpeed);
     }
   }
 
@@ -386,12 +544,15 @@ export default function PortfolioBuildPrototype() {
     }
 
     const distance = dragDeltaX.current;
+    const hadHorizontalIntent = dragHasHorizontalIntent.current;
     const clickIndex = pendingClickIndex.current;
     dragStartX.current = null;
+    dragStartY.current = null;
     pendingClickIndex.current = null;
     dragDeltaX.current = 0;
+    dragHasHorizontalIntent.current = false;
 
-    if (Math.abs(distance) <= 8 && clickIndex !== null) {
+    if (!hadHorizontalIntent && Math.abs(distance) <= 8 && clickIndex !== null) {
       selectProject(clickIndex);
       ignoreClick.current = true;
       window.setTimeout(() => {
@@ -407,12 +568,23 @@ export default function PortfolioBuildPrototype() {
       }, 0);
     }
 
-    if (Math.abs(distance) < SWIPE_THRESHOLD) return;
-
     if (modeRef.current === "orbit") {
-      snapOrbitToProject(getNearestProjectIndex(orbitAngleRef.current), 0.45, true);
+      if (orbitFrame.current !== null) {
+        window.cancelAnimationFrame(orbitFrame.current);
+        orbitFrame.current = null;
+        renderOrbitAtAngle(pendingOrbitAngle.current, true);
+      }
+
+      const currentAngle = orbitAngleRef.current;
+      const projectedAngle = currentAngle + clamp(dragVelocity.current * 280, -ORBIT_STEP * 2.4, ORBIT_STEP * 2.4);
+      const targetIndex = getNearestProjectIndex(projectedAngle);
+      const targetAngle = getShortestTargetAngle(currentAngle, -targetIndex * ORBIT_STEP);
+
+      snapOrbitToProject(targetIndex, getSnapDuration(currentAngle, targetAngle), true);
       return;
     }
+
+    if (Math.abs(distance) < SWIPE_THRESHOLD) return;
 
     changeProject(distance < 0 ? 1 : -1);
   }
@@ -422,9 +594,22 @@ export default function PortfolioBuildPrototype() {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
+    if (modeRef.current === "orbit" && dragHasHorizontalIntent.current) {
+      if (orbitFrame.current !== null) {
+        window.cancelAnimationFrame(orbitFrame.current);
+        orbitFrame.current = null;
+        renderOrbitAtAngle(pendingOrbitAngle.current, true);
+      }
+
+      snapOrbitToProject(getNearestProjectIndex(orbitAngleRef.current), 0.45, true);
+    }
+
     dragStartX.current = null;
+    dragStartY.current = null;
     pendingClickIndex.current = null;
     dragDeltaX.current = 0;
+    dragHasHorizontalIntent.current = false;
+    dragVelocity.current = 0;
   }
 
   useEffect(() => {
@@ -433,13 +618,49 @@ export default function PortfolioBuildPrototype() {
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 767px)");
-    const updateCompactState = () => setIsCompact(query.matches);
+    const updateCompactState = () => {
+      isCompactRef.current = query.matches;
+      setIsCompact(query.matches);
+    };
 
     updateCompactState();
     query.addEventListener("change", updateCompactState);
 
     return () => query.removeEventListener("change", updateCompactState);
   }, []);
+
+  useLayoutEffect(() => {
+    if (!isCompact || !showsOrbit) return undefined;
+
+    const updateMobileOrbitWidth = () => {
+      const nextWidth = Math.round(orbitStageRef.current?.clientWidth || window.innerWidth || 390);
+      mobileOrbitWidthRef.current = nextWidth;
+      setMobileOrbitWidth(nextWidth);
+      renderOrbitAtAngle(orbitAngleRef.current, true);
+    };
+
+    updateMobileOrbitWidth();
+
+    if (!orbitStageRef.current || typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateMobileOrbitWidth);
+      return () => window.removeEventListener("resize", updateMobileOrbitWidth);
+    }
+
+    const resizeObserver = new ResizeObserver(updateMobileOrbitWidth);
+    resizeObserver.observe(orbitStageRef.current);
+    window.addEventListener("orientationchange", updateMobileOrbitWidth);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("orientationchange", updateMobileOrbitWidth);
+    };
+  }, [isCompact, renderOrbitAtAngle, showsOrbit]);
+
+  useLayoutEffect(() => {
+    if (mode !== "orbit") return;
+
+    renderOrbitAtAngle(orbitAngleRef.current, true);
+  }, [isCompact, mode, renderOrbitAtAngle]);
 
   useEffect(() => {
     if (mode !== "focus") return undefined;
@@ -627,12 +848,14 @@ export default function PortfolioBuildPrototype() {
       }
     }, section);
 
+    const autoOrbitDuration = window.matchMedia("(max-width: 767px)").matches ? 54 : 44;
+
     autoOrbitTween.current = gsap.to(orbitProxy.current, {
       angle: "-=360",
-      duration: 44,
+      duration: autoOrbitDuration,
       ease: "none",
       repeat: -1,
-      onUpdate: () => applyOrbitAngle(orbitProxy.current.angle, true),
+      onUpdate: () => renderOrbitAtAngle(orbitProxy.current.angle, true),
     });
 
     return () => {
@@ -643,9 +866,14 @@ export default function PortfolioBuildPrototype() {
         snapOrbitTween.current = null;
       }
 
+      if (orbitFrame.current !== null) {
+        window.cancelAnimationFrame(orbitFrame.current);
+        orbitFrame.current = null;
+      }
+
       context.revert();
     };
-  }, [applyOrbitAngle, stopAutoOrbit]);
+  }, [renderOrbitAtAngle, stopAutoOrbit]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -725,9 +953,9 @@ export default function PortfolioBuildPrototype() {
           onPointerCancel={handlePointerCancel}
         >
           {showsOrbit ? (
-          <div className="lpb-orbit" aria-label="Escolha um projeto">
+          <div className="lpb-orbit" aria-label="Escolha um projeto" ref={orbitStageRef}>
             {projects.map((project, index) => {
-              const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact);
+              const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact, mobileOrbitWidth);
               const isSelected = index === activeIndex;
 
               return (
@@ -740,6 +968,9 @@ export default function PortfolioBuildPrototype() {
                   style={getPoseStyle(pose)}
                   aria-label={`Abrir projeto ${project.name}`}
                   key={project.id}
+                  ref={(card) => {
+                    orbitCardRefs.current[index] = card;
+                  }}
                   onClick={() => selectProject(index)}
                 >
                   <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>

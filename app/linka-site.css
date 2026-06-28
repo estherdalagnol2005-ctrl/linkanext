@@ -2705,6 +2705,8 @@ body {
 @media(max-width:767px){
   .linka-portfolio-mount .lpb-section{
     padding:4px 0 72px;
+    -webkit-user-select:none;
+    overscroll-behavior-x:contain;
   }
 
   .linka-portfolio-mount .lpb-shell{
@@ -3478,6 +3480,11 @@ body {
     padding:4px 0 72px;
   }
 
+  .linka-portfolio-mount .lpb-section.is-orbit{
+    padding-top:0;
+    padding-bottom:50px;
+  }
+
   .linka-portfolio-mount .lpb-shell{
     width:100%;
     min-height:552px;
@@ -3485,7 +3492,8 @@ body {
   }
 
   .linka-portfolio-mount .lpb-section.is-orbit .lpb-shell{
-    min-height:420px;
+    min-height:342px;
+    perspective:820px;
   }
 
   .linka-portfolio-mount .lpb-section.is-opening .lpb-shell{
@@ -3512,6 +3520,15 @@ body {
     height:388px;
     perspective:960px;
     perspective-origin:50% 42%;
+    overscroll-behavior-x:contain;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .linka-portfolio-mount .lpb-section.is-orbit .lpb-gallery{
+    height:320px;
+    perspective:820px;
+    perspective-origin:50% 38%;
+    overflow:visible;
   }
 
   .linka-portfolio-mount .lpb-gallery.is-focus,
@@ -3523,6 +3540,16 @@ body {
     top:30px;
     height:292px;
     perspective:940px;
+    overscroll-behavior-x:contain;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit{
+    top:14px;
+    height:254px;
+    perspective:820px;
+    perspective-origin:50% 42%;
+    overflow:visible;
+    transform-style:preserve-3d;
   }
 
   .linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit{
@@ -3537,10 +3564,25 @@ body {
     transform:translate(-50%,-48%) rotateX(66deg);
   }
 
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit::before{
+    width:min(328px,88vw);
+    height:108px;
+    transform:translate(-50%,-42%) rotateX(64deg);
+    box-shadow:
+      0 0 34px rgba(56,189,248,.07),
+      inset 0 0 22px rgba(139,92,246,.05);
+  }
+
   .linka-portfolio-mount .lpb-orbit::after{
     width:270px;
     max-width:72%;
     height:92px;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit::after{
+    width:min(230px,64vw);
+    height:76px;
+    transform:translate(-50%,-42%) rotateX(64deg) rotateZ(-7deg);
   }
 
   .linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit::before{
@@ -3553,15 +3595,81 @@ body {
     height:104px;
     padding:11px;
     border-radius:16px;
+    touch-action:pan-y;
+    contain:paint;
+    box-shadow:
+      0 18px 34px rgba(0,0,0,.36),
+      inset 0 1px 0 rgba(255,255,255,.075),
+      0 0 18px rgba(56,189,248,.075);
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit-card{
+    width:136px;
+    height:92px;
+    padding:10px;
+    border-radius:14px;
+    box-shadow:
+      0 14px 26px rgba(0,0,0,.34),
+      inset 0 1px 0 rgba(255,255,255,.075),
+      0 0 12px rgba(56,189,248,.055);
+    transform:
+      translate3d(-50%,-50%,0)
+      translate3d(var(--lpb-card-x),var(--lpb-card-y),var(--lpb-card-z))
+      rotateY(var(--lpb-card-rotate-y))
+      scale(var(--lpb-card-scale));
+    transition:
+      opacity .16s ease,
+      border-color .18s ease,
+      box-shadow .18s ease;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit-card{
+    transition:
+      transform .32s cubic-bezier(.2,.82,.22,1),
+      opacity .18s ease,
+      border-color .18s ease,
+      box-shadow .18s ease;
+  }
+
+  .linka-portfolio-mount .lpb-orbit-card::after{
+    opacity:.18;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit-card::after{
+    opacity:.12;
+  }
+
+  .linka-portfolio-mount .lpb-orbit-card.is-selected{
+    box-shadow:
+      0 20px 38px rgba(0,0,0,.42),
+      0 0 24px rgba(139,255,79,.16),
+      0 0 42px rgba(56,189,248,.10),
+      inset 0 1px 0 rgba(255,255,255,.11);
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-orbit-card.is-selected{
+    box-shadow:
+      0 18px 32px rgba(0,0,0,.38),
+      0 0 22px rgba(139,255,79,.14),
+      inset 0 1px 0 rgba(255,255,255,.11);
   }
 
   .linka-portfolio-mount .lpb-card-index{
     font-size:9.5px;
   }
 
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-card-index{
+    font-size:9px;
+  }
+
   .linka-portfolio-mount .lpb-card-name{
     margin-top:5px;
     font-size:11px;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-card-name{
+    margin-top:4px;
+    font-size:10.5px;
   }
 
   .linka-portfolio-mount .lpb-card-preview{
@@ -3570,6 +3678,14 @@ body {
     bottom:10px;
     height:42px;
     gap:5px;
+  }
+
+  .linka-portfolio-mount .lpb-gallery.is-orbit .lpb-card-preview{
+    left:10px;
+    right:10px;
+    bottom:9px;
+    height:36px;
+    gap:4px;
   }
 
   .linka-portfolio-mount .lpb-preview-hero,
