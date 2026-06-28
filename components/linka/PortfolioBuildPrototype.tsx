@@ -10,30 +10,40 @@ const projects = [
     name: "Marcenaria",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenariadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenaria.mp4",
+    desktopPreview: "/portfolio-previews/marcenaria-desktop.webp",
+    mobilePreview: "/portfolio-previews/marcenaria-mobile.webp",
   },
   {
     id: "nutricionista",
     name: "Nutricionista",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionista.mp4",
+    desktopPreview: "/portfolio-previews/nutricionista-desktop.webp",
+    mobilePreview: "/portfolio-previews/nutricionista-mobile.webp",
   },
   {
     id: "casa-sea",
     name: "Casa Sea",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
+    desktopPreview: "/portfolio-previews/casa-sea-desktop.webp",
+    mobilePreview: "/portfolio-previews/casa-sea-mobile.webp",
   },
   {
     id: "barbearia",
     name: "Barbearia",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbeariadesktop-1.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbearia.mp4",
+    desktopPreview: "/portfolio-previews/barbearia-desktop.webp",
+    mobilePreview: "/portfolio-previews/barbearia-mobile.webp",
   },
   {
     id: "quatorze",
     name: "Quatorze",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
+    desktopPreview: "/portfolio-previews/quatorze-desktop.webp",
+    mobilePreview: "/portfolio-previews/quatorze-mobile.webp",
   },
 ];
 
@@ -157,6 +167,29 @@ function readCardIndex(card: HTMLButtonElement | null) {
   if (!card?.dataset.index) return null;
 
   return Number(card.dataset.index);
+}
+
+function renderOrbitMockup(project: (typeof projects)[number]) {
+  return (
+    <>
+      <span className="lpb-orbit-mockup" aria-hidden="true">
+        <span className="lpb-mini-notebook">
+          <span className="lpb-mini-notebook-screen">
+            <img src={project.desktopPreview} alt="" loading="lazy" decoding="async" draggable={false} />
+          </span>
+          <span className="lpb-mini-notebook-base" />
+        </span>
+
+        <span className="lpb-mini-phone">
+          <span className="lpb-mini-phone-screen">
+            <img src={project.mobilePreview} alt="" loading="lazy" decoding="async" draggable={false} />
+          </span>
+        </span>
+      </span>
+
+      <span className="lpb-preview-name">{project.name}</span>
+    </>
+  );
 }
 
 export default function PortfolioBuildPrototype() {
@@ -1085,20 +1118,7 @@ export default function PortfolioBuildPrototype() {
                         key={project.id}
                         onClick={() => selectProject(index)}
                       >
-                        <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
-                        <span className="lpb-card-name">{project.name}</span>
-                        <span className="lpb-card-preview" aria-hidden="true">
-                          <span className="lpb-preview-hero" />
-                          <span className="lpb-preview-lines">
-                            <i />
-                            <i />
-                          </span>
-                          <span className="lpb-preview-grid">
-                            <i />
-                            <i />
-                            <i />
-                          </span>
-                        </span>
+                        {renderOrbitMockup(project)}
                       </button>
                     );
                   })}
@@ -1125,20 +1145,7 @@ export default function PortfolioBuildPrototype() {
                       }}
                       onClick={() => selectProject(index)}
                     >
-                      <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
-                      <span className="lpb-card-name">{project.name}</span>
-                      <span className="lpb-card-preview" aria-hidden="true">
-                        <span className="lpb-preview-hero" />
-                        <span className="lpb-preview-lines">
-                          <i />
-                          <i />
-                        </span>
-                        <span className="lpb-preview-grid">
-                          <i />
-                          <i />
-                          <i />
-                        </span>
-                      </span>
+                      {renderOrbitMockup(project)}
                     </button>
                   );
                 })}
