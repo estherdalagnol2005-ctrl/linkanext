@@ -2,7 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const projects = [
   {
@@ -37,7 +37,21 @@ const projects = [
   },
 ];
 
+type PortfolioMode = "orbit" | "focus";
+
+type ProjectPose = {
+  x: number;
+  y: number;
+  z: number;
+  rotateY: number;
+  scale: number;
+  opacity: number;
+  zIndex: number;
+};
+
+const ORBIT_STEP = 360 / projects.length;
 const SWIPE_THRESHOLD = 42;
+const DRAG_ROTATION_SPEED = 0.28;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,15 +59,195 @@ function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
 }
 
+function normalizeAngle(angle: number) {
+  return ((((angle + 180) % 360) + 360) % 360) - 180;
+}
+
+function getShortestTargetAngle(currentAngle: number, targetAngle: number) {
+  return currentAngle + normalizeAngle(targetAngle - currentAngle);
+}
+
+function getNearestProjectIndex(orbitAngle: number) {
+  let nearestIndex = 0;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  projects.forEach((_, index) => {
+    const distance = Math.abs(normalizeAngle(index * ORBIT_STEP + orbitAngle));
+
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  });
+
+  return nearestIndex;
+}
+
+function getRelativeOffset(index: number, activeIndex: number) {
+  let offset = index - activeIndex;
+  const half = projects.length / 2;
+
+  if (offset > half) offset -= projects.length;
+  if (offset < -half) offset += projects.length;
+
+  return offset;
+}
+
+function getProjectPose(
+  index: number,
+  activeIndex: number,
+  orbitAngle: number,
+  mode: PortfolioMode,
+  isCompact: boolean,
+): ProjectPose {
+  if (mode === "focus") {
+    const offset = getRelativeOffset(index, activeIndex);
+    const distance = Math.abs(offset);
+    const xStep = isCompact ? 102 : 168;
+    const zStep = isCompact ? 54 : 74;
+    const isActive = offset === 0;
+    const fanBaseY = isCompact ? 34 : 104;
+
+    return {
+      x: offset * xStep,
+      y: fanBaseY + (isActive ? 0 : (isCompact ? 18 : 24) + distance * 8),
+      z: isActive ? (isCompact ? 92 : 210) : (isCompact ? -116 : -146) - distance * zStep,
+      rotateY: isActive ? 0 : offset * -13,
+      scale: isActive ? (isCompact ? 0.82 : 0.94) : Math.max(isCompact ? 0.48 : 0.52, (isCompact ? 0.64 : 0.72) - distance * 0.08),
+      opacity: isActive ? 1 : Math.max(isCompact ? 0.2 : 0.24, (isCompact ? 0.52 : 0.6) - distance * 0.12),
+      zIndex: isActive ? 60 : 38 - distance,
+    };
+  }
+
+  const angle = normalizeAngle(index * ORBIT_STEP + orbitAngle);
+  const radians = (angle * Math.PI) / 180;
+  const frontness = (Math.cos(radians) + 1) / 2;
+  const side = Math.sin(radians);
+  const xRadius = isCompact ? 128 : 310;
+  const zRadius = isCompact ? 172 : 430;
+
+  return {
+    x: side * xRadius,
+    y: Math.abs(side) * (isCompact ? 13 : 24) + (1 - frontness) * (isCompact ? 9 : 20),
+    z: Math.cos(radians) * zRadius - (isCompact ? 96 : 250),
+    rotateY: angle * -0.52,
+    scale: (isCompact ? 0.52 : 0.54) + frontness * (isCompact ? 0.45 : 0.48),
+    opacity: 0.22 + frontness * 0.78,
+    zIndex: Math.round(frontness * 50),
+  };
+}
+
+function getPoseStyle(pose: ProjectPose) {
+  return {
+    "--lpb-card-x": `${pose.x.toFixed(2)}px`,
+    "--lpb-card-y": `${pose.y.toFixed(2)}px`,
+    "--lpb-card-z": `${pose.z.toFixed(2)}px`,
+    "--lpb-card-rotate-y": `${pose.rotateY.toFixed(2)}deg`,
+    "--lpb-card-scale": pose.scale.toFixed(3),
+    "--lpb-card-opacity": pose.opacity.toFixed(3),
+    "--lpb-card-z-index": pose.zIndex,
+  } as CSSProperties;
+}
+
+function readCardIndex(card: HTMLButtonElement | null) {
+  if (!card?.dataset.index) return null;
+
+  return Number(card.dataset.index);
+}
+
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
   const dragStartX = useRef<number | null>(null);
+  const dragStartAngle = useRef(0);
   const dragDeltaX = useRef(0);
+  const pendingClickIndex = useRef<number | null>(null);
+  const ignoreClick = useRef(false);
   const switchTimeout = useRef<number | null>(null);
+  const autoOrbitTween = useRef<gsap.core.Tween | null>(null);
+  const snapOrbitTween = useRef<gsap.core.Tween | null>(null);
+  const orbitProxy = useRef({ angle: 0 });
+  const orbitAngleRef = useRef(0);
+  const activeIndexRef = useRef(0);
+  const modeRef = useRef<PortfolioMode>("orbit");
+  const reduceMotionRef = useRef(false);
+
+  const [mode, setMode] = useState<PortfolioMode>("orbit");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [orbitAngle, setOrbitAngle] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
   const activeProject = projects[activeIndex];
+
+  const setActiveProject = useCallback((index: number) => {
+    const nextIndex = wrapIndex(index);
+    activeIndexRef.current = nextIndex;
+    setActiveIndex(nextIndex);
+  }, []);
+
+  const applyOrbitAngle = useCallback(
+    (nextAngle: number, updateActiveProject = true) => {
+      orbitAngleRef.current = nextAngle;
+      orbitProxy.current.angle = nextAngle;
+      setOrbitAngle(nextAngle);
+
+      if (updateActiveProject) {
+        setActiveProject(getNearestProjectIndex(nextAngle));
+      }
+    },
+    [setActiveProject],
+  );
+
+  const clearSwitchState = useCallback(() => {
+    if (switchTimeout.current !== null) {
+      window.clearTimeout(switchTimeout.current);
+    }
+
+    switchTimeout.current = window.setTimeout(() => {
+      setIsSwitching(false);
+      switchTimeout.current = null;
+    }, 360);
+  }, []);
+
+  const stopAutoOrbit = useCallback(() => {
+    if (autoOrbitTween.current) {
+      autoOrbitTween.current.kill();
+      autoOrbitTween.current = null;
+    }
+  }, []);
+
+  const markInteraction = useCallback(() => {
+    setHasInteracted(true);
+    stopAutoOrbit();
+  }, [stopAutoOrbit]);
+
+  const snapOrbitToProject = useCallback(
+    (index: number, duration = 0.52, updateActiveProject = true) => {
+      const targetAngle = getShortestTargetAngle(orbitAngleRef.current, -wrapIndex(index) * ORBIT_STEP);
+
+      if (snapOrbitTween.current) {
+        snapOrbitTween.current.kill();
+      }
+
+      if (reduceMotionRef.current) {
+        applyOrbitAngle(targetAngle, updateActiveProject);
+        return;
+      }
+
+      snapOrbitTween.current = gsap.to(orbitProxy.current, {
+        angle: targetAngle,
+        duration,
+        ease: "power3.out",
+        overwrite: true,
+        onUpdate: () => applyOrbitAngle(orbitProxy.current.angle, updateActiveProject),
+        onComplete: () => {
+          applyOrbitAngle(targetAngle, updateActiveProject);
+          snapOrbitTween.current = null;
+        },
+      });
+    },
+    [applyOrbitAngle],
+  );
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
@@ -68,54 +262,188 @@ export default function PortfolioBuildPrototype() {
     videos.forEach(playVideo);
   }, []);
 
-  const changeProject = useCallback((direction: -1 | 1) => {
-    setHasInteracted(true);
-    setIsSwitching(true);
-    setActiveIndex((currentIndex) => wrapIndex(currentIndex + direction));
+  const changeProject = useCallback(
+    (direction: -1 | 1) => {
+      markInteraction();
+      const nextIndex = wrapIndex(activeIndexRef.current + direction);
 
-    if (switchTimeout.current !== null) {
-      window.clearTimeout(switchTimeout.current);
-    }
+      setIsSwitching(true);
+      setActiveProject(nextIndex);
+      snapOrbitToProject(nextIndex, modeRef.current === "orbit" ? 0.5 : 0.42, modeRef.current === "orbit");
+      clearSwitchState();
+    },
+    [clearSwitchState, markInteraction, setActiveProject, snapOrbitToProject],
+  );
 
-    switchTimeout.current = window.setTimeout(() => {
-      setIsSwitching(false);
-      switchTimeout.current = null;
-    }, 260);
-  }, []);
+  const openProject = useCallback(
+    (index: number) => {
+      markInteraction();
+      modeRef.current = "focus";
+      setMode("focus");
+      setIsSwitching(true);
+      setActiveProject(index);
+      snapOrbitToProject(index, 0.48, false);
+      clearSwitchState();
+
+      if (isCompact) {
+        window.requestAnimationFrame(() => {
+          sectionRef.current?.scrollIntoView({
+            block: "center",
+            behavior: reduceMotionRef.current ? "auto" : "smooth",
+          });
+        });
+      }
+    },
+    [clearSwitchState, isCompact, markInteraction, setActiveProject, snapOrbitToProject],
+  );
+
+  const selectProject = useCallback(
+    (index: number) => {
+      if (ignoreClick.current) return;
+
+      if (modeRef.current === "orbit") {
+        openProject(index);
+        return;
+      }
+
+      markInteraction();
+      setIsSwitching(true);
+      setActiveProject(index);
+      snapOrbitToProject(index, 0.42, false);
+      clearSwitchState();
+    },
+    [clearSwitchState, markInteraction, openProject, setActiveProject, snapOrbitToProject],
+  );
+
+  const returnToOrbit = useCallback(() => {
+    markInteraction();
+    modeRef.current = "orbit";
+    setMode("orbit");
+    setIsSwitching(false);
+    snapOrbitToProject(activeIndexRef.current, 0.58, true);
+  }, [markInteraction, snapOrbitToProject]);
+
+  function getProjectIndexFromPoint(target: EventTarget | null, clientX: number, clientY: number) {
+    const directCard = (target as HTMLElement | null)?.closest<HTMLButtonElement>(".lpb-orbit-card") ?? null;
+    const directIndex = readCardIndex(directCard);
+
+    if (directIndex !== null) return directIndex;
+
+    const cards = sectionRef.current?.querySelectorAll<HTMLButtonElement>(".lpb-orbit-card") ?? [];
+    let nearestIndex: number | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const padding = modeRef.current === "focus" ? 18 : 10;
+      const isInside =
+        clientX >= rect.left - padding &&
+        clientX <= rect.right + padding &&
+        clientY >= rect.top - padding &&
+        clientY <= rect.bottom + padding;
+
+      if (!isInside) return;
+
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(clientX - centerX, clientY - centerY);
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = readCardIndex(card);
+      }
+    });
+
+    return nearestIndex;
+  }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    markInteraction();
+
+    pendingClickIndex.current = getProjectIndexFromPoint(event.target, event.clientX, event.clientY);
     dragStartX.current = event.clientX;
+    dragStartAngle.current = orbitAngleRef.current;
     dragDeltaX.current = 0;
+    ignoreClick.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStartX.current === null) return;
+
     dragDeltaX.current = event.clientX - dragStartX.current;
+
+    if (modeRef.current === "orbit") {
+      applyOrbitAngle(dragStartAngle.current + dragDeltaX.current * DRAG_ROTATION_SPEED, true);
+    }
   }
 
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStartX.current === null) return;
 
-    event.currentTarget.releasePointerCapture(event.pointerId);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
     const distance = dragDeltaX.current;
+    const clickIndex = pendingClickIndex.current;
     dragStartX.current = null;
+    pendingClickIndex.current = null;
     dragDeltaX.current = 0;
 
+    if (Math.abs(distance) <= 8 && clickIndex !== null) {
+      selectProject(clickIndex);
+      ignoreClick.current = true;
+      window.setTimeout(() => {
+        ignoreClick.current = false;
+      }, 0);
+      return;
+    }
+
+    if (Math.abs(distance) > 8) {
+      ignoreClick.current = true;
+      window.setTimeout(() => {
+        ignoreClick.current = false;
+      }, 0);
+    }
+
     if (Math.abs(distance) < SWIPE_THRESHOLD) return;
+
+    if (modeRef.current === "orbit") {
+      snapOrbitToProject(getNearestProjectIndex(orbitAngleRef.current), 0.45, true);
+      return;
+    }
+
     changeProject(distance < 0 ? 1 : -1);
   }
 
   function handlePointerCancel(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStartX.current !== null) {
+    if (dragStartX.current !== null && event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
     dragStartX.current = null;
+    pendingClickIndex.current = null;
     dragDeltaX.current = 0;
   }
 
   useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const updateCompactState = () => setIsCompact(query.matches);
+
+    updateCompactState();
+    query.addEventListener("change", updateCompactState);
+
+    return () => query.removeEventListener("change", updateCompactState);
+  }, []);
+
+  useEffect(() => {
+    if (mode !== "focus") return undefined;
+
     const frame = window.requestAnimationFrame(playProjectVideos);
     const retry = window.setTimeout(playProjectVideos, 240);
 
@@ -123,39 +451,29 @@ export default function PortfolioBuildPrototype() {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(retry);
     };
-  }, [activeIndex, playProjectVideos]);
+  }, [activeIndex, mode, playProjectVideos]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    if (!section) return undefined;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) {
-      gsap.set(
-        [
-          ".linka-portfolio-kicker",
-          ".linka-portfolio-intro h2",
-          ".linka-portfolio-intro p",
-          ".lpb-drag-hint",
-          ".lpb-notebook",
-          ".lpb-phone",
-          ".lpb-project-meta",
-          ".lpb-controls",
-          ".lpb-glow",
-        ],
-        { autoAlpha: 1, clearProps: "transform,filter" },
-      );
-      return;
+    reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mount = section.closest(".linka-portfolio-mount") ?? section;
+    const introItems = [
+      mount.querySelector(".linka-portfolio-kicker"),
+      mount.querySelector(".linka-portfolio-intro h2"),
+      mount.querySelector(".linka-portfolio-intro p"),
+    ].filter(Boolean);
+    const dragHint = section.querySelector(".lpb-drag-hint");
+    const orbitCards = Array.from(section.querySelectorAll(".lpb-orbit-card"));
+    const glow = section.querySelector(".lpb-glow");
+
+    if (reduceMotionRef.current) {
+      gsap.set([...introItems, dragHint, ...orbitCards, glow].filter(Boolean), { autoAlpha: 1, clearProps: "filter" });
+      return undefined;
     }
 
     const context = gsap.context(() => {
-      const mount = section.closest(".linka-portfolio-mount") ?? section;
-      const introItems = [
-        mount.querySelector(".linka-portfolio-kicker"),
-        mount.querySelector(".linka-portfolio-intro h2"),
-        mount.querySelector(".linka-portfolio-intro p"),
-      ].filter(Boolean);
-
       const timeline = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
@@ -170,59 +488,95 @@ export default function PortfolioBuildPrototype() {
           introItems,
           { autoAlpha: 0, y: 22 },
           { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.09, clearProps: "opacity,visibility,transform" },
-        )
-        .fromTo(
-          ".lpb-drag-hint",
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.46, clearProps: "opacity,visibility,transform" },
-          "-=0.24",
-        )
-        .fromTo(
-          ".lpb-notebook",
-          { autoAlpha: 0, y: 34, scale: 0.95 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.78 },
-          "-=0.16",
-        )
-        .fromTo(
-          ".lpb-phone",
-          { autoAlpha: 0, x: 28, y: 18, scale: 0.96 },
-          { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.62 },
-          "-=0.5",
-        )
-        .fromTo(
-          ".lpb-project-meta",
-          { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: 0.48, clearProps: "opacity,visibility,transform" },
-          "-=0.3",
-        )
-        .fromTo(
-          ".lpb-controls",
-          { autoAlpha: 0, y: 12 },
-          { autoAlpha: 1, y: 0, duration: 0.42, clearProps: "opacity,visibility,transform" },
-          "-=0.32",
         );
 
-      gsap
-        .timeline({
+      if (dragHint) {
+        timeline.fromTo(
+          dragHint,
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.42, clearProps: "opacity,visibility,transform" },
+          "-=0.2",
+        );
+      }
+
+      if (orbitCards.length > 0) {
+        timeline.fromTo(
+          orbitCards,
+          { autoAlpha: 0, filter: "blur(8px)" },
+          { autoAlpha: 1, filter: "blur(0px)", duration: 0.74, stagger: { each: 0.06, from: "center" }, clearProps: "opacity,visibility,filter" },
+          "-=0.18",
+        );
+      }
+
+      const glowTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: mount,
             start: "top bottom",
             end: "bottom top",
             scrub: 0.65,
           },
-        })
-        .to(".lpb-notebook", { y: -12, ease: "none" }, 0)
-        .to(".lpb-phone", { y: -22, x: 8, ease: "none" }, 0)
-        .to(".lpb-glow", { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
+        });
+
+      if (glow) {
+        glowTimeline.to(glow, { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
+      }
+    }, section);
+
+    autoOrbitTween.current = gsap.to(orbitProxy.current, {
+      angle: "-=360",
+      duration: 44,
+      ease: "none",
+      repeat: -1,
+      onUpdate: () => applyOrbitAngle(orbitProxy.current.angle, true),
+    });
+
+    return () => {
+      stopAutoOrbit();
+
+      if (snapOrbitTween.current) {
+        snapOrbitTween.current.kill();
+        snapOrbitTween.current = null;
+      }
+
+      context.revert();
+    };
+  }, [applyOrbitAngle, stopAutoOrbit]);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || reduceMotionRef.current || mode !== "focus") return undefined;
+
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        ".lpb-device-stage",
+        { autoAlpha: 0, y: 34, scale: 0.965, filter: "blur(6px)" },
+        { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.64, ease: "power3.out", clearProps: "opacity,visibility,transform,filter" },
+      );
+      gsap.fromTo(
+        ".lpb-phone",
+        { autoAlpha: 0, x: 26, y: 16, scale: 0.94 },
+        { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.52, ease: "power3.out", clearProps: "opacity,visibility,transform" },
+      );
+      gsap.fromTo(
+        ".lpb-project-meta",
+        { autoAlpha: 0, y: 14 },
+        { autoAlpha: 1, y: 0, duration: 0.44, ease: "power3.out", clearProps: "opacity,visibility,transform" },
+      );
+      gsap.fromTo(
+        ".lpb-orbit-return",
+        { autoAlpha: 0, y: 10 },
+        { autoAlpha: 1, y: 0, duration: 0.36, ease: "power3.out", clearProps: "opacity,visibility,transform" },
+      );
     }, section);
 
     return () => context.revert();
-  }, []);
+  }, [activeIndex, mode]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (!sectionRef.current) return;
-      if (!sectionRef.current.matches(":hover") && document.activeElement !== sectionRef.current) return;
+      const section = sectionRef.current;
+      if (!section) return;
+      if (!section.matches(":hover") && !section.contains(document.activeElement)) return;
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
@@ -248,87 +602,124 @@ export default function PortfolioBuildPrototype() {
   }, []);
 
   return (
-    <section className="lpb-section" aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
+    <section className={`lpb-section is-${mode}`} aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
       <div className="lpb-shell">
         <div className="lpb-glow" aria-hidden="true" />
-        <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
+
+        {mode === "orbit" ? (
+          <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>GIRE PARA EXPLORAR</div>
+        ) : null}
 
         <div
-          className={isSwitching ? "lpb-gallery is-switching" : "lpb-gallery"}
+          className={isSwitching ? `lpb-gallery is-${mode} is-switching` : `lpb-gallery is-${mode}`}
           aria-live="polite"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
         >
-          <article className="lpb-project-layer is-active" key={activeProject.id}>
-            <div className="lpb-devices">
-              <div className="lpb-notebook">
-                <div className="lpb-notebook-screen">
-                  <div className="lpb-window-bar">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <video
-                    key={`${activeProject.id}-desktop`}
-                    className="lpb-project-video"
-                    src={activeProject.desktopVideo}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={`Projeto ${activeProject.name} no notebook`}
-                    onCanPlay={(event) => playVideo(event.currentTarget)}
-                    onLoadedData={(event) => playVideo(event.currentTarget)}
-                  />
-                </div>
-                <div className="lpb-notebook-base" />
-              </div>
+          <div className="lpb-orbit" aria-label="Escolha um projeto">
+            {projects.map((project, index) => {
+              const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact);
+              const isSelected = index === activeIndex;
 
-              <div className="lpb-phone">
-                <div className="lpb-phone-screen">
-                  <div className="lpb-phone-notch" />
-                  <video
-                    key={`${activeProject.id}-mobile`}
-                    className="lpb-project-video"
-                    src={activeProject.mobileVideo}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={`Projeto ${activeProject.name} no celular`}
-                    onCanPlay={(event) => playVideo(event.currentTarget)}
-                    onLoadedData={(event) => playVideo(event.currentTarget)}
-                  />
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <div className="lpb-project-meta">
-          <span>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-          </span>
-          <strong>{activeProject.name}</strong>
-        </div>
-
-        <div className="lpb-controls" aria-label="Navegar projetos">
-          <button type="button" aria-label="Projeto anterior" onClick={() => changeProject(-1)}>
-            &lsaquo;
-          </button>
-          <div className="lpb-dots" aria-hidden="true">
-            {projects.map((project, index) => (
-              <span className={index === activeIndex ? "is-active" : ""} key={project.id} />
-            ))}
+              return (
+                <button
+                  type="button"
+                  className={isSelected ? "lpb-orbit-card is-selected" : "lpb-orbit-card"}
+                  data-index={index}
+                  data-project={project.id}
+                  style={getPoseStyle(pose)}
+                  aria-label={`${mode === "orbit" ? "Abrir" : "Selecionar"} projeto ${project.name}`}
+                  aria-pressed={mode === "focus" ? isSelected : undefined}
+                  key={project.id}
+                  onClick={() => selectProject(index)}
+                >
+                  <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="lpb-card-name">{project.name}</span>
+                  <span className="lpb-card-preview" aria-hidden="true">
+                    <span className="lpb-preview-hero" />
+                    <span className="lpb-preview-lines">
+                      <i />
+                      <i />
+                    </span>
+                    <span className="lpb-preview-grid">
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <button type="button" aria-label="Proximo projeto" onClick={() => changeProject(1)}>
-            &rsaquo;
-          </button>
+
+          {mode === "focus" ? (
+            <article className="lpb-project-layer is-active" key={activeProject.id}>
+              <div className="lpb-device-stage">
+                <div className="lpb-devices">
+                  <div className="lpb-notebook">
+                    <div className="lpb-notebook-screen">
+                      <div className="lpb-window-bar">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                      <video
+                        key={`${activeProject.id}-desktop`}
+                        className="lpb-project-video"
+                        src={activeProject.desktopVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-label={`Projeto ${activeProject.name} no notebook`}
+                        onCanPlay={(event) => playVideo(event.currentTarget)}
+                        onLoadedData={(event) => playVideo(event.currentTarget)}
+                      />
+                    </div>
+                    <div className="lpb-notebook-base" />
+                  </div>
+
+                  <div className="lpb-phone">
+                    <div className="lpb-phone-screen">
+                      <div className="lpb-phone-notch" />
+                      <video
+                        key={`${activeProject.id}-mobile`}
+                        className="lpb-project-video"
+                        src={activeProject.mobileVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-label={`Projeto ${activeProject.name} no celular`}
+                        onCanPlay={(event) => playVideo(event.currentTarget)}
+                        onLoadedData={(event) => playVideo(event.currentTarget)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ) : null}
         </div>
+
+        {mode === "focus" ? (
+          <>
+            <div className="lpb-project-meta" key={`${activeProject.id}-meta`}>
+              <span>
+                {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+              </span>
+              <strong>{activeProject.name}</strong>
+            </div>
+
+            <button type="button" className="lpb-orbit-return" onClick={returnToOrbit}>
+              Voltar à órbita
+            </button>
+          </>
+        ) : null}
       </div>
     </section>
   );
