@@ -37,7 +37,7 @@ const projects = [
   },
 ];
 
-type PortfolioMode = "orbit" | "focus";
+type PortfolioMode = "orbit" | "opening" | "focus" | "closing";
 
 type ProjectPose = {
   x: number;
@@ -100,22 +100,19 @@ function getProjectPose(
   mode: PortfolioMode,
   isCompact: boolean,
 ): ProjectPose {
-  if (mode === "focus") {
+  if (mode === "opening") {
     const offset = getRelativeOffset(index, activeIndex);
     const distance = Math.abs(offset);
-    const xStep = isCompact ? 102 : 168;
-    const zStep = isCompact ? 54 : 74;
     const isActive = offset === 0;
-    const fanBaseY = isCompact ? 34 : 104;
 
     return {
-      x: offset * xStep,
-      y: fanBaseY + (isActive ? 0 : (isCompact ? 18 : 24) + distance * 8),
-      z: isActive ? (isCompact ? 92 : 210) : (isCompact ? -116 : -146) - distance * zStep,
-      rotateY: isActive ? 0 : offset * -13,
-      scale: isActive ? (isCompact ? 0.82 : 0.94) : Math.max(isCompact ? 0.48 : 0.52, (isCompact ? 0.64 : 0.72) - distance * 0.08),
-      opacity: isActive ? 1 : Math.max(isCompact ? 0.2 : 0.24, (isCompact ? 0.52 : 0.6) - distance * 0.12),
-      zIndex: isActive ? 60 : 38 - distance,
+      x: isActive ? 0 : offset * (isCompact ? 118 : 220),
+      y: isActive ? (isCompact ? 22 : 32) : (isCompact ? 36 : 48) + distance * 12,
+      z: isActive ? (isCompact ? 190 : 310) : -260 - distance * 70,
+      rotateY: isActive ? 0 : offset * -18,
+      scale: isActive ? (isCompact ? 1 : 1.08) : Math.max(0.38, 0.58 - distance * 0.08),
+      opacity: isActive ? 1 : 0,
+      zIndex: isActive ? 90 : 12 - distance,
     };
   }
 
@@ -167,6 +164,8 @@ export default function PortfolioBuildPrototype() {
   const snapOrbitTween = useRef<gsap.core.Tween | null>(null);
   const orbitProxy = useRef({ angle: 0 });
   const orbitAngleRef = useRef(0);
+  const returnOrbitAngleRef = useRef(0);
+  const shouldAnimateOrbitReturn = useRef(false);
   const activeIndexRef = useRef(0);
   const modeRef = useRef<PortfolioMode>("orbit");
   const reduceMotionRef = useRef(false);
@@ -178,6 +177,8 @@ export default function PortfolioBuildPrototype() {
   const [isSwitching, setIsSwitching] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const activeProject = projects[activeIndex];
+  const showsOrbit = mode === "orbit" || mode === "opening";
+  const showsProject = mode === "focus" || mode === "closing";
 
   const setActiveProject = useCallback((index: number) => {
     const nextIndex = wrapIndex(index);
@@ -264,6 +265,8 @@ export default function PortfolioBuildPrototype() {
 
   const changeProject = useCallback(
     (direction: -1 | 1) => {
+      if (modeRef.current !== "orbit") return;
+
       markInteraction();
       const nextIndex = wrapIndex(activeIndexRef.current + direction);
 
@@ -277,13 +280,14 @@ export default function PortfolioBuildPrototype() {
 
   const openProject = useCallback(
     (index: number) => {
+      if (modeRef.current !== "orbit") return;
+
       markInteraction();
-      modeRef.current = "focus";
-      setMode("focus");
+      returnOrbitAngleRef.current = orbitAngleRef.current;
+      modeRef.current = "opening";
+      setMode("opening");
       setIsSwitching(true);
       setActiveProject(index);
-      snapOrbitToProject(index, 0.48, false);
-      clearSwitchState();
 
       if (isCompact) {
         window.requestAnimationFrame(() => {
@@ -294,7 +298,7 @@ export default function PortfolioBuildPrototype() {
         });
       }
     },
-    [clearSwitchState, isCompact, markInteraction, setActiveProject, snapOrbitToProject],
+    [isCompact, markInteraction, setActiveProject],
   );
 
   const selectProject = useCallback(
@@ -303,25 +307,19 @@ export default function PortfolioBuildPrototype() {
 
       if (modeRef.current === "orbit") {
         openProject(index);
-        return;
       }
-
-      markInteraction();
-      setIsSwitching(true);
-      setActiveProject(index);
-      snapOrbitToProject(index, 0.42, false);
-      clearSwitchState();
     },
-    [clearSwitchState, markInteraction, openProject, setActiveProject, snapOrbitToProject],
+    [openProject],
   );
 
   const returnToOrbit = useCallback(() => {
+    if (modeRef.current !== "focus") return;
+
     markInteraction();
-    modeRef.current = "orbit";
-    setMode("orbit");
-    setIsSwitching(false);
-    snapOrbitToProject(activeIndexRef.current, 0.58, true);
-  }, [markInteraction, snapOrbitToProject]);
+    modeRef.current = "closing";
+    setMode("closing");
+    setIsSwitching(true);
+  }, [markInteraction]);
 
   function getProjectIndexFromPoint(target: EventTarget | null, clientX: number, clientY: number) {
     const directCard = (target as HTMLElement | null)?.closest<HTMLButtonElement>(".lpb-orbit-card") ?? null;
@@ -358,6 +356,8 @@ export default function PortfolioBuildPrototype() {
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (modeRef.current !== "orbit") return;
+
     markInteraction();
 
     pendingClickIndex.current = getProjectIndexFromPoint(event.target, event.clientX, event.clientY);
@@ -452,6 +452,111 @@ export default function PortfolioBuildPrototype() {
       window.clearTimeout(retry);
     };
   }, [activeIndex, mode, playProjectVideos]);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || mode !== "opening") return undefined;
+
+    if (reduceMotionRef.current) {
+      modeRef.current = "focus";
+      setMode("focus");
+      setIsSwitching(false);
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const selectedCard = section.querySelector(".lpb-orbit-card.is-selected");
+      const otherCards = Array.from(section.querySelectorAll(".lpb-orbit-card:not(.is-selected)"));
+
+      gsap.to(otherCards, {
+        autoAlpha: 0,
+        scale: 0.72,
+        duration: 0.18,
+        ease: "power2.out",
+        overwrite: true,
+      });
+
+      gsap.to(selectedCard, {
+        filter: "brightness(1.18)",
+        duration: 0.28,
+        ease: "power2.out",
+        overwrite: true,
+        onComplete: () => {
+          gsap.to(selectedCard, {
+            autoAlpha: 0,
+            scale: 0.88,
+            duration: 0.16,
+            ease: "power2.in",
+            overwrite: true,
+            onComplete: () => {
+              modeRef.current = "focus";
+              setMode("focus");
+              setIsSwitching(false);
+            },
+          });
+        },
+      });
+    }, section);
+
+    return () => context.revert();
+  }, [mode]);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || mode !== "closing") return undefined;
+
+    if (reduceMotionRef.current) {
+      applyOrbitAngle(returnOrbitAngleRef.current, true);
+      shouldAnimateOrbitReturn.current = false;
+      modeRef.current = "orbit";
+      setMode("orbit");
+      setIsSwitching(false);
+      return undefined;
+    }
+
+    const context = gsap.context(() => {
+      const exitItems = [
+        section.querySelector(".lpb-device-stage"),
+        section.querySelector(".lpb-project-meta"),
+        section.querySelector(".lpb-orbit-return"),
+      ].filter(Boolean);
+
+      gsap.to(exitItems, {
+        autoAlpha: 0,
+        y: 16,
+        scale: 0.98,
+        duration: 0.24,
+        ease: "power2.in",
+        overwrite: true,
+        onComplete: () => {
+          applyOrbitAngle(returnOrbitAngleRef.current, true);
+          shouldAnimateOrbitReturn.current = true;
+          modeRef.current = "orbit";
+          setMode("orbit");
+          setIsSwitching(false);
+        },
+      });
+    }, section);
+
+    return () => context.revert();
+  }, [applyOrbitAngle, mode]);
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || mode !== "orbit" || !shouldAnimateOrbitReturn.current || reduceMotionRef.current) return undefined;
+
+    shouldAnimateOrbitReturn.current = false;
+
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        [section.querySelector(".lpb-drag-hint"), ...Array.from(section.querySelectorAll(".lpb-orbit-card"))].filter(Boolean),
+        { autoAlpha: 0, y: 10, scale: 0.96 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.28, stagger: 0.025, ease: "power2.out", clearProps: "opacity,visibility,transform" },
+      );
+    }, section);
+
+    return () => context.revert();
+  }, [mode]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -577,6 +682,7 @@ export default function PortfolioBuildPrototype() {
       const section = sectionRef.current;
       if (!section) return;
       if (!section.matches(":hover") && !section.contains(document.activeElement)) return;
+      if (modeRef.current !== "orbit") return;
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
@@ -618,6 +724,7 @@ export default function PortfolioBuildPrototype() {
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
         >
+          {showsOrbit ? (
           <div className="lpb-orbit" aria-label="Escolha um projeto">
             {projects.map((project, index) => {
               const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact);
@@ -629,9 +736,9 @@ export default function PortfolioBuildPrototype() {
                   className={isSelected ? "lpb-orbit-card is-selected" : "lpb-orbit-card"}
                   data-index={index}
                   data-project={project.id}
+                  disabled={mode === "opening"}
                   style={getPoseStyle(pose)}
-                  aria-label={`${mode === "orbit" ? "Abrir" : "Selecionar"} projeto ${project.name}`}
-                  aria-pressed={mode === "focus" ? isSelected : undefined}
+                  aria-label={`Abrir projeto ${project.name}`}
                   key={project.id}
                   onClick={() => selectProject(index)}
                 >
@@ -653,8 +760,9 @@ export default function PortfolioBuildPrototype() {
               );
             })}
           </div>
+          ) : null}
 
-          {mode === "focus" ? (
+          {showsProject ? (
             <article className="lpb-project-layer is-active" key={activeProject.id}>
               <div className="lpb-device-stage">
                 <div className="lpb-devices">
@@ -706,7 +814,7 @@ export default function PortfolioBuildPrototype() {
           ) : null}
         </div>
 
-        {mode === "focus" ? (
+        {showsProject ? (
           <>
             <div className="lpb-project-meta" key={`${activeProject.id}-meta`}>
               <span>
