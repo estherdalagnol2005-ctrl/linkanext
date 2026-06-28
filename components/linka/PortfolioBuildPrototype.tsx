@@ -97,34 +97,12 @@ function getRelativeOffset(index: number, activeIndex: number) {
   return offset;
 }
 
-function getMobileOrbitPose(index: number, orbitAngle: number, stageWidth: number): ProjectPose {
-  const safeWidth = clamp(stageWidth, 320, 460);
-  const angle = normalizeAngle(index * ORBIT_STEP + orbitAngle);
-  const radians = (angle * Math.PI) / 180;
-  const side = Math.sin(radians);
-  const depth = Math.cos(radians);
-  const frontness = (depth + 1) / 2;
-  const xRadius = clamp(safeWidth * 0.29, 96, 122);
-  const zRadius = clamp(safeWidth * 0.5, 160, 212);
-
-  return {
-    x: side * xRadius,
-    y: -8 + Math.abs(side) * 10 + (1 - frontness) * 28,
-    z: depth * zRadius - zRadius * 0.42,
-    rotateY: angle * -0.68,
-    scale: 0.48 + frontness * 0.5,
-    opacity: 0.28 + frontness * 0.72,
-    zIndex: 20 + Math.round(frontness * 80),
-  };
-}
-
 function getProjectPose(
   index: number,
   activeIndex: number,
   orbitAngle: number,
   mode: PortfolioMode,
   isCompact: boolean,
-  mobileOrbitWidth = 390,
 ): ProjectPose {
   if (mode === "opening") {
     const offset = getRelativeOffset(index, activeIndex);
@@ -140,10 +118,6 @@ function getProjectPose(
       opacity: isActive ? 1 : 0,
       zIndex: isActive ? 90 : 12 - distance,
     };
-  }
-
-  if (isCompact) {
-    return getMobileOrbitPose(index, orbitAngle, mobileOrbitWidth);
   }
 
   const angle = normalizeAngle(index * ORBIT_STEP + orbitAngle);
@@ -184,7 +158,8 @@ function readCardIndex(card: HTMLButtonElement | null) {
 
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
-  const orbitStageRef = useRef<HTMLDivElement>(null);
+  const mobileOrbitStageRef = useRef<HTMLDivElement>(null);
+  const mobileOrbitRingRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef<number | null>(null);
   const dragStartY = useRef<number | null>(null);
   const dragStartAngle = useRef(0);
@@ -203,7 +178,6 @@ export default function PortfolioBuildPrototype() {
   const pendingOrbitAngle = useRef(0);
   const orbitFrame = useRef<number | null>(null);
   const orbitCardRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const mobileOrbitWidthRef = useRef(390);
   const visualActiveIndexRef = useRef(0);
   const returnOrbitAngleRef = useRef(0);
   const shouldAnimateOrbitReturn = useRef(false);
@@ -218,7 +192,6 @@ export default function PortfolioBuildPrototype() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
-  const [mobileOrbitWidth, setMobileOrbitWidth] = useState(390);
   const activeProject = projects[activeIndex];
   const showsOrbit = mode === "orbit" || mode === "opening";
   const showsProject = mode === "focus" || mode === "closing";
@@ -250,6 +223,10 @@ export default function PortfolioBuildPrototype() {
     visualActiveIndexRef.current = index;
   }, []);
 
+  const writeMobileRingAngle = useCallback((nextAngle: number) => {
+    mobileOrbitRingRef.current?.style.setProperty("--lpb-mobile-ring-angle", `${nextAngle.toFixed(2)}deg`);
+  }, []);
+
   const renderOrbitAtAngle = useCallback(
     (nextAngle: number, updateVisualProject = true) => {
       orbitAngleRef.current = nextAngle;
@@ -258,20 +235,22 @@ export default function PortfolioBuildPrototype() {
 
       if (modeRef.current !== "orbit") return;
 
+      if (isCompactRef.current) {
+        writeMobileRingAngle(nextAngle);
+        return;
+      }
+
       orbitCardRefs.current.forEach((card, index) => {
         if (!card) return;
 
-        writeCardPose(
-          card,
-          getProjectPose(index, activeIndexRef.current, nextAngle, "orbit", isCompactRef.current, mobileOrbitWidthRef.current),
-        );
+        writeCardPose(card, getProjectPose(index, activeIndexRef.current, nextAngle, "orbit", false));
       });
 
       if (updateVisualProject) {
         setVisualActiveProject(getNearestProjectIndex(nextAngle));
       }
     },
-    [setVisualActiveProject, writeCardPose],
+    [setVisualActiveProject, writeCardPose, writeMobileRingAngle],
   );
 
   const scheduleOrbitRender = useCallback(
@@ -340,7 +319,7 @@ export default function PortfolioBuildPrototype() {
   function getDragRotationSpeed() {
     if (!isCompactRef.current) return DRAG_ROTATION_SPEED;
 
-    const stageWidth = clamp(mobileOrbitWidthRef.current || window.innerWidth || 390, 320, 460);
+    const stageWidth = clamp(mobileOrbitStageRef.current?.clientWidth || window.innerWidth || 390, 320, 460);
     return ORBIT_STEP / Math.max(104, stageWidth * 0.3);
   }
 
@@ -350,7 +329,7 @@ export default function PortfolioBuildPrototype() {
   }
 
   const snapOrbitToProject = useCallback(
-    (index: number, duration = 0.52, updateActiveProject = true) => {
+    (index: number, duration = 0.52, updateActiveProject = true, onComplete?: () => void) => {
       const targetAngle = getShortestTargetAngle(orbitAngleRef.current, -wrapIndex(index) * ORBIT_STEP);
 
       if (snapOrbitTween.current) {
@@ -359,6 +338,7 @@ export default function PortfolioBuildPrototype() {
 
       if (reduceMotionRef.current) {
         commitOrbitAngle(targetAngle, updateActiveProject);
+        onComplete?.();
         return;
       }
 
@@ -373,6 +353,7 @@ export default function PortfolioBuildPrototype() {
         onComplete: () => {
           commitOrbitAngle(targetAngle, updateActiveProject);
           snapOrbitTween.current = null;
+          onComplete?.();
         },
       });
     },
@@ -435,10 +416,16 @@ export default function PortfolioBuildPrototype() {
       if (ignoreClick.current) return;
 
       if (modeRef.current === "orbit") {
+        if (isCompactRef.current) {
+          markInteraction();
+          snapOrbitToProject(index, 0.46, true, () => openProject(index));
+          return;
+        }
+
         openProject(index);
       }
     },
-    [openProject],
+    [markInteraction, openProject, snapOrbitToProject],
   );
 
   const returnToOrbit = useCallback(() => {
@@ -451,12 +438,13 @@ export default function PortfolioBuildPrototype() {
   }, [markInteraction]);
 
   function getProjectIndexFromPoint(target: EventTarget | null, clientX: number, clientY: number) {
-    const directCard = (target as HTMLElement | null)?.closest<HTMLButtonElement>(".lpb-orbit-card") ?? null;
+    const directCard =
+      (target as HTMLElement | null)?.closest<HTMLButtonElement>(".lpb-orbit-card, .lpb-mobile-orbit-card") ?? null;
     const directIndex = readCardIndex(directCard);
 
     if (directIndex !== null) return directIndex;
 
-    const cards = sectionRef.current?.querySelectorAll<HTMLButtonElement>(".lpb-orbit-card") ?? [];
+    const cards = sectionRef.current?.querySelectorAll<HTMLButtonElement>(".lpb-orbit-card, .lpb-mobile-orbit-card") ?? [];
     let nearestIndex: number | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
 
@@ -489,7 +477,9 @@ export default function PortfolioBuildPrototype() {
 
     const currentAngle = orbitAngleRef.current;
     setOrbitAngle(currentAngle);
-    setActiveProject(getNearestProjectIndex(currentAngle));
+    if (!isCompactRef.current) {
+      setActiveProject(getNearestProjectIndex(currentAngle));
+    }
     markInteraction();
 
     if (snapOrbitTween.current) {
@@ -616,7 +606,7 @@ export default function PortfolioBuildPrototype() {
     modeRef.current = mode;
   }, [mode]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const query = window.matchMedia("(max-width: 767px)");
     const updateCompactState = () => {
       isCompactRef.current = query.matches;
@@ -632,27 +622,33 @@ export default function PortfolioBuildPrototype() {
   useLayoutEffect(() => {
     if (!isCompact || !showsOrbit) return undefined;
 
-    const updateMobileOrbitWidth = () => {
-      const nextWidth = Math.round(orbitStageRef.current?.clientWidth || window.innerWidth || 390);
-      mobileOrbitWidthRef.current = nextWidth;
-      setMobileOrbitWidth(nextWidth);
+    const updateMobileOrbitMetrics = () => {
+      const stage = mobileOrbitStageRef.current;
+      const stageWidth = Math.round(stage?.clientWidth || window.innerWidth || 390);
+      const radius = clamp(stageWidth * 0.37, 138, 160);
+      const cardWidth = clamp(stageWidth * 0.32, 126, 136);
+      const cardHeight = clamp(cardWidth * 0.68, 88, 96);
+
+      stage?.style.setProperty("--lpb-mobile-orbit-radius", `${radius.toFixed(1)}px`);
+      stage?.style.setProperty("--lpb-mobile-card-width", `${cardWidth.toFixed(1)}px`);
+      stage?.style.setProperty("--lpb-mobile-card-height", `${cardHeight.toFixed(1)}px`);
       renderOrbitAtAngle(orbitAngleRef.current, true);
     };
 
-    updateMobileOrbitWidth();
+    updateMobileOrbitMetrics();
 
-    if (!orbitStageRef.current || typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", updateMobileOrbitWidth);
-      return () => window.removeEventListener("resize", updateMobileOrbitWidth);
+    if (!mobileOrbitStageRef.current || typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateMobileOrbitMetrics);
+      return () => window.removeEventListener("resize", updateMobileOrbitMetrics);
     }
 
-    const resizeObserver = new ResizeObserver(updateMobileOrbitWidth);
-    resizeObserver.observe(orbitStageRef.current);
-    window.addEventListener("orientationchange", updateMobileOrbitWidth);
+    const resizeObserver = new ResizeObserver(updateMobileOrbitMetrics);
+    resizeObserver.observe(mobileOrbitStageRef.current);
+    window.addEventListener("orientationchange", updateMobileOrbitMetrics);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("orientationchange", updateMobileOrbitWidth);
+      window.removeEventListener("orientationchange", updateMobileOrbitMetrics);
     };
   }, [isCompact, renderOrbitAtAngle, showsOrbit]);
 
@@ -686,8 +682,17 @@ export default function PortfolioBuildPrototype() {
     }
 
     const context = gsap.context(() => {
-      const selectedCard = section.querySelector(".lpb-orbit-card.is-selected");
-      const otherCards = Array.from(section.querySelectorAll(".lpb-orbit-card:not(.is-selected)"));
+      const selectedCard = section.querySelector(".lpb-orbit-card.is-selected, .lpb-mobile-orbit-card.is-selected");
+      const otherCards = Array.from(
+        section.querySelectorAll(".lpb-orbit-card:not(.is-selected), .lpb-mobile-orbit-card:not(.is-selected)"),
+      );
+
+      if (!selectedCard) {
+        modeRef.current = "focus";
+        setMode("focus");
+        setIsSwitching(false);
+        return;
+      }
 
       gsap.to(otherCards, {
         autoAlpha: 0,
@@ -792,49 +797,62 @@ export default function PortfolioBuildPrototype() {
     ].filter(Boolean);
     const dragHint = section.querySelector(".lpb-drag-hint");
     const orbitCards = Array.from(section.querySelectorAll(".lpb-orbit-card"));
+    const mobileOrbitItems = Array.from(section.querySelectorAll(".lpb-mobile-orbit-stage, .lpb-mobile-orbit-card"));
     const glow = section.querySelector(".lpb-glow");
+    const isMobileViewport = window.matchMedia("(max-width: 767px)").matches;
 
     if (reduceMotionRef.current) {
-      gsap.set([...introItems, dragHint, ...orbitCards, glow].filter(Boolean), { autoAlpha: 1, clearProps: "filter" });
+      gsap.set([...introItems, dragHint, ...orbitCards, ...mobileOrbitItems, glow].filter(Boolean), {
+        autoAlpha: 1,
+        clearProps: "filter,opacity,visibility,transform",
+      });
       return undefined;
     }
 
-    const context = gsap.context(() => {
-      const timeline = gsap.timeline({
-        defaults: { ease: "power3.out" },
-        scrollTrigger: {
-          trigger: mount,
-          start: "top 78%",
-          once: true,
-        },
+    let context: gsap.Context | null = null;
+
+    if (isMobileViewport) {
+      gsap.set([...introItems, dragHint, ...mobileOrbitItems, glow].filter(Boolean), {
+        autoAlpha: 1,
+        clearProps: "filter,opacity,visibility,transform",
       });
+    } else {
+      context = gsap.context(() => {
+        const timeline = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          scrollTrigger: {
+            trigger: mount,
+            start: "top 78%",
+            once: true,
+          },
+        });
 
-      timeline
-        .fromTo(
-          introItems,
-          { autoAlpha: 0, y: 22 },
-          { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.09, clearProps: "opacity,visibility,transform" },
-        );
+        timeline
+          .fromTo(
+            introItems,
+            { autoAlpha: 0, y: 22 },
+            { autoAlpha: 1, y: 0, duration: 0.62, stagger: 0.09, clearProps: "opacity,visibility,transform" },
+          );
 
-      if (dragHint) {
-        timeline.fromTo(
-          dragHint,
-          { autoAlpha: 0, y: 12 },
-          { autoAlpha: 1, y: 0, duration: 0.42, clearProps: "opacity,visibility,transform" },
-          "-=0.2",
-        );
-      }
+        if (dragHint) {
+          timeline.fromTo(
+            dragHint,
+            { autoAlpha: 0, y: 12 },
+            { autoAlpha: 1, y: 0, duration: 0.42, clearProps: "opacity,visibility,transform" },
+            "-=0.2",
+          );
+        }
 
-      if (orbitCards.length > 0) {
-        timeline.fromTo(
-          orbitCards,
-          { autoAlpha: 0, filter: "blur(8px)" },
-          { autoAlpha: 1, filter: "blur(0px)", duration: 0.74, stagger: { each: 0.06, from: "center" }, clearProps: "opacity,visibility,filter" },
-          "-=0.18",
-        );
-      }
+        if (orbitCards.length > 0) {
+          timeline.fromTo(
+            orbitCards,
+            { autoAlpha: 0, filter: "blur(8px)" },
+            { autoAlpha: 1, filter: "blur(0px)", duration: 0.74, stagger: { each: 0.06, from: "center" }, clearProps: "opacity,visibility,filter" },
+            "-=0.18",
+          );
+        }
 
-      const glowTimeline = gsap.timeline({
+        const glowTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: mount,
             start: "top bottom",
@@ -843,10 +861,11 @@ export default function PortfolioBuildPrototype() {
           },
         });
 
-      if (glow) {
-        glowTimeline.to(glow, { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
-      }
-    }, section);
+        if (glow) {
+          glowTimeline.to(glow, { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
+        }
+      }, section);
+    }
 
     const autoOrbitDuration = window.matchMedia("(max-width: 767px)").matches ? 54 : 44;
 
@@ -871,7 +890,7 @@ export default function PortfolioBuildPrototype() {
         orbitFrame.current = null;
       }
 
-      context.revert();
+      context?.revert();
     };
   }, [renderOrbitAtAngle, stopAutoOrbit]);
 
@@ -953,44 +972,87 @@ export default function PortfolioBuildPrototype() {
           onPointerCancel={handlePointerCancel}
         >
           {showsOrbit ? (
-          <div className="lpb-orbit" aria-label="Escolha um projeto" ref={orbitStageRef}>
-            {projects.map((project, index) => {
-              const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact, mobileOrbitWidth);
-              const isSelected = index === activeIndex;
-
-              return (
-                <button
-                  type="button"
-                  className={isSelected ? "lpb-orbit-card is-selected" : "lpb-orbit-card"}
-                  data-index={index}
-                  data-project={project.id}
-                  disabled={mode === "opening"}
-                  style={getPoseStyle(pose)}
-                  aria-label={`Abrir projeto ${project.name}`}
-                  key={project.id}
-                  ref={(card) => {
-                    orbitCardRefs.current[index] = card;
-                  }}
-                  onClick={() => selectProject(index)}
+            isCompact ? (
+              <div className="lpb-mobile-orbit-stage" aria-label="Escolha um projeto" ref={mobileOrbitStageRef}>
+                <div
+                  className="lpb-mobile-orbit-ring"
+                  ref={mobileOrbitRingRef}
+                  style={{ "--lpb-mobile-ring-angle": `${orbitAngle.toFixed(2)}deg` } as CSSProperties}
                 >
-                  <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="lpb-card-name">{project.name}</span>
-                  <span className="lpb-card-preview" aria-hidden="true">
-                    <span className="lpb-preview-hero" />
-                    <span className="lpb-preview-lines">
-                      <i />
-                      <i />
-                    </span>
-                    <span className="lpb-preview-grid">
-                      <i />
-                      <i />
-                      <i />
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                  {projects.map((project, index) => {
+                    const isSelected = index === activeIndex;
+
+                    return (
+                      <button
+                        type="button"
+                        className={isSelected ? "lpb-mobile-orbit-card is-selected" : "lpb-mobile-orbit-card"}
+                        data-index={index}
+                        data-project={project.id}
+                        disabled={mode === "opening"}
+                        style={{ "--lpb-mobile-slot-angle": `${(index * ORBIT_STEP).toFixed(2)}deg` } as CSSProperties}
+                        aria-label={`Abrir projeto ${project.name}`}
+                        key={project.id}
+                        onClick={() => selectProject(index)}
+                      >
+                        <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
+                        <span className="lpb-card-name">{project.name}</span>
+                        <span className="lpb-card-preview" aria-hidden="true">
+                          <span className="lpb-preview-hero" />
+                          <span className="lpb-preview-lines">
+                            <i />
+                            <i />
+                          </span>
+                          <span className="lpb-preview-grid">
+                            <i />
+                            <i />
+                            <i />
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="lpb-orbit" aria-label="Escolha um projeto">
+                {projects.map((project, index) => {
+                  const pose = getProjectPose(index, activeIndex, orbitAngle, mode, isCompact);
+                  const isSelected = index === activeIndex;
+
+                  return (
+                    <button
+                      type="button"
+                      className={isSelected ? "lpb-orbit-card is-selected" : "lpb-orbit-card"}
+                      data-index={index}
+                      data-project={project.id}
+                      disabled={mode === "opening"}
+                      style={getPoseStyle(pose)}
+                      aria-label={`Abrir projeto ${project.name}`}
+                      key={project.id}
+                      ref={(card) => {
+                        orbitCardRefs.current[index] = card;
+                      }}
+                      onClick={() => selectProject(index)}
+                    >
+                      <span className="lpb-card-index">{String(index + 1).padStart(2, "0")}</span>
+                      <span className="lpb-card-name">{project.name}</span>
+                      <span className="lpb-card-preview" aria-hidden="true">
+                        <span className="lpb-preview-hero" />
+                        <span className="lpb-preview-lines">
+                          <i />
+                          <i />
+                        </span>
+                        <span className="lpb-preview-grid">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )
           ) : null}
 
           {showsProject ? (
