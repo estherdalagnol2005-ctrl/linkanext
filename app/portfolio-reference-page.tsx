@@ -324,6 +324,21 @@ function adaptPortfolioBehavior(source: string) {
         });
       }
 
+      function getProjectDisplayTitle(card) {
+        if (!card) return defaultDisplayTitle || "";
+        return card.getAttribute("data-display-title") || card.getAttribute("data-project-title") || defaultDisplayTitle || "";
+      }
+
+      function updateProjectDisplayTitle(card) {
+        if (!projectDisplayTitle) return;
+        projectDisplayTitle.textContent = getProjectDisplayTitle(card);
+      }
+
+      function resetProjectDisplayTitle() {
+        if (!projectDisplayTitle || !defaultDisplayTitle) return;
+        projectDisplayTitle.textContent = defaultDisplayTitle;
+      }
+
       function setChoiceCardsInteractive`,
   );
   script = replaceRequired(
