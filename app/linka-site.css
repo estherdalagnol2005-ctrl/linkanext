@@ -3392,27 +3392,22 @@ body {
 .linka-portfolio-mount .lpb-project-meta{
   position:relative;
   z-index:20;
-  width:min(560px,100%);
+  width:min(760px,94vw);
   margin:-18px auto 0;
-  display:grid;
-  gap:8px;
+  display:block;
   text-align:center;
   pointer-events:none;
 }
 
-.linka-portfolio-mount .lpb-project-meta span{
-  color:var(--lpb-green);
-  font:950 11px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.15em;
-  text-shadow:0 0 18px rgba(139,255,79,.2);
-}
-
 .linka-portfolio-mount .lpb-project-meta strong{
+  display:block;
+  max-width:100%;
   color:#fff;
   font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(34px,4.2vw,60px);
-  line-height:1;
+  font-size:clamp(2rem,3.6vw,3.8rem);
+  line-height:.98;
   letter-spacing:0;
+  text-wrap:balance;
   text-shadow:0 18px 48px rgba(0,0,0,.48);
 }
 
@@ -3719,17 +3714,13 @@ body {
   }
 
   .linka-portfolio-mount .lpb-project-meta{
-    width:min(330px,92%);
-    margin:-12px auto 0;
-    gap:6px;
-  }
-
-  .linka-portfolio-mount .lpb-project-meta span{
-    font-size:10px;
+    width:min(410px,96vw);
+    margin:-18px auto 0;
   }
 
   .linka-portfolio-mount .lpb-project-meta strong{
-    font-size:36px;
+    font-size:clamp(1.55rem,6.6vw,2.15rem);
+    line-height:1.02;
   }
 
   .linka-portfolio-mount .lpb-orbit-return{
@@ -3750,9 +3741,6 @@ body {
     bottom:24px;
   }
 
-  .linka-portfolio-mount .lpb-project-meta strong{
-    font-size:34px;
-  }
 }
 
 @media(prefers-reduced-motion:reduce){

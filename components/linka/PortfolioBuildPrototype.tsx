@@ -8,6 +8,7 @@ const projects = [
   {
     id: "marcenaria",
     name: "Marcenaria",
+    displayTitle: "Site de Captação — Baptista",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenariadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenaria.mp4",
     desktopPreview: "/portfolio-previews/marcenaria-desktop.webp",
@@ -16,6 +17,7 @@ const projects = [
   {
     id: "nutricionista",
     name: "Nutricionista",
+    displayTitle: "Landing Page de Conversão — Manoella Santos",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionista.mp4",
     desktopPreview: "/portfolio-previews/nutricionista-desktop.webp",
@@ -24,6 +26,7 @@ const projects = [
   {
     id: "casa-sea",
     name: "Casa Sea",
+    displayTitle: "Landing Page — Casa Sea",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
     desktopPreview: "/portfolio-previews/casa-sea-desktop.webp",
@@ -32,6 +35,7 @@ const projects = [
   {
     id: "barbearia",
     name: "Barbearia",
+    displayTitle: "Site de Conversão — Escobar",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbeariadesktop-1.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbearia.mp4",
     desktopPreview: "/portfolio-previews/barbearia-desktop.webp",
@@ -40,6 +44,7 @@ const projects = [
   {
     id: "quatorze",
     name: "Quatorze",
+    displayTitle: "Landing Page — Quatorze Hair Spa",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
     desktopPreview: "/portfolio-previews/quatorze-desktop.webp",
@@ -1208,10 +1213,7 @@ export default function PortfolioBuildPrototype() {
         {showsProject ? (
           <>
             <div className="lpb-project-meta" key={`${activeProject.id}-meta`}>
-              <span>
-                {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-              </span>
-              <strong>{activeProject.name}</strong>
+              <strong>{activeProject.displayTitle}</strong>
             </div>
 
             <button type="button" className="lpb-orbit-return" onClick={returnToOrbit}>
