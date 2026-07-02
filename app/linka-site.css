@@ -2387,6 +2387,9 @@ body {
   perspective:1500px;
   cursor:grab;
   touch-action:pan-y;
+  overscroll-behavior-x:contain;
+  user-select:none;
+  -webkit-user-select:none;
   z-index:1;
 }
 
