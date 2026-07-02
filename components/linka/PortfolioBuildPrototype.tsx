@@ -18,7 +18,7 @@ const projects = [
   {
     id: "nutricionista",
     name: "Nutricionista",
-    displayTitle: "Landing Page de Conversão — Manoella Santos",
+    displayTitle: "Landing Page de Conversão — Nutrição",
     titleType: "Landing Page de Conversão",
     titleBrand: "Manoella Santos",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
@@ -45,7 +45,7 @@ const projects = [
   {
     id: "quatorze",
     name: "Quatorze",
-    displayTitle: "Landing Page — Quatorze Hair Spa",
+    displayTitle: "Landing Page — Quatorze",
     titleType: "Landing Page",
     titleBrand: "Quatorze Hair Spa",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
@@ -65,6 +65,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
+}
+
+function getDisplayTitleParts(displayTitle: string) {
+  const [titleType, ...brandParts] = displayTitle.split(" — ");
+
+  return {
+    titleType,
+    titleBrand: brandParts.join(" — "),
+  };
 }
 
 type TransitionDirection = -1 | 1;
@@ -112,6 +121,7 @@ export default function PortfolioBuildPrototype() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("desktop");
   const titleProject = projects[titleIndex];
+  const displayTitleParts = getDisplayTitleParts(titleProject.displayTitle);
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
@@ -753,17 +763,16 @@ export default function PortfolioBuildPrototype() {
         </div>
 
         <div className="lpb-project-meta">
+          <strong className="lpb-project-title" ref={titleRef}>
+            <span className="lpb-project-title-type">{displayTitleParts.titleType}</span>
+            <span className="lpb-project-title-separator"> — </span>
+            <span className="lpb-project-title-brand">{displayTitleParts.titleBrand}</span>
+          </strong>
           <span className="lpb-counter" aria-label={`${titleIndex + 1} de ${projects.length}`}>
             <span className="lpb-counter-current">{String(titleIndex + 1).padStart(2, "0")}</span>
             <span className="lpb-counter-separator">/</span>
             <span className="lpb-counter-total">{String(projects.length).padStart(2, "0")}</span>
           </span>
-          <strong className="lpb-project-title" ref={titleRef}>
-            <span className="lpb-project-title-type">{titleProject.titleType}</span>
-            <span className="lpb-project-title-separator"> — </span>
-            <span className="lpb-project-title-brand">{titleProject.titleBrand}</span>
-          </strong>
-          <span className="lpb-signal-line" aria-hidden="true" />
         </div>
 
         <div className="lpb-controls" aria-label="Navegar projetos">

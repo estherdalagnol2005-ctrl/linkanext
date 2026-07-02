@@ -2604,7 +2604,7 @@ body {
   width:min(760px,94vw);
   margin:-18px auto 0;
   display:grid;
-  gap:8px;
+  gap:5px;
   text-align:center;
 }
 
@@ -2631,12 +2631,18 @@ body {
 }
 
 .linka-portfolio-mount .lpb-project-title{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  column-gap:.18em;
+  row-gap:0;
   max-width:100%;
+  min-height:2.08em;
   color:#fff;
   font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(2rem,3.6vw,3.8rem);
-  line-height:.98;
+  font-size:clamp(1.8rem,3vw,3rem);
+  line-height:1.02;
   letter-spacing:0;
   text-wrap:balance;
   text-shadow:0 14px 34px rgba(0,0,0,.32);
@@ -2659,18 +2665,9 @@ body {
   -webkit-text-fill-color:transparent;
 }
 
-.linka-portfolio-mount .lpb-signal-line{
-  width:74px;
-  height:2px;
-  margin:2px auto 0;
-  border-radius:999px;
-  background:linear-gradient(90deg,#8bff4f 0%,#7dd3fc 100%);
-  box-shadow:0 0 10px rgba(139,255,79,.16);
-}
-
 .linka-portfolio-mount .lpb-controls{
   width:min(360px,100%);
-  margin:12px auto 0;
+  margin:7px auto 0;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -2861,22 +2858,18 @@ body {
   .linka-portfolio-mount .lpb-project-meta{
     width:min(410px,96vw);
     margin:-18px auto 0;
-    gap:6px;
+    gap:4px;
   }
 
   .linka-portfolio-mount .lpb-project-title{
-    font-size:clamp(1.55rem,6.6vw,2.15rem);
-    line-height:1.02;
-  }
-
-  .linka-portfolio-mount .lpb-signal-line{
-    width:68px;
-    margin-top:1px;
+    min-height:2.2em;
+    font-size:clamp(1.45rem,6vw,2rem);
+    line-height:1.08;
   }
 
   .linka-portfolio-mount .lpb-controls{
     width:min(300px,90%);
-    margin-top:10px;
+    margin-top:8px;
     gap:10px;
   }
 
