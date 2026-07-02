@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const projects = [
@@ -57,6 +58,8 @@ const MOBILE_SWIPE_THRESHOLD = 22;
 const MOBILE_FLICK_THRESHOLD = 12;
 const MOBILE_FLICK_VELOCITY = 0.42;
 const VIDEO_TRANSITION_DURATION = 0.22;
+const VIDEO_START_TIME = 0.8;
+const VIDEO_LOOP_THRESHOLD = 0.18;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,19 +76,27 @@ type TransitionRequest = {
 };
 
 type ViewportMode = "desktop" | "mobile";
+type VideoSlot = 0 | 1;
+type VideoChannel = "desktop" | "mobile";
+type VideoSlotSources = [string, string];
+type VideoWithFrameCallback = HTMLVideoElement & {
+  requestVideoFrameCallback?: (callback: (now: number, metadata: unknown) => void) => number;
+};
 
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLElement>(null);
-  const currentDesktopVideoRef = useRef<HTMLVideoElement>(null);
-  const currentMobileVideoRef = useRef<HTMLVideoElement>(null);
-  const incomingDesktopVideoRef = useRef<HTMLVideoElement>(null);
-  const incomingMobileVideoRef = useRef<HTMLVideoElement>(null);
+  const desktopVideoSlotsRef = useRef<Array<HTMLVideoElement | null>>([null, null]);
+  const mobileVideoSlotsRef = useRef<Array<HTMLVideoElement | null>>([null, null]);
   const transitionTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const videoTimelinesRef = useRef<gsap.core.Timeline[]>([]);
   const transitionTokenRef = useRef(0);
   const requestedIndexRef = useRef(0);
-  const preloadedVideosRef = useRef<Map<string, HTMLVideoElement>>(new Map());
+  const pendingVideoCleanupsRef = useRef<Set<() => void>>(new Set());
+  const activeDesktopSlotRef = useRef<VideoSlot>(0);
+  const activeMobileSlotRef = useRef<VideoSlot>(0);
+  const desktopSlotSourcesRef = useRef<VideoSlotSources>([projects[0].desktopVideo, ""]);
+  const mobileSlotSourcesRef = useRef<VideoSlotSources>([projects[0].mobileVideo, ""]);
   const dragStartX = useRef<number | null>(null);
   const dragStartY = useRef<number | null>(null);
   const dragLastX = useRef(0);
@@ -95,64 +106,146 @@ export default function PortfolioBuildPrototype() {
   const dragAbandoned = useRef(false);
   const dragPointerId = useRef<number | null>(null);
   const dragCaptured = useRef(false);
-  const [desktopIndex, setDesktopIndex] = useState(0);
-  const [mobileIndex, setMobileIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [titleIndex, setTitleIndex] = useState(0);
-  const [incomingIndex, setIncomingIndex] = useState<number | null>(null);
   const [transitionRequest, setTransitionRequest] = useState<TransitionRequest | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("desktop");
-  const desktopProject = projects[desktopIndex];
-  const mobileProject = projects[mobileIndex];
-  const incomingProject = incomingIndex === null ? null : projects[incomingIndex];
   const titleProject = projects[titleIndex];
-  const shouldRenderIncomingDesktop = incomingProject !== null && desktopIndex !== incomingIndex;
-  const shouldRenderIncomingMobile = incomingProject !== null && mobileIndex !== incomingIndex;
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
     video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
 
     const playback = video.play();
     void playback.catch(() => undefined);
   }
 
-  const playProjectVideos = useCallback(() => {
-    const videos = sectionRef.current?.querySelectorAll<HTMLVideoElement>(".lpb-project-video") ?? [];
-    videos.forEach(playVideo);
-  }, []);
+  function getSafeStartTime(video: HTMLVideoElement) {
+    if (!Number.isFinite(video.duration) || video.duration <= 0) {
+      return VIDEO_START_TIME;
+    }
 
-  const waitForVideoFrame = useCallback((video: HTMLVideoElement | null, token: number) => {
-    if (!video || transitionTokenRef.current !== token) {
+    return Math.min(VIDEO_START_TIME, Math.max(0, video.duration - 0.2));
+  }
+
+  function handleControlledLoop(video: HTMLVideoElement) {
+    if (!Number.isFinite(video.duration) || video.duration <= VIDEO_START_TIME + 0.2) return;
+    if (!video.ended && video.currentTime < video.duration - VIDEO_LOOP_THRESHOLD) return;
+
+    video.currentTime = getSafeStartTime(video);
+    playVideo(video);
+  }
+
+  function updateVideoSlotState(currentVideo: HTMLVideoElement, incomingVideo: HTMLVideoElement) {
+    currentVideo.classList.add("is-current");
+    currentVideo.classList.remove("is-incoming");
+    incomingVideo.classList.add("is-incoming");
+    incomingVideo.classList.remove("is-current");
+  }
+
+  function clearPendingVideoWaits() {
+    pendingVideoCleanupsRef.current.forEach((cleanup) => cleanup());
+    pendingVideoCleanupsRef.current.clear();
+  }
+
+  function waitForVideoEvent(video: HTMLVideoElement, events: string[], token: number) {
+    if (transitionTokenRef.current !== token) {
       return Promise.resolve(false);
     }
 
-    playVideo(video);
+    return new Promise<boolean>((resolve) => {
+      let settled = false;
+      const timeoutId = window.setTimeout(() => finish(false), 9000);
+      const cancel = () => finish(false);
+      const cleanup = () => {
+        window.clearTimeout(timeoutId);
+        events.forEach((eventName) => video.removeEventListener(eventName, handleReady));
+        video.removeEventListener("error", handleError);
+        pendingVideoCleanupsRef.current.delete(cancel);
+      };
+      const finish = (result: boolean) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        resolve(result);
+      };
+      const handleReady = () => finish(transitionTokenRef.current === token);
+      const handleError = () => finish(false);
+
+      events.forEach((eventName) => video.addEventListener(eventName, handleReady, { once: true }));
+      video.addEventListener("error", handleError, { once: true });
+      pendingVideoCleanupsRef.current.add(cancel);
+    });
+  }
+
+  const waitForRenderedFrame = useCallback((video: HTMLVideoElement, token: number) => {
+    if (transitionTokenRef.current !== token) {
+      return Promise.resolve(false);
+    }
+
+    const videoWithFrameCallback: VideoWithFrameCallback = video;
+    if (typeof videoWithFrameCallback.requestVideoFrameCallback === "function") {
+      return new Promise<boolean>((resolve) => {
+        const timeoutId = window.setTimeout(() => {
+          resolve(transitionTokenRef.current === token && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA);
+        }, 700);
+
+        videoWithFrameCallback.requestVideoFrameCallback(() => {
+          window.clearTimeout(timeoutId);
+          resolve(transitionTokenRef.current === token);
+        });
+      });
+    }
 
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
       return Promise.resolve(true);
     }
 
-    return new Promise<boolean>((resolve) => {
-      let settled = false;
-      const finish = (hasFrame: boolean) => {
-        if (settled) return;
-        settled = true;
-        video.removeEventListener("loadeddata", handleReady);
-        video.removeEventListener("canplay", handleReady);
-        video.removeEventListener("error", handleError);
-        resolve(hasFrame);
-      };
-      const handleReady = () => finish(true);
-      const handleError = () => finish(false);
-
-      video.addEventListener("loadeddata", handleReady, { once: true });
-      video.addEventListener("canplay", handleReady, { once: true });
-      video.addEventListener("error", handleError, { once: true });
-      video.load();
-    });
+    return waitForVideoEvent(video, ["loadeddata", "canplay"], token);
   }, []);
+
+  const prepareVideoSlot = useCallback(async (
+    video: HTMLVideoElement,
+    src: string,
+    loadedSources: MutableRefObject<VideoSlotSources>,
+    slot: VideoSlot,
+    token: number,
+    label: string,
+  ) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("aria-label", label);
+
+    if (loadedSources.current[slot] !== src) {
+      video.pause();
+      loadedSources.current[slot] = src;
+      video.src = src;
+      video.load();
+    }
+
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      const hasMetadata = await waitForVideoEvent(video, ["loadedmetadata"], token);
+      if (!hasMetadata || transitionTokenRef.current !== token) return false;
+    }
+
+    const startTime = getSafeStartTime(video);
+    if (Math.abs(video.currentTime - startTime) > 0.04) {
+      const seekPromise = waitForVideoEvent(video, ["seeked", "loadeddata", "canplay"], token);
+      video.currentTime = startTime;
+      const seeked = await seekPromise;
+      if (!seeked || transitionTokenRef.current !== token) return false;
+    }
+
+    playVideo(video);
+    return waitForRenderedFrame(video, token);
+  }, [waitForRenderedFrame]);
 
   const requestProject = useCallback((projectIndex: number, direction: TransitionDirection) => {
     const nextIndex = wrapIndex(projectIndex);
@@ -161,11 +254,11 @@ export default function PortfolioBuildPrototype() {
     transitionTimelineRef.current?.kill();
     videoTimelinesRef.current.forEach((timeline) => timeline.kill());
     videoTimelinesRef.current = [];
+    clearPendingVideoWaits();
     transitionTokenRef.current += 1;
     requestedIndexRef.current = nextIndex;
     setHasInteracted(true);
     setSelectedIndex(nextIndex);
-    setIncomingIndex(nextIndex);
     setTransitionRequest({ index: nextIndex, direction, token: transitionTokenRef.current });
   }, []);
 
@@ -259,25 +352,15 @@ export default function PortfolioBuildPrototype() {
 
     const { direction, index, token } = transitionRequest;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const currentDesktopVideo = currentDesktopVideoRef.current;
-    const currentMobileVideo = currentMobileVideoRef.current;
-    const incomingDesktopVideo = incomingDesktopVideoRef.current;
-    const incomingMobileVideo = incomingMobileVideoRef.current;
-    const currentVideos = [currentDesktopVideo, currentMobileVideo].filter(Boolean);
-    const incomingVideos = [incomingDesktopVideo, incomingMobileVideo].filter(Boolean);
     const incomingOffset = direction * 8;
     const outgoingOffset = direction * -8;
-    let desktopSettled = !incomingDesktopVideo || desktopIndex === index;
-    let mobileSettled = !incomingMobileVideo || mobileIndex === index;
-
-    gsap.set(currentVideos, { autoAlpha: 1, x: 0 });
-    gsap.set(incomingVideos, { autoAlpha: 0, x: incomingOffset });
+    let desktopSettled = false;
+    let mobileSettled = false;
 
     const finishTransitionIfReady = () => {
       if (transitionTokenRef.current !== token) return;
       if (!desktopSettled || !mobileSettled) return;
 
-      setIncomingIndex(null);
       setTransitionRequest(null);
     };
 
@@ -308,23 +391,44 @@ export default function PortfolioBuildPrototype() {
     };
 
     const animateVideoChannel = (
-      currentVideo: HTMLVideoElement | null,
-      incomingVideo: HTMLVideoElement | null,
-      setChannelIndex: (nextIndex: number) => void,
+      channel: VideoChannel,
       markSettled: () => void,
     ) => {
+      const isDesktop = channel === "desktop";
+      const activeSlot = isDesktop ? activeDesktopSlotRef.current : activeMobileSlotRef.current;
+      const incomingSlot = (activeSlot === 0 ? 1 : 0) as VideoSlot;
+      const slotsRef = isDesktop ? desktopVideoSlotsRef : mobileVideoSlotsRef;
+      const sourcesRef = isDesktop ? desktopSlotSourcesRef : mobileSlotSourcesRef;
+      const currentVideo = slotsRef.current[activeSlot];
+      const incomingVideo = slotsRef.current[incomingSlot];
+      const project = projects[index];
+      const nextSrc = isDesktop ? project.desktopVideo : project.mobileVideo;
+      const label = `Projeto ${project.name} no ${isDesktop ? "notebook" : "celular"}`;
+
       if (!incomingVideo || !currentVideo) {
         markSettled();
         finishTransitionIfReady();
         return;
       }
 
-      void waitForVideoFrame(incomingVideo, token).then((hasFrame) => {
+      gsap.set(currentVideo, { opacity: 1, visibility: "visible", x: 0 });
+      gsap.set(incomingVideo, { opacity: 0, visibility: "visible", x: incomingOffset });
+      updateVideoSlotState(currentVideo, incomingVideo);
+
+      void prepareVideoSlot(incomingVideo, nextSrc, sourcesRef, incomingSlot, token, label).then((hasFrame) => {
         if (transitionTokenRef.current !== token) return;
 
         if (!hasFrame || reduceMotion) {
           if (hasFrame) {
-            setChannelIndex(index);
+            gsap.set(incomingVideo, { opacity: 1, visibility: "visible", x: 0 });
+            gsap.set(currentVideo, { opacity: 0, visibility: "visible", x: outgoingOffset });
+            currentVideo.pause();
+            if (isDesktop) {
+              activeDesktopSlotRef.current = incomingSlot;
+            } else {
+              activeMobileSlotRef.current = incomingSlot;
+            }
+            updateVideoSlotState(incomingVideo, currentVideo);
           }
 
           markSettled();
@@ -337,55 +441,42 @@ export default function PortfolioBuildPrototype() {
             defaults: { ease: "power2.out" },
             onComplete: () => {
               if (transitionTokenRef.current !== token) return;
-              setChannelIndex(index);
+              currentVideo.pause();
+              if (isDesktop) {
+                activeDesktopSlotRef.current = incomingSlot;
+              } else {
+                activeMobileSlotRef.current = incomingSlot;
+              }
+              updateVideoSlotState(incomingVideo, currentVideo);
               markSettled();
               finishTransitionIfReady();
             },
           })
-          .to(currentVideo, { autoAlpha: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
-          .to(incomingVideo, { autoAlpha: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0);
+          .to(currentVideo, { opacity: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
+          .to(incomingVideo, { opacity: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0);
 
         videoTimelinesRef.current.push(videoTimeline);
       });
     };
-
-    const desktopChannel = {
-      current: currentDesktopVideo,
-      incoming: incomingDesktopVideo,
-      setIndex: setDesktopIndex,
-      settle: () => {
-        desktopSettled = true;
-      },
+    const markDesktopSettled = () => {
+      desktopSettled = true;
     };
-    const mobileChannel = {
-      current: currentMobileVideo,
-      incoming: incomingMobileVideo,
-      setIndex: setMobileIndex,
-      settle: () => {
-        mobileSettled = true;
-      },
+    const markMobileSettled = () => {
+      mobileSettled = true;
     };
-    const priorityChannel = viewportMode === "mobile" ? mobileChannel : desktopChannel;
-    const secondaryChannel = viewportMode === "mobile" ? desktopChannel : mobileChannel;
+    const priorityChannel: VideoChannel = viewportMode === "mobile" ? "mobile" : "desktop";
+    const secondaryChannel: VideoChannel = viewportMode === "mobile" ? "desktop" : "mobile";
 
     animateTitle();
 
     if (reduceMotion) {
-      if (desktopChannel.incoming) {
-        setDesktopIndex(index);
-      }
-      if (mobileChannel.incoming) {
-        setMobileIndex(index);
-      }
-      setTitleIndex(index);
-      setIncomingIndex(null);
-      setTransitionRequest(null);
-      return;
+      animateVideoChannel("desktop", markDesktopSettled);
+      animateVideoChannel("mobile", markMobileSettled);
+    } else {
+      animateVideoChannel(priorityChannel, priorityChannel === "desktop" ? markDesktopSettled : markMobileSettled);
+      animateVideoChannel(secondaryChannel, secondaryChannel === "desktop" ? markDesktopSettled : markMobileSettled);
     }
-
-    animateVideoChannel(priorityChannel.current, priorityChannel.incoming, priorityChannel.setIndex, priorityChannel.settle);
-    animateVideoChannel(secondaryChannel.current, secondaryChannel.incoming, secondaryChannel.setIndex, secondaryChannel.settle);
-  }, [transitionRequest, viewportMode, waitForVideoFrame]);
+  }, [prepareVideoSlot, transitionRequest, viewportMode]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -397,34 +488,58 @@ export default function PortfolioBuildPrototype() {
     return () => mediaQuery.removeEventListener("change", syncViewportMode);
   }, []);
 
-  useEffect(() => {
-    const videoKey = viewportMode === "mobile" ? "mobileVideo" : "desktopVideo";
-    const neighborIndexes = [wrapIndex(selectedIndex - 1), wrapIndex(selectedIndex + 1)];
+  useLayoutEffect(() => {
+    const desktopActive = desktopVideoSlotsRef.current[0];
+    const desktopHidden = desktopVideoSlotsRef.current[1];
+    const mobileActive = mobileVideoSlotsRef.current[0];
+    const mobileHidden = mobileVideoSlotsRef.current[1];
+    const project = projects[0];
 
-    neighborIndexes.forEach((projectIndex) => {
-      const src = projects[projectIndex][videoKey];
-      if (preloadedVideosRef.current.has(src)) return;
-
-      const video = document.createElement("video");
-      video.preload = "auto";
+    [desktopActive, desktopHidden, mobileActive, mobileHidden].forEach((video) => {
+      if (!video) return;
       video.muted = true;
       video.defaultMuted = true;
       video.playsInline = true;
-      video.src = src;
-      video.load();
-      preloadedVideosRef.current.set(src, video);
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
     });
-  }, [selectedIndex, viewportMode]);
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(playProjectVideos);
-    const retry = window.setTimeout(playProjectVideos, 240);
+    if (desktopActive) {
+      desktopActive.src = project.desktopVideo;
+      desktopSlotSourcesRef.current[0] = project.desktopVideo;
+      desktopActive.setAttribute("aria-label", `Projeto ${project.name} no notebook`);
+      gsap.set(desktopActive, { opacity: 1, visibility: "visible", x: 0 });
+    }
 
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.clearTimeout(retry);
-    };
-  }, [desktopIndex, mobileIndex, incomingIndex, playProjectVideos]);
+    if (mobileActive) {
+      mobileActive.src = project.mobileVideo;
+      mobileSlotSourcesRef.current[0] = project.mobileVideo;
+      mobileActive.setAttribute("aria-label", `Projeto ${project.name} no celular`);
+      gsap.set(mobileActive, { opacity: 1, visibility: "visible", x: 0 });
+    }
+
+    [desktopHidden, mobileHidden].forEach((video) => {
+      if (!video) return;
+      gsap.set(video, { opacity: 0, visibility: "visible", x: 0 });
+    });
+
+    if (desktopActive && desktopHidden) {
+      updateVideoSlotState(desktopActive, desktopHidden);
+    }
+    if (mobileActive && mobileHidden) {
+      updateVideoSlotState(mobileActive, mobileHidden);
+    }
+
+    const token = transitionTokenRef.current;
+    void Promise.all([
+      desktopActive
+        ? prepareVideoSlot(desktopActive, project.desktopVideo, desktopSlotSourcesRef, 0, token, `Projeto ${project.name} no notebook`)
+        : Promise.resolve(false),
+      mobileActive
+        ? prepareVideoSlot(mobileActive, project.mobileVideo, mobileSlotSourcesRef, 0, token, `Projeto ${project.name} no celular`)
+        : Promise.resolve(false),
+    ]);
+  }, [prepareVideoSlot]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -540,6 +655,7 @@ export default function PortfolioBuildPrototype() {
 
   useEffect(() => {
     return () => {
+      clearPendingVideoWaits();
       transitionTimelineRef.current?.kill();
       videoTimelinesRef.current.forEach((timeline) => timeline.kill());
     };
@@ -569,35 +685,31 @@ export default function PortfolioBuildPrototype() {
                   </div>
                   <div className="lpb-video-stack">
                     <video
-                      key={`${desktopProject.id}-desktop-current`}
-                      className="lpb-project-video is-current"
-                      src={desktopProject.desktopVideo}
+                      className="lpb-project-video lpb-video-slot-a is-current"
                       autoPlay
                       muted
-                      loop
                       playsInline
-                      preload="metadata"
-                      aria-label={`Projeto ${desktopProject.name} no notebook`}
-                      ref={currentDesktopVideoRef}
-                      onCanPlay={(event) => playVideo(event.currentTarget)}
-                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                      preload="auto"
+                      aria-label={`Projeto ${projects[0].name} no notebook`}
+                      ref={(video) => {
+                        desktopVideoSlotsRef.current[0] = video;
+                      }}
+                      onTimeUpdate={(event) => handleControlledLoop(event.currentTarget)}
+                      onEnded={(event) => handleControlledLoop(event.currentTarget)}
                     />
-                    {shouldRenderIncomingDesktop && incomingProject ? (
-                      <video
-                        key={`${incomingProject.id}-desktop-incoming-${transitionRequest?.token ?? 0}`}
-                        className="lpb-project-video is-incoming"
-                        src={incomingProject.desktopVideo}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        aria-label={`Projeto ${incomingProject.name} no notebook`}
-                        ref={incomingDesktopVideoRef}
-                        onCanPlay={(event) => playVideo(event.currentTarget)}
-                        onLoadedData={(event) => playVideo(event.currentTarget)}
-                      />
-                    ) : null}
+                    <video
+                      className="lpb-project-video lpb-video-slot-b is-incoming"
+                      autoPlay
+                      muted
+                      playsInline
+                      preload="auto"
+                      aria-label="Proximo projeto no notebook"
+                      ref={(video) => {
+                        desktopVideoSlotsRef.current[1] = video;
+                      }}
+                      onTimeUpdate={(event) => handleControlledLoop(event.currentTarget)}
+                      onEnded={(event) => handleControlledLoop(event.currentTarget)}
+                    />
                   </div>
                 </div>
                 <div className="lpb-notebook-base" />
@@ -608,35 +720,31 @@ export default function PortfolioBuildPrototype() {
                   <div className="lpb-phone-notch" />
                   <div className="lpb-video-stack">
                     <video
-                      key={`${mobileProject.id}-mobile-current`}
-                      className="lpb-project-video is-current"
-                      src={mobileProject.mobileVideo}
+                      className="lpb-project-video lpb-video-slot-a is-current"
                       autoPlay
                       muted
-                      loop
                       playsInline
-                      preload="metadata"
-                      aria-label={`Projeto ${mobileProject.name} no celular`}
-                      ref={currentMobileVideoRef}
-                      onCanPlay={(event) => playVideo(event.currentTarget)}
-                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                      preload="auto"
+                      aria-label={`Projeto ${projects[0].name} no celular`}
+                      ref={(video) => {
+                        mobileVideoSlotsRef.current[0] = video;
+                      }}
+                      onTimeUpdate={(event) => handleControlledLoop(event.currentTarget)}
+                      onEnded={(event) => handleControlledLoop(event.currentTarget)}
                     />
-                    {shouldRenderIncomingMobile && incomingProject ? (
-                      <video
-                        key={`${incomingProject.id}-mobile-incoming-${transitionRequest?.token ?? 0}`}
-                        className="lpb-project-video is-incoming"
-                        src={incomingProject.mobileVideo}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        aria-label={`Projeto ${incomingProject.name} no celular`}
-                        ref={incomingMobileVideoRef}
-                        onCanPlay={(event) => playVideo(event.currentTarget)}
-                        onLoadedData={(event) => playVideo(event.currentTarget)}
-                      />
-                    ) : null}
+                    <video
+                      className="lpb-project-video lpb-video-slot-b is-incoming"
+                      autoPlay
+                      muted
+                      playsInline
+                      preload="auto"
+                      aria-label="Proximo projeto no celular"
+                      ref={(video) => {
+                        mobileVideoSlotsRef.current[1] = video;
+                      }}
+                      onTimeUpdate={(event) => handleControlledLoop(event.currentTarget)}
+                      onEnded={(event) => handleControlledLoop(event.currentTarget)}
+                    />
                   </div>
                 </div>
               </div>
