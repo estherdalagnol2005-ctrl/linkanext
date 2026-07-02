@@ -2579,8 +2579,8 @@ body {
 .linka-portfolio-mount .lpb-project-meta{
   position:relative;
   z-index:12;
-  width:min(560px,100%);
-  margin:-12px auto 0;
+  width:min(760px,94vw);
+  margin:-18px auto 0;
   display:grid;
   gap:8px;
   text-align:center;
@@ -2593,11 +2593,14 @@ body {
 }
 
 .linka-portfolio-mount .lpb-project-meta strong{
+  display:block;
+  max-width:100%;
   color:#fff;
   font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(32px,4vw,58px);
-  line-height:1;
+  font-size:clamp(2rem,3.6vw,3.8rem);
+  line-height:.98;
   letter-spacing:0;
+  text-wrap:balance;
   text-shadow:0 18px 46px rgba(0,0,0,.44);
 }
 
@@ -2656,19 +2659,36 @@ body {
   gap:7px;
 }
 
-.linka-portfolio-mount .lpb-dots span{
+.linka-portfolio-mount .lpb-dots button{
+  appearance:none;
   width:6px;
+  min-width:6px;
   height:6px;
+  min-height:6px;
+  padding:0;
+  border:0;
   border-radius:999px;
   background:rgba(255,255,255,.24);
+  color:transparent;
+  cursor:pointer;
+  font:inherit;
   transition:
     width .2s ease,
+    min-width .2s ease,
     background .2s ease,
     box-shadow .2s ease;
 }
 
-.linka-portfolio-mount .lpb-dots span.is-active{
+.linka-portfolio-mount .lpb-dots button:hover,
+.linka-portfolio-mount .lpb-dots button:focus-visible{
+  background:rgba(255,255,255,.42);
+  outline:none;
+  box-shadow:0 0 14px rgba(255,255,255,.14);
+}
+
+.linka-portfolio-mount .lpb-dots button.is-active{
   width:22px;
+  min-width:22px;
   background:#8bff4f;
   box-shadow:0 0 18px rgba(139,255,79,.3);
 }
@@ -2705,8 +2725,6 @@ body {
 @media(max-width:767px){
   .linka-portfolio-mount .lpb-section{
     padding:4px 0 72px;
-    -webkit-user-select:none;
-    overscroll-behavior-x:contain;
   }
 
   .linka-portfolio-mount .lpb-shell{
@@ -2803,13 +2821,14 @@ body {
   }
 
   .linka-portfolio-mount .lpb-project-meta{
-    width:min(330px,92%);
-    margin:-16px auto 0;
+    width:min(410px,96vw);
+    margin:-18px auto 0;
     gap:6px;
   }
 
   .linka-portfolio-mount .lpb-project-meta strong{
-    font-size:36px;
+    font-size:clamp(1.55rem,6.6vw,2.15rem);
+    line-height:1.02;
   }
 
   .linka-portfolio-mount .lpb-controls{
@@ -2825,933 +2844,24 @@ body {
     min-height:40px;
     padding:0;
   }
+
+  .linka-portfolio-mount .lpb-dots button{
+    width:6px;
+    min-width:6px;
+    height:6px;
+    min-height:6px;
+  }
+
+  .linka-portfolio-mount .lpb-dots button.is-active{
+    width:22px;
+    min-width:22px;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
   .linka-portfolio-mount .lpb-project-layer.is-active,
   .linka-portfolio-mount .lpb-project-video{
     animation:none!important;
-  }
-}
-
-/* =========================================================
-   LINKA PORTFOLIO - 3D PROJECT ORBIT
-========================================================= */
-
-.linka-portfolio-mount .lpb-section{
-  --lpb-green:#8bff4f;
-  --lpb-blue:#64c7ff;
-  --lpb-violet:#8b5cf6;
-  --lpb-ink:#02050b;
-  --lpb-panel:rgba(5,11,22,.9);
-  --lpb-line:rgba(190,229,255,.18);
-  width:100%;
-  max-width:100%;
-  padding:10px 18px 98px;
-  color:#fff;
-  font-family:Manrope,Arial,sans-serif;
-  overflow:hidden;
-  cursor:default;
-  user-select:none;
-  touch-action:pan-y;
-}
-
-.linka-portfolio-mount .lpb-section *,
-.linka-portfolio-mount .lpb-section *::before,
-.linka-portfolio-mount .lpb-section *::after{
-  box-sizing:border-box;
-}
-
-.linka-portfolio-mount .lpb-section:focus-visible{
-  outline:1px solid rgba(139,255,79,.38);
-  outline-offset:8px;
-}
-
-.linka-portfolio-mount .lpb-shell{
-  width:min(1180px,100%);
-  min-height:600px;
-  margin:0 auto;
-  display:block;
-  position:relative;
-  isolation:isolate;
-  perspective:1500px;
-  transform-style:preserve-3d;
-}
-
-.linka-portfolio-mount .lpb-section.is-orbit .lpb-shell{
-  min-height:550px;
-}
-
-.linka-portfolio-mount .lpb-section.is-opening .lpb-shell{
-  min-height:550px;
-}
-
-.linka-portfolio-mount .lpb-section.is-focus .lpb-shell,
-.linka-portfolio-mount .lpb-section.is-closing .lpb-shell{
-  min-height:670px;
-}
-
-.linka-portfolio-mount .lpb-shell::before{
-  display:none;
-}
-
-.linka-portfolio-mount .lpb-glow{
-  position:absolute;
-  inset:0 -10% 6%;
-  z-index:0;
-  border-radius:999px;
-  background:
-    radial-gradient(circle at 30% 40%,rgba(56,189,248,.26),transparent 34%),
-    radial-gradient(circle at 66% 34%,rgba(139,92,246,.24),transparent 34%),
-    radial-gradient(circle at 50% 82%,rgba(139,255,79,.10),transparent 42%);
-  filter:blur(24px);
-  opacity:.86;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-drag-hint{
-  position:absolute;
-  top:0;
-  left:50%;
-  z-index:18;
-  transform:translateX(-50%);
-  color:rgba(236,248,255,.68);
-  font:950 10.5px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  white-space:nowrap;
-  text-shadow:0 0 18px rgba(100,199,255,.24);
-  transition:opacity .22s ease,color .22s ease;
-}
-
-.linka-portfolio-mount .lpb-drag-hint.is-muted{
-  opacity:.36;
-  color:rgba(236,248,255,.42);
-}
-
-.linka-portfolio-mount .lpb-gallery{
-  height:558px;
-  max-width:100%;
-  position:relative;
-  z-index:2;
-  cursor:grab;
-  touch-action:pan-y;
-  perspective:1500px;
-  perspective-origin:50% 44%;
-  transform-style:preserve-3d;
-}
-
-.linka-portfolio-mount .lpb-gallery:active{
-  cursor:grabbing;
-}
-
-.linka-portfolio-mount .lpb-gallery.is-focus,
-.linka-portfolio-mount .lpb-gallery.is-closing{
-  height:610px;
-}
-
-.linka-portfolio-mount .lpb-orbit{
-  position:absolute;
-  left:0;
-  right:0;
-  top:36px;
-  z-index:8;
-  height:370px;
-  transform-style:preserve-3d;
-  perspective:1500px;
-  pointer-events:auto;
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit{
-  top:4px;
-  height:320px;
-  perspective:1200px;
-}
-
-.linka-portfolio-mount .lpb-orbit::before,
-.linka-portfolio-mount .lpb-orbit::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  z-index:-1;
-  width:min(760px,84%);
-  height:210px;
-  border-radius:50%;
-  border:1px solid rgba(125,211,252,.13);
-  transform:translate(-50%,-50%) rotateX(66deg);
-  box-shadow:
-    0 0 52px rgba(56,189,248,.08),
-    inset 0 0 34px rgba(139,92,246,.06);
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-orbit::after{
-  width:min(560px,64%);
-  height:150px;
-  border-color:rgba(139,255,79,.11);
-  transform:translate(-50%,-50%) rotateX(66deg) rotateZ(-6deg);
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit::before{
-  width:min(720px,82%);
-  height:58px;
-  transform:translate(-50%,-38%) rotateX(72deg);
-  opacity:.64;
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit::after{
-  display:none;
-}
-
-.linka-portfolio-mount .lpb-orbit-card{
-  appearance:none;
-  width:196px;
-  height:128px;
-  padding:0;
-  border:0;
-  border-radius:0;
-  position:absolute;
-  left:50%;
-  top:50%;
-  z-index:var(--lpb-card-z-index);
-  display:block;
-  overflow:visible;
-  color:#fff;
-  background:transparent;
-  box-shadow:none;
-  opacity:var(--lpb-card-opacity);
-  transform:
-    translate(-50%,-50%)
-    translateX(var(--lpb-card-x))
-    translateY(var(--lpb-card-y))
-    rotateY(var(--lpb-card-rotate-y))
-    translateZ(var(--lpb-card-z))
-    scale(var(--lpb-card-scale));
-  transform-style:preserve-3d;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  pointer-events:auto;
-  cursor:pointer;
-  will-change:transform,opacity;
-  transition:
-    transform .58s cubic-bezier(.2,.82,.22,1),
-    opacity .28s ease,
-    filter .22s ease;
-}
-
-.linka-portfolio-mount .lpb-orbit-card:hover,
-.linka-portfolio-mount .lpb-orbit-card:focus-visible{
-  outline:none;
-  filter:saturate(1.08) brightness(1.04);
-}
-
-.linka-portfolio-mount .lpb-orbit-card.is-selected{
-  filter:saturate(1.13) brightness(1.08);
-}
-
-.linka-portfolio-mount .lpb-orbit-mockup{
-  position:absolute;
-  inset:0 1px 18px;
-  z-index:2;
-  display:block;
-  transform-style:preserve-3d;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-orbit-mockup::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:55%;
-  z-index:-1;
-  width:78%;
-  height:62%;
-  border-radius:50%;
-  background:
-    radial-gradient(circle,rgba(139,255,79,.24),transparent 58%),
-    radial-gradient(circle,rgba(56,189,248,.18),transparent 68%);
-  opacity:.16;
-  transform:translate(-50%,-50%) translateZ(-18px);
-  pointer-events:none;
-  transition:opacity .2s ease;
-}
-
-.linka-portfolio-mount .lpb-orbit-card.is-selected .lpb-orbit-mockup::before,
-.linka-portfolio-mount .lpb-mobile-orbit-card.is-selected .lpb-orbit-mockup::before{
-  opacity:.78;
-}
-
-.linka-portfolio-mount .lpb-mini-notebook{
-  position:absolute;
-  left:8px;
-  top:13px;
-  width:158px;
-  display:block;
-  transform:translateZ(0);
-  transform-style:preserve-3d;
-}
-
-.linka-portfolio-mount .lpb-mini-notebook-screen{
-  display:block;
-  aspect-ratio:16/10;
-  padding:4px;
-  border:1px solid rgba(210,237,255,.2);
-  border-radius:9px 9px 5px 5px;
-  background:linear-gradient(145deg,rgba(12,18,31,.98),rgba(1,5,11,.96));
-  box-shadow:
-    0 14px 26px rgba(0,0,0,.34),
-    inset 0 1px 0 rgba(255,255,255,.14);
-  overflow:hidden;
-}
-
-.linka-portfolio-mount .lpb-mini-notebook-screen img,
-.linka-portfolio-mount .lpb-mini-phone-screen img{
-  width:100%;
-  height:100%;
-  display:block;
-  object-fit:cover;
-  user-select:none;
-  -webkit-user-select:none;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-mini-notebook-base{
-  display:block;
-  width:70%;
-  height:6px;
-  margin:0 auto;
-  border-radius:0 0 12px 12px;
-  background:linear-gradient(180deg,rgba(185,218,236,.72),rgba(47,66,84,.54));
-  box-shadow:0 9px 16px rgba(0,0,0,.24);
-}
-
-.linka-portfolio-mount .lpb-mini-phone{
-  position:absolute;
-  right:14px;
-  bottom:6px;
-  width:45px;
-  height:78px;
-  padding:3px;
-  border:1px solid rgba(224,246,255,.22);
-  border-radius:11px;
-  display:block;
-  background:linear-gradient(150deg,rgba(16,23,36,.98),rgba(3,7,14,.96));
-  box-shadow:
-    0 16px 28px rgba(0,0,0,.38),
-    0 0 14px rgba(56,189,248,.08),
-    inset 0 1px 0 rgba(255,255,255,.12);
-  transform:translateZ(28px) rotateY(-7deg) rotateZ(1deg);
-  overflow:hidden;
-}
-
-.linka-portfolio-mount .lpb-mini-phone::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:3px;
-  z-index:2;
-  width:15px;
-  height:2px;
-  border-radius:999px;
-  background:rgba(255,255,255,.28);
-  transform:translateX(-50%);
-}
-
-.linka-portfolio-mount .lpb-mini-phone-screen{
-  display:block;
-  width:100%;
-  height:100%;
-  border-radius:8px;
-  overflow:hidden;
-  background:#050916;
-}
-
-.linka-portfolio-mount .lpb-preview-name{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-17px;
-  z-index:3;
-  color:rgba(236,248,255,.64);
-  font:850 10.5px/1 "Space Grotesk",Manrope,Arial,sans-serif;
-  letter-spacing:0;
-  text-align:center;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  text-shadow:0 0 14px rgba(56,189,248,.18);
-  pointer-events:none;
-  transition:color .2s ease, opacity .2s ease;
-}
-
-.linka-portfolio-mount .lpb-orbit-card.is-selected .lpb-preview-name,
-.linka-portfolio-mount .lpb-mobile-orbit-card.is-selected .lpb-preview-name{
-  color:rgba(255,255,255,.94);
-  text-shadow:
-    0 0 14px rgba(139,255,79,.24),
-    0 0 18px rgba(56,189,248,.18);
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit-card{
-  width:168px;
-  height:104px;
-  padding:0;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-orbit-mockup{
-  inset:0 0 14px;
-}
-
-.linka-portfolio-mount .lpb-gallery.is-opening .lpb-preview-name{
-  bottom:-14px;
-  font-size:9.5px;
-}
-
-.linka-portfolio-mount .lpb-project-layer{
-  position:absolute;
-  inset:58px 0 0;
-  z-index:9;
-  display:grid;
-  place-items:center;
-  transform-style:preserve-3d;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-device-stage{
-  width:min(900px,100%);
-  min-height:410px;
-  position:relative;
-  display:grid;
-  place-items:center;
-  transform-style:preserve-3d;
-}
-
-.linka-portfolio-mount .lpb-devices{
-  width:min(900px,100%);
-  min-height:410px;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  isolation:isolate;
-  transform:none!important;
-  transition:filter .26s ease,transform .26s ease;
-}
-
-.linka-portfolio-mount .lpb-devices::before{
-  content:"";
-  position:absolute;
-  z-index:0;
-  width:min(700px,90%);
-  aspect-ratio:1.68;
-  border-radius:46px;
-  border:1px solid rgba(125,211,252,.16);
-  background:
-    radial-gradient(circle at 28% 28%,rgba(100,199,255,.18),transparent 34%),
-    radial-gradient(circle at 72% 28%,rgba(139,92,246,.16),transparent 34%),
-    linear-gradient(135deg,rgba(255,255,255,.055),rgba(139,255,79,.035));
-  box-shadow:
-    0 0 86px rgba(100,199,255,.11),
-    0 0 92px rgba(139,255,79,.08);
-  transform:rotate(-3deg) translateZ(-80px);
-}
-
-.linka-portfolio-mount .lpb-devices::after{
-  content:"";
-  position:absolute;
-  z-index:0;
-  width:min(620px,84%);
-  aspect-ratio:1.7;
-  border-radius:42px;
-  background:radial-gradient(circle at 50% 42%,rgba(139,255,79,.15),transparent 66%);
-  opacity:.76;
-  pointer-events:none;
-  transform:rotate(3deg) translateZ(-120px);
-}
-
-.linka-portfolio-mount .lpb-notebook{
-  width:min(680px,76%);
-  position:relative;
-  z-index:2;
-  filter:
-    drop-shadow(0 36px 60px rgba(0,0,0,.48))
-    drop-shadow(0 0 34px rgba(56,189,248,.16));
-}
-
-.linka-portfolio-mount .lpb-notebook-screen{
-  aspect-ratio:16/10;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:24px 24px 16px 16px;
-  background:
-    linear-gradient(140deg,rgba(7,20,34,.98),rgba(14,30,52,.96) 48%,rgba(22,12,44,.96)),
-    radial-gradient(circle at 20% 18%,rgba(125,211,252,.28),transparent 36%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.06),
-    inset 0 0 44px rgba(125,211,252,.1),
-    0 0 56px rgba(125,211,252,.18);
-  overflow:hidden;
-}
-
-.linka-portfolio-mount .lpb-notebook-base{
-  width:92%;
-  height:18px;
-  margin:0 auto;
-  border-radius:0 0 28px 28px;
-  background:linear-gradient(90deg,rgba(47,65,86,.9),rgba(160,184,204,.66),rgba(48,67,92,.9));
-  box-shadow:0 18px 28px rgba(0,0,0,.34);
-}
-
-.linka-portfolio-mount .lpb-window-bar{
-  height:24px;
-  flex:0 0 auto;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:18px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.linka-portfolio-mount .lpb-window-bar span{
-  width:8px;
-  height:8px;
-  border-radius:999px;
-  background:rgba(255,255,255,.28);
-}
-
-.linka-portfolio-mount .lpb-window-bar span:nth-child(2){
-  background:rgba(139,255,79,.74);
-  box-shadow:0 0 14px rgba(139,255,79,.36);
-}
-
-.linka-portfolio-mount .lpb-project-video{
-  display:block;
-  width:100%;
-  height:100%;
-  min-height:0;
-  border:0;
-  border-radius:18px;
-  object-fit:cover;
-  background:#02070d;
-  animation:lpb-video-in .34s ease both;
-}
-
-.linka-portfolio-mount .lpb-project-video::-webkit-media-controls,
-.linka-portfolio-mount .lpb-project-video::-webkit-media-controls-start-playback-button{
-  display:none!important;
-}
-
-.linka-portfolio-mount .lpb-phone{
-  width:min(172px,24vw);
-  position:absolute;
-  right:8%;
-  bottom:24px;
-  z-index:3;
-  padding:9px;
-  border:1px solid rgba(255,255,255,.19);
-  border-radius:28px;
-  background:linear-gradient(145deg,rgba(8,17,31,.98),rgba(28,37,57,.98));
-  box-shadow:
-    0 28px 50px rgba(0,0,0,.5),
-    0 0 36px rgba(139,92,246,.2);
-}
-
-.linka-portfolio-mount .lpb-phone-screen{
-  aspect-ratio:9/17.4;
-  border-radius:22px;
-  background:
-    radial-gradient(circle at 30% 16%,rgba(139,255,79,.22),transparent 26%),
-    linear-gradient(155deg,rgba(7,17,32,.98),rgba(16,31,55,.98) 58%,rgba(25,14,49,.98));
-  border:1px solid rgba(125,211,252,.12);
-  position:relative;
-  overflow:hidden;
-}
-
-.linka-portfolio-mount .lpb-phone-screen .lpb-project-video{
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-}
-
-.linka-portfolio-mount .lpb-phone-notch{
-  position:absolute;
-  top:9px;
-  left:50%;
-  z-index:2;
-  width:42px;
-  height:5px;
-  border-radius:999px;
-  background:rgba(255,255,255,.2);
-  transform:translateX(-50%);
-}
-
-.linka-portfolio-mount .lpb-project-meta{
-  position:relative;
-  z-index:20;
-  width:min(760px,94vw);
-  margin:-18px auto 0;
-  display:block;
-  text-align:center;
-  pointer-events:none;
-}
-
-.linka-portfolio-mount .lpb-project-meta strong{
-  display:block;
-  max-width:100%;
-  color:#fff;
-  font-family:"Space Grotesk",Manrope,sans-serif;
-  font-size:clamp(2rem,3.6vw,3.8rem);
-  line-height:.98;
-  letter-spacing:0;
-  text-wrap:balance;
-  text-shadow:0 18px 48px rgba(0,0,0,.48);
-}
-
-.linka-portfolio-mount .lpb-orbit-return{
-  appearance:none;
-  min-height:34px;
-  margin:14px auto 0;
-  padding:0 15px;
-  border:1px solid rgba(139,255,79,.28);
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  z-index:22;
-  color:rgba(238,255,232,.86);
-  background:linear-gradient(180deg,rgba(11,19,30,.82),rgba(4,7,13,.88));
-  box-shadow:0 16px 34px rgba(0,0,0,.26),0 0 22px rgba(139,255,79,.08);
-  cursor:pointer;
-  font:900 11px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.02em;
-  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease;
-}
-
-.linka-portfolio-mount .lpb-orbit-return:hover,
-.linka-portfolio-mount .lpb-orbit-return:focus-visible{
-  transform:translateY(-1px);
-  border-color:rgba(139,255,79,.5);
-  color:#fff;
-  outline:none;
-  box-shadow:0 18px 42px rgba(0,0,0,.34),0 0 30px rgba(139,255,79,.13);
-}
-
-.linka-portfolio-mount .lpb-gallery.is-switching .lpb-device-stage{
-  filter:blur(.35px) brightness(.96);
-}
-
-@media(max-width:767px){
-  .linka-portfolio-mount .lpb-section{
-    padding:4px 0 72px;
-  }
-
-  .linka-portfolio-mount .lpb-section.is-orbit{
-    padding-top:0;
-    padding-bottom:50px;
-  }
-
-  .linka-portfolio-mount .lpb-shell{
-    width:100%;
-    min-height:552px;
-    perspective:980px;
-  }
-
-  .linka-portfolio-mount .lpb-section.is-orbit .lpb-shell{
-    min-height:342px;
-    perspective:820px;
-  }
-
-  .linka-portfolio-mount .lpb-section.is-opening .lpb-shell{
-    min-height:420px;
-  }
-
-  .linka-portfolio-mount .lpb-section.is-focus .lpb-shell,
-  .linka-portfolio-mount .lpb-section.is-closing .lpb-shell{
-    min-height:588px;
-  }
-
-  .linka-portfolio-mount .lpb-glow{
-    inset:2% -36% 10%;
-    opacity:.76;
-  }
-
-  .linka-portfolio-mount .lpb-drag-hint{
-    top:0;
-    font-size:9px;
-    letter-spacing:.16em;
-  }
-
-  .linka-portfolio-mount .lpb-gallery{
-    height:388px;
-    perspective:960px;
-    perspective-origin:50% 42%;
-    overscroll-behavior-x:contain;
-    -webkit-tap-highlight-color:transparent;
-  }
-
-  .linka-portfolio-mount .lpb-section.is-orbit .lpb-gallery{
-    height:320px;
-    perspective:820px;
-    perspective-origin:50% 38%;
-    overflow:visible;
-  }
-
-  .linka-portfolio-mount .lpb-gallery.is-focus,
-  .linka-portfolio-mount .lpb-gallery.is-closing{
-    height:500px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-stage{
-    --lpb-mobile-ring-angle:0deg;
-    --lpb-mobile-orbit-radius:144px;
-    --lpb-mobile-card-width:128px;
-    --lpb-mobile-card-height:90px;
-    position:absolute;
-    left:0;
-    right:0;
-    top:14px;
-    z-index:8;
-    height:286px;
-    perspective:950px;
-    perspective-origin:50% 42%;
-    transform-style:preserve-3d;
-    overflow:visible;
-    touch-action:pan-y;
-    user-select:none;
-    -webkit-user-select:none;
-    overscroll-behavior-x:contain;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-stage::before{
-    content:"";
-    position:absolute;
-    left:50%;
-    top:50%;
-    z-index:-1;
-    width:min(330px,88vw);
-    height:104px;
-    border-radius:50%;
-    border:1px solid rgba(125,211,252,.12);
-    transform:translate(-50%,-42%) rotateX(64deg);
-    box-shadow:0 0 32px rgba(56,189,248,.07), inset 0 0 22px rgba(139,92,246,.05);
-    pointer-events:none;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-ring{
-    position:absolute;
-    left:50%;
-    top:48%;
-    width:1px;
-    height:1px;
-    transform:rotateY(var(--lpb-mobile-ring-angle));
-    transform-style:preserve-3d;
-    will-change:transform;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card{
-    appearance:none;
-    width:var(--lpb-mobile-card-width);
-    height:var(--lpb-mobile-card-height);
-    padding:0;
-    border:0;
-    border-radius:0;
-    position:absolute;
-    left:0;
-    top:0;
-    display:block;
-    overflow:visible;
-    color:#fff;
-    background:transparent;
-    box-shadow:none;
-    cursor:pointer;
-    touch-action:pan-y;
-    opacity:.94;
-    transform:
-      translate3d(-50%,-50%,0)
-      rotateY(var(--lpb-mobile-slot-angle))
-      translateZ(var(--lpb-mobile-orbit-radius));
-    transform-style:preserve-3d;
-    backface-visibility:hidden;
-    -webkit-backface-visibility:hidden;
-    will-change:transform,opacity;
-    transition:filter .18s ease;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card.is-selected{
-    filter:saturate(1.12) brightness(1.06);
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-orbit-mockup{
-    inset:0 0 13px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-orbit-mockup::before{
-    width:88%;
-    height:66%;
-    opacity:.12;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-notebook{
-    left:4px;
-    top:8px;
-    width:98px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-notebook-screen{
-    padding:3px;
-    border-radius:7px 7px 4px 4px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-notebook-base{
-    height:4px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-phone{
-    right:7px;
-    bottom:5px;
-    width:32px;
-    height:57px;
-    padding:2px;
-    border-radius:8px;
-    transform:translateZ(20px) rotateY(-7deg) rotateZ(1deg);
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-phone::before{
-    width:10px;
-    height:1.5px;
-    top:2px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-mini-phone-screen{
-    border-radius:6px;
-  }
-
-  .linka-portfolio-mount .lpb-mobile-orbit-card .lpb-preview-name{
-    bottom:-13px;
-    font-size:8.5px;
-    color:rgba(236,248,255,.58);
-  }
-
-  .linka-portfolio-mount .lpb-project-layer{
-    inset:82px 0 0;
-  }
-
-  .linka-portfolio-mount .lpb-device-stage{
-    width:100%;
-    min-height:318px;
-  }
-
-  .linka-portfolio-mount .lpb-devices{
-    width:100%;
-    min-height:318px;
-    display:grid;
-    place-items:center;
-  }
-
-  .linka-portfolio-mount .lpb-devices::before{
-    width:min(350px,92%);
-    border-radius:30px;
-  }
-
-  .linka-portfolio-mount .lpb-devices::after{
-    width:min(330px,86%);
-    border-radius:28px;
-  }
-
-  .linka-portfolio-mount .lpb-notebook{
-    width:min(324px,82vw);
-  }
-
-  .linka-portfolio-mount .lpb-notebook-screen{
-    padding:10px;
-    border-radius:18px 18px 12px 12px;
-  }
-
-  .linka-portfolio-mount .lpb-notebook-base{
-    height:12px;
-  }
-
-  .linka-portfolio-mount .lpb-window-bar{
-    height:18px;
-    margin-bottom:11px;
-    gap:6px;
-  }
-
-  .linka-portfolio-mount .lpb-window-bar span{
-    width:6px;
-    height:6px;
-  }
-
-  .linka-portfolio-mount .lpb-project-video{
-    border-radius:12px;
-  }
-
-  .linka-portfolio-mount .lpb-phone{
-    width:84px;
-    right:calc(50% - 156px);
-    bottom:22px;
-    padding:6px;
-    border-radius:22px;
-  }
-
-  .linka-portfolio-mount .lpb-phone-screen{
-    border-radius:17px;
-  }
-
-  .linka-portfolio-mount .lpb-phone-screen .lpb-project-video{
-    border-radius:inherit;
-  }
-
-  .linka-portfolio-mount .lpb-phone-notch{
-    top:7px;
-    width:32px;
-    height:4px;
-  }
-
-  .linka-portfolio-mount .lpb-project-meta{
-    width:min(410px,96vw);
-    margin:-18px auto 0;
-  }
-
-  .linka-portfolio-mount .lpb-project-meta strong{
-    font-size:clamp(1.55rem,6.6vw,2.15rem);
-    line-height:1.02;
-  }
-
-  .linka-portfolio-mount .lpb-orbit-return{
-    min-height:32px;
-    margin-top:12px;
-    font-size:10px;
-  }
-}
-
-@media(max-width:380px){
-  .linka-portfolio-mount .lpb-notebook{
-    width:min(304px,81vw);
-  }
-
-  .linka-portfolio-mount .lpb-phone{
-    width:80px;
-    right:calc(50% - 148px);
-    bottom:24px;
-  }
-
-}
-
-@media(prefers-reduced-motion:reduce){
-  .linka-portfolio-mount .lpb-orbit-card,
-  .linka-portfolio-mount .lpb-device-stage,
-  .linka-portfolio-mount .lpb-devices,
-  .linka-portfolio-mount .lpb-project-meta,
-  .linka-portfolio-mount .lpb-orbit-return,
-  .linka-portfolio-mount .lpb-glow{
-    animation:none!important;
-    transition:none!important;
   }
 }
 html,body{max-width:100%!important;overflow-x:clip!important}
