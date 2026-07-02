@@ -304,14 +304,14 @@ export default function PortfolioBuildPrototype() {
         )
         .fromTo(
           ".lpb-notebook",
-          { autoAlpha: 0, y: 34, scale: 0.95 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.78 },
+          { autoAlpha: 0, y: 34 },
+          { autoAlpha: 1, y: 0, duration: 0.78 },
           "-=0.16",
         )
         .fromTo(
           ".lpb-phone",
-          { autoAlpha: 0, x: 28, y: 18, scale: 0.96 },
-          { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.62 },
+          { autoAlpha: 0, x: 28, y: 18 },
+          { autoAlpha: 1, x: 0, y: 0, duration: 0.62 },
           "-=0.5",
         )
         .fromTo(
