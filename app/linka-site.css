@@ -1763,7 +1763,6 @@ body {
   border-radius:18px;
   object-fit:cover;
   background:#02070d;
-  animation:lpb-video-in .34s ease both;
 }
 
 .linka-portfolio-mount .lpb-project-video::-webkit-media-controls,
@@ -2102,17 +2101,6 @@ body {
   }
 }
 
-@keyframes lpb-video-in{
-  from{
-    opacity:.72;
-    transform:scale(1.012);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
 @media(min-width:768px){
   .linka-portfolio-mount .linka-sticky{
     box-sizing:border-box;
@@ -2406,22 +2394,17 @@ body {
   inset:34px 4% 10px;
   display:grid;
   place-items:center;
-  opacity:0;
+  opacity:1;
   transform-style:preserve-3d;
-  transition:
-    transform .48s cubic-bezier(.22,1,.36,1),
-    opacity .32s ease,
-    filter .32s ease;
   pointer-events:none;
-  filter:saturate(1) brightness(1);
+  filter:none;
 }
 
 .linka-portfolio-mount .lpb-project-layer.is-active{
   z-index:2;
   opacity:1;
   transform:translate3d(0,0,0) scale(1) rotateY(0deg);
-  filter:saturate(1) brightness(1);
-  animation:lpb-project-pop .3s ease both;
+  filter:none;
 }
 
 .linka-portfolio-mount .lpb-project-layer.is-previous{
@@ -2444,10 +2427,7 @@ body {
   align-items:center;
   justify-content:center;
   isolation:isolate;
-  transform:none!important;
-  transition:
-    filter .26s ease,
-    transform .26s ease;
+  transform:none;
 }
 
 .linka-portfolio-mount .lpb-devices::before{
@@ -2524,7 +2504,31 @@ body {
   border-radius:18px;
   object-fit:cover;
   background:#02070d;
-  animation:lpb-video-in .34s ease both;
+  will-change:opacity,transform;
+}
+
+.linka-portfolio-mount .lpb-video-stack{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+  border-radius:18px;
+  background:#02070d;
+}
+
+.linka-portfolio-mount .lpb-video-stack .lpb-project-video{
+  position:absolute;
+  inset:0;
+}
+
+.linka-portfolio-mount .lpb-project-video.is-current{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+
+.linka-portfolio-mount .lpb-project-video.is-incoming{
+  opacity:0;
+  transform:translate3d(10px,0,0);
 }
 
 .linka-portfolio-mount .lpb-project-video::-webkit-media-controls,
@@ -2559,6 +2563,12 @@ body {
 }
 
 .linka-portfolio-mount .lpb-phone-screen .lpb-project-video{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+}
+
+.linka-portfolio-mount .lpb-phone-screen .lpb-video-stack{
   position:absolute;
   inset:0;
   border-radius:inherit;
@@ -2602,6 +2612,7 @@ body {
   letter-spacing:0;
   text-wrap:balance;
   text-shadow:0 18px 46px rgba(0,0,0,.44);
+  will-change:opacity,transform;
 }
 
 .linka-portfolio-mount .lpb-controls{
@@ -2691,35 +2702,6 @@ body {
   min-width:22px;
   background:#8bff4f;
   box-shadow:0 0 18px rgba(139,255,79,.3);
-}
-
-@keyframes lpb-video-in{
-  from{
-    opacity:.72;
-    transform:scale(1.012);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
-@keyframes lpb-project-pop{
-  from{
-    opacity:.88;
-    filter:blur(.8px) saturate(.92);
-    transform:translate3d(0,8px,-24px) scale(.985);
-  }
-  to{
-    opacity:1;
-    filter:blur(0) saturate(1);
-    transform:translate3d(0,0,0) scale(1);
-  }
-}
-
-.linka-portfolio-mount .lpb-gallery.is-switching .lpb-devices{
-  transform:scale(.985)!important;
-  filter:blur(.35px) brightness(.96);
 }
 
 @media(max-width:767px){
@@ -2858,12 +2840,6 @@ body {
   }
 }
 
-@media(prefers-reduced-motion:reduce){
-  .linka-portfolio-mount .lpb-project-layer.is-active,
-  .linka-portfolio-mount .lpb-project-video{
-    animation:none!important;
-  }
-}
 html,body{max-width:100%!important;overflow-x:clip!important}
 
 .linka-copy-v64,

@@ -43,6 +43,7 @@ const projects = [
 ];
 
 const SWIPE_THRESHOLD = 42;
+const VIDEO_TRANSITION_DURATION = 0.32;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,15 +51,35 @@ function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
 }
 
+type TransitionDirection = -1 | 1;
+
+type TransitionRequest = {
+  direction: TransitionDirection;
+  index: number;
+  token: number;
+};
+
 export default function PortfolioBuildPrototype() {
   const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLElement>(null);
+  const currentDesktopVideoRef = useRef<HTMLVideoElement>(null);
+  const currentMobileVideoRef = useRef<HTMLVideoElement>(null);
+  const incomingDesktopVideoRef = useRef<HTMLVideoElement>(null);
+  const incomingMobileVideoRef = useRef<HTMLVideoElement>(null);
+  const transitionTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const transitionTokenRef = useRef(0);
+  const requestedIndexRef = useRef(0);
   const dragStartX = useRef<number | null>(null);
   const dragDeltaX = useRef(0);
-  const switchTimeout = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [titleIndex, setTitleIndex] = useState(0);
+  const [incomingIndex, setIncomingIndex] = useState<number | null>(null);
+  const [transitionRequest, setTransitionRequest] = useState<TransitionRequest | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(false);
   const activeProject = projects[activeIndex];
+  const incomingProject = incomingIndex === null ? null : projects[incomingIndex];
+  const titleProject = projects[titleIndex];
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
@@ -73,30 +94,59 @@ export default function PortfolioBuildPrototype() {
     videos.forEach(playVideo);
   }, []);
 
-  const scheduleSwitchEnd = useCallback(() => {
-    if (switchTimeout.current !== null) {
-      window.clearTimeout(switchTimeout.current);
+  const waitForVideo = useCallback((video: HTMLVideoElement | null, token: number) => {
+    if (!video || transitionTokenRef.current !== token) {
+      return Promise.resolve();
     }
 
-    switchTimeout.current = window.setTimeout(() => {
-      setIsSwitching(false);
-      switchTimeout.current = null;
-    }, 260);
+    playVideo(video);
+
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      return Promise.resolve();
+    }
+
+    return new Promise<void>((resolve) => {
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        video.removeEventListener("loadeddata", finish);
+        video.removeEventListener("canplay", finish);
+        video.removeEventListener("error", finish);
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      const timeout = window.setTimeout(finish, 1400);
+
+      video.addEventListener("loadeddata", finish, { once: true });
+      video.addEventListener("canplay", finish, { once: true });
+      video.addEventListener("error", finish, { once: true });
+      video.load();
+    });
   }, []);
 
-  const changeProject = useCallback((direction: -1 | 1) => {
+  const requestProject = useCallback((projectIndex: number, direction: TransitionDirection) => {
+    const nextIndex = wrapIndex(projectIndex);
+    if (nextIndex === requestedIndexRef.current) return;
+
+    transitionTimelineRef.current?.kill();
+    transitionTokenRef.current += 1;
+    requestedIndexRef.current = nextIndex;
     setHasInteracted(true);
-    setIsSwitching(true);
-    setActiveIndex((currentIndex) => wrapIndex(currentIndex + direction));
-    scheduleSwitchEnd();
-  }, [scheduleSwitchEnd]);
+    setSelectedIndex(nextIndex);
+    setIncomingIndex(nextIndex);
+    setTransitionRequest({ index: nextIndex, direction, token: transitionTokenRef.current });
+  }, []);
+
+  const changeProject = useCallback((direction: TransitionDirection) => {
+    requestProject(requestedIndexRef.current + direction, direction);
+  }, [requestProject]);
 
   const goToProject = useCallback((projectIndex: number) => {
-    setHasInteracted(true);
-    setIsSwitching(true);
-    setActiveIndex(wrapIndex(projectIndex));
-    scheduleSwitchEnd();
-  }, [scheduleSwitchEnd]);
+    const normalizedIndex = wrapIndex(projectIndex);
+    const direction = normalizedIndex > requestedIndexRef.current ? 1 : -1;
+    requestProject(normalizedIndex, direction);
+  }, [requestProject]);
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     dragStartX.current = event.clientX;
@@ -130,6 +180,66 @@ export default function PortfolioBuildPrototype() {
     dragDeltaX.current = 0;
   }
 
+  useLayoutEffect(() => {
+    if (!transitionRequest) return;
+
+    const { direction, index, token } = transitionRequest;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const currentVideos = [currentDesktopVideoRef.current, currentMobileVideoRef.current].filter(Boolean);
+    const incomingVideos = [incomingDesktopVideoRef.current, incomingMobileVideoRef.current].filter(Boolean);
+    const incomingOffset = direction * 10;
+    const outgoingOffset = direction * -10;
+
+    gsap.set(currentVideos, { autoAlpha: 1, x: 0 });
+    gsap.set(incomingVideos, { autoAlpha: 0, x: incomingOffset });
+
+    void Promise.all([
+      waitForVideo(incomingDesktopVideoRef.current, token),
+      waitForVideo(incomingMobileVideoRef.current, token),
+    ]).then(() => {
+      if (transitionTokenRef.current !== token) return;
+
+      transitionTimelineRef.current?.kill();
+
+      if (reduceMotion) {
+        setActiveIndex(index);
+        setTitleIndex(index);
+        setIncomingIndex(null);
+        setTransitionRequest(null);
+        return;
+      }
+
+      const timeline = gsap.timeline({
+        defaults: { ease: "power2.out" },
+        onComplete: () => {
+          if (transitionTokenRef.current !== token) return;
+          setActiveIndex(index);
+          setTitleIndex(index);
+          setIncomingIndex(null);
+          setTransitionRequest(null);
+        },
+      });
+
+      transitionTimelineRef.current = timeline;
+
+      timeline
+        .to(currentVideos, { autoAlpha: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
+        .to(incomingVideos, { autoAlpha: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0)
+        .to(titleRef.current, { autoAlpha: 0, y: direction * -6, duration: 0.12 }, 0)
+        .call(() => {
+          if (transitionTokenRef.current === token) {
+            setTitleIndex(index);
+          }
+        }, undefined, 0.13)
+        .fromTo(
+          titleRef.current,
+          { autoAlpha: 0, y: direction * 6 },
+          { autoAlpha: 1, y: 0, duration: 0.2 },
+          0.14,
+        );
+    });
+  }, [transitionRequest, waitForVideo]);
+
   useEffect(() => {
     const frame = window.requestAnimationFrame(playProjectVideos);
     const retry = window.setTimeout(playProjectVideos, 240);
@@ -138,7 +248,7 @@ export default function PortfolioBuildPrototype() {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(retry);
     };
-  }, [activeIndex, playProjectVideos]);
+  }, [activeIndex, incomingIndex, playProjectVideos]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -256,9 +366,7 @@ export default function PortfolioBuildPrototype() {
 
   useEffect(() => {
     return () => {
-      if (switchTimeout.current !== null) {
-        window.clearTimeout(switchTimeout.current);
-      }
+      transitionTimelineRef.current?.kill();
     };
   }, []);
 
@@ -269,14 +377,14 @@ export default function PortfolioBuildPrototype() {
         <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
 
         <div
-          className={isSwitching ? "lpb-gallery is-switching" : "lpb-gallery"}
+          className="lpb-gallery"
           aria-live="polite"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
         >
-          <article className="lpb-project-layer is-active" key={activeProject.id}>
+          <article className="lpb-project-layer is-active">
             <div className="lpb-devices">
               <div className="lpb-notebook">
                 <div className="lpb-notebook-screen">
@@ -285,19 +393,38 @@ export default function PortfolioBuildPrototype() {
                     <span />
                     <span />
                   </div>
-                  <video
-                    key={`${activeProject.id}-desktop`}
-                    className="lpb-project-video"
-                    src={activeProject.desktopVideo}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={`Projeto ${activeProject.name} no notebook`}
-                    onCanPlay={(event) => playVideo(event.currentTarget)}
-                    onLoadedData={(event) => playVideo(event.currentTarget)}
-                  />
+                  <div className="lpb-video-stack">
+                    <video
+                      key={`${activeProject.id}-desktop-current`}
+                      className="lpb-project-video is-current"
+                      src={activeProject.desktopVideo}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={`Projeto ${activeProject.name} no notebook`}
+                      ref={currentDesktopVideoRef}
+                      onCanPlay={(event) => playVideo(event.currentTarget)}
+                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                    />
+                    {incomingProject ? (
+                      <video
+                        key={`${incomingProject.id}-desktop-incoming-${transitionRequest?.token ?? 0}`}
+                        className="lpb-project-video is-incoming"
+                        src={incomingProject.desktopVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-label={`Projeto ${incomingProject.name} no notebook`}
+                        ref={incomingDesktopVideoRef}
+                        onCanPlay={(event) => playVideo(event.currentTarget)}
+                        onLoadedData={(event) => playVideo(event.currentTarget)}
+                      />
+                    ) : null}
+                  </div>
                 </div>
                 <div className="lpb-notebook-base" />
               </div>
@@ -305,19 +432,38 @@ export default function PortfolioBuildPrototype() {
               <div className="lpb-phone">
                 <div className="lpb-phone-screen">
                   <div className="lpb-phone-notch" />
-                  <video
-                    key={`${activeProject.id}-mobile`}
-                    className="lpb-project-video"
-                    src={activeProject.mobileVideo}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={`Projeto ${activeProject.name} no celular`}
-                    onCanPlay={(event) => playVideo(event.currentTarget)}
-                    onLoadedData={(event) => playVideo(event.currentTarget)}
-                  />
+                  <div className="lpb-video-stack">
+                    <video
+                      key={`${activeProject.id}-mobile-current`}
+                      className="lpb-project-video is-current"
+                      src={activeProject.mobileVideo}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={`Projeto ${activeProject.name} no celular`}
+                      ref={currentMobileVideoRef}
+                      onCanPlay={(event) => playVideo(event.currentTarget)}
+                      onLoadedData={(event) => playVideo(event.currentTarget)}
+                    />
+                    {incomingProject ? (
+                      <video
+                        key={`${incomingProject.id}-mobile-incoming-${transitionRequest?.token ?? 0}`}
+                        className="lpb-project-video is-incoming"
+                        src={incomingProject.mobileVideo}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-label={`Projeto ${incomingProject.name} no celular`}
+                        ref={incomingMobileVideoRef}
+                        onCanPlay={(event) => playVideo(event.currentTarget)}
+                        onLoadedData={(event) => playVideo(event.currentTarget)}
+                      />
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
@@ -326,9 +472,9 @@ export default function PortfolioBuildPrototype() {
 
         <div className="lpb-project-meta">
           <span>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+            {String(titleIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
           </span>
-          <strong>{activeProject.displayTitle}</strong>
+          <strong ref={titleRef}>{titleProject.displayTitle}</strong>
         </div>
 
         <div className="lpb-controls" aria-label="Navegar projetos">
@@ -339,9 +485,9 @@ export default function PortfolioBuildPrototype() {
             {projects.map((project, index) => (
               <button
                 type="button"
-                className={index === activeIndex ? "is-active" : ""}
+                className={index === selectedIndex ? "is-active" : ""}
                 aria-label={`Ver projeto ${project.name}`}
-                aria-pressed={index === activeIndex}
+                aria-pressed={index === selectedIndex}
                 key={project.id}
                 onClick={() => goToProject(index)}
               />
