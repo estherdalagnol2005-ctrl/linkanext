@@ -1,15 +1,16 @@
 export default function GlobalBackground() {
   return (
-    <div aria-hidden="true" className="linka-global-background-v2">
-      <span className="lgb-shape lgb-shape-1" />
-      <span className="lgb-shape lgb-shape-2" />
-      <span className="lgb-shape lgb-shape-3" />
-      <span className="lgb-shape lgb-shape-4" />
-      <span className="lgb-shape lgb-shape-5" />
-      <span className="lgb-shape lgb-shape-6" />
-      <span className="lgb-line lgb-line-1" />
-      <span className="lgb-line lgb-line-2" />
-      <span className="lgb-line lgb-line-3" />
+    <div className="linka-global-background-v3" aria-hidden="true">
+      <span className="lgb3-shape lgb3-blue-panel" />
+      <span className="lgb3-shape lgb3-lime-pill" />
+      <span className="lgb3-shape lgb3-cyan-frame" />
+      <span className="lgb3-shape lgb3-violet-arc" />
+      <span className="lgb3-shape lgb3-orange-bar" />
+      <span className="lgb3-shape lgb3-blue-panel-secondary" />
+
+      <span className="lgb3-detail lgb3-detail-a" />
+      <span className="lgb3-detail lgb3-detail-b" />
+      <span className="lgb3-detail lgb3-detail-c" />
     </div>
   );
 }
