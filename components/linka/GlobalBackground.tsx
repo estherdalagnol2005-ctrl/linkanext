@@ -1,13 +1,15 @@
 export default function GlobalBackground() {
   return (
-    <div aria-hidden="true" className="linka-bg-pro-v5">
-      <span className="lk5-noise" />
-      <span className="lk5-glow lk5-glow-a" />
-      <span className="lk5-glow lk5-glow-b" />
-      <span className="lk5-glow lk5-glow-c" />
-      <span className="lk5-orbit lk5-orbit-a" />
-      <span className="lk5-orbit lk5-orbit-b" />
-      <div className="lk5-particles" id="lk5Particles" />
+    <div aria-hidden="true" className="linka-global-background-v2">
+      <span className="lgb-shape lgb-shape-1" />
+      <span className="lgb-shape lgb-shape-2" />
+      <span className="lgb-shape lgb-shape-3" />
+      <span className="lgb-shape lgb-shape-4" />
+      <span className="lgb-shape lgb-shape-5" />
+      <span className="lgb-shape lgb-shape-6" />
+      <span className="lgb-line lgb-line-1" />
+      <span className="lgb-line lgb-line-2" />
+      <span className="lgb-line lgb-line-3" />
     </div>
   );
 }

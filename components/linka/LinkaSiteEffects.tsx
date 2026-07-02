@@ -585,127 +585,6 @@ function applyLanguage(nextLang: Language) {
   requestScrollRefresh(90);
 }
 
-function randomBetween(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
-
-function chooseParticleSize() {
-  const chance = Math.random();
-  if (chance < 0.62) return randomBetween(1, 1.8);
-  if (chance < 0.9) return randomBetween(1.8, 2.9);
-  return randomBetween(3, 4.8);
-}
-
-function initParticles(addCleanup: (cleanup: () => void) => void) {
-  const particleField = document.getElementById("lk5Particles");
-  if (!particleField) return;
-  const field = particleField;
-
-  const particleAmounts = {
-    desktop: 110,
-    tablet: 60,
-    mobile: 36,
-  } as const;
-
-  type ParticleMode = keyof typeof particleAmounts;
-  let currentMode = "";
-  let resizeTimer: number | undefined;
-  let pointerFrame: number | undefined;
-  let pointerX = 0;
-  let pointerY = 0;
-
-  function getScreenMode(): ParticleMode {
-    if (window.innerWidth <= 480) return "mobile";
-    if (window.innerWidth <= 820) return "tablet";
-    return "desktop";
-  }
-
-  function createParticle(index: number) {
-    const particle = document.createElement("span");
-    particle.className = "lk5-particle";
-
-    const size = chooseParticleSize();
-    let opacityLow = randomBetween(0.14, 0.3);
-    let opacityHigh = randomBetween(0.46, 0.9);
-
-    if (index % 11 === 0) {
-      particle.classList.add("is-bright");
-      opacityLow = randomBetween(0.28, 0.42);
-      opacityHigh = randomBetween(0.75, 1);
-    }
-
-    if (index % 5 === 0) particle.classList.add("is-blue");
-    if (index % 19 === 0) particle.classList.add("is-ring");
-    if (index % 23 === 0) particle.classList.add("is-soft");
-
-    particle.style.setProperty("--x", `${randomBetween(0, 100)}%`);
-    particle.style.setProperty("--y", `${randomBetween(0, 100)}%`);
-    particle.style.setProperty("--size", `${size}px`);
-    particle.style.setProperty("--move-x", `${randomBetween(-24, 24)}px`);
-    particle.style.setProperty("--move-y", `${randomBetween(-34, 24)}px`);
-    particle.style.setProperty("--move-x-end", `${randomBetween(-18, 18)}px`);
-    particle.style.setProperty("--move-y-end", `${randomBetween(-28, 18)}px`);
-    particle.style.setProperty("--duration", `${randomBetween(14, 34)}s`);
-    particle.style.setProperty("--delay", `${randomBetween(-32, 0)}s`);
-    particle.style.setProperty("--pulse-duration", `${randomBetween(4.5, 10)}s`);
-    particle.style.setProperty("--pulse-delay", `${randomBetween(-10, 0)}s`);
-    particle.style.setProperty("--opacity-low", opacityLow.toFixed(2));
-    particle.style.setProperty("--opacity-high", opacityHigh.toFixed(2));
-
-    return particle;
-  }
-
-  function renderParticles(force = false) {
-    const newMode = getScreenMode();
-    if (!force && newMode === currentMode) return;
-    currentMode = newMode;
-
-    const fragment = document.createDocumentFragment();
-    field.innerHTML = "";
-
-    for (let index = 0; index < particleAmounts[newMode]; index += 1) {
-      fragment.appendChild(createParticle(index));
-    }
-
-    field.appendChild(fragment);
-  }
-
-  function handlePointerMove(event: MouseEvent) {
-    if (window.innerWidth <= 820) return;
-
-    pointerX = event.clientX;
-    pointerY = event.clientY;
-
-    if (pointerFrame) return;
-
-    pointerFrame = window.requestAnimationFrame(() => {
-      pointerFrame = undefined;
-      const normalizedX = pointerX / window.innerWidth - 0.5;
-      const normalizedY = pointerY / window.innerHeight - 0.5;
-
-      field.style.setProperty("--lk5-parallax-x", `${normalizedX * 12}px`);
-      field.style.setProperty("--lk5-parallax-y", `${normalizedY * 12}px`);
-    });
-  }
-
-  function handleResize() {
-    if (resizeTimer) window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(() => renderParticles(false), 180);
-  }
-
-  renderParticles(true);
-  window.addEventListener("mousemove", handlePointerMove, { passive: true });
-  window.addEventListener("resize", handleResize, { passive: true });
-
-  addCleanup(() => {
-    window.removeEventListener("mousemove", handlePointerMove);
-    window.removeEventListener("resize", handleResize);
-    if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
-    if (resizeTimer) window.clearTimeout(resizeTimer);
-    field.innerHTML = "";
-  });
-}
-
 function initHeader(addCleanup: (cleanup: () => void) => void) {
   const header = document.querySelector<HTMLElement>("[data-linka-header-v11]");
   if (!header) return;
@@ -1906,7 +1785,6 @@ export default function LinkaSiteEffects() {
       timers.push(timer);
     };
 
-    initParticles(addCleanup);
     initHeader(addCleanup);
     initHero(addCleanup);
     initPortfolioIntro(addCleanup);

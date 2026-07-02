@@ -2,7 +2,7 @@
 
 .linka-page {
   min-height: 100vh;
-  background: #000000;
+  background: #02050b;
   color: #fff;
   position: relative;
   isolation: isolate;
@@ -13,8 +13,7 @@
     :root{color-scheme:dark;--lk-green:#8bff4f;--lk-blue:#7dd3fc}
     html{scroll-behavior:smooth;background:#000000!important}
     body{min-height:100vh;margin:0;background:#000000!important;isolation:isolate;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-    .linka-bg-pro-v5{z-index:0!important}
-    .linka-site-content{position:relative;z-index:1;background:#000000}
+    .linka-site-content{position:relative;z-index:1;background:transparent}
     .linka-site-content>section,.linka-site-content>footer{background-color:transparent!important}
 
     .linka-language-switch{
@@ -62,300 +61,168 @@ body {
   isolation: isolate !important;
 }
 
-/* Remove versoes antigas do fundo */
-.linka-space-bg,
-.linka-global-bg-v1,
-.linka-global-bg-clean,
-.linka-global-bg-clean-v3,
-.linka-bg-pro-v4 {
-  display: none !important;
-}
-
 /* =========================================================
    CAMADA PRINCIPAL
 ========================================================= */
 
-.linka-bg-pro-v5,
-.linka-bg-pro-v5 * {
+.linka-global-background-v2,
+.linka-global-background-v2 * {
   box-sizing: border-box;
 }
 
-.linka-bg-pro-v5 {
-  position: fixed !important;
-  inset: 0 !important;
-
-  width: 100vw !important;
-  height: 100vh !important;
-
-  z-index: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-
-  background:#000000;
+.linka-global-background-v2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      #02050b 0%,
+      #030712 40%,
+      #02040a 72%,
+      #010205 100%
+    );
 }
 
-/* Vinheta */
-.linka-bg-pro-v5::before {
+.linka-global-background-v2::before {
   content: "";
   position: absolute;
   inset: 0;
-
-  z-index: 2;
-  pointer-events: none;
-
   background:
-    radial-gradient(
-      circle at center,
-      transparent 0%,
-      rgba(0, 0, 0, 0.04) 48%,
-      rgba(0, 0, 0, 0.56) 100%
-    );
+    linear-gradient(rgba(125, 211, 252, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.028) 1px, transparent 1px);
+  background-size: 148px 148px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.18) 78%, transparent);
+  opacity: 0.22;
 }
 
-/* Luz central superior */
-.linka-bg-pro-v5::after {
+.linka-global-background-v2::after {
   content: "";
   position: absolute;
-
-  left: 50%;
-  top: -28%;
-
-  width: 92vw;
-  height: 58vh;
-
-  z-index: 2;
-
-  transform: translateX(-50%);
-
+  inset: 0;
   background:
-    radial-gradient(
-      ellipse at center,
-      rgba(100, 199, 255, 0.035),
-      transparent 72%
-    );
-
-  filter: blur(48px);
-  opacity: 0.34;
+    radial-gradient(circle at 50% 0%, rgba(125, 211, 252, 0.08), transparent 28%),
+    radial-gradient(circle at 18% 26%, rgba(40, 103, 245, 0.08), transparent 25%),
+    radial-gradient(circle at 78% 66%, rgba(75, 47, 145, 0.08), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.68), transparent 40%);
+  opacity: 0.9;
 }
 
-/* =========================================================
-   TEXTURA
-========================================================= */
-
-.lk5-noise {
-  position: absolute;
-  inset: -60%;
-
-  z-index: 9;
-  opacity: 0.025;
-
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 260 260' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23noise)' opacity='.65'/%3E%3C/svg%3E");
-
-  animation: lk5Noise 14s steps(4) infinite;
-}
-
-/* =========================================================
-   LUZES DIFUSAS
-========================================================= */
-
-.lk5-glow {
+.lgb-shape,
+.lgb-line {
   position: absolute;
   display: block;
-
-  z-index: 1;
-
-  border-radius: 50%;
-  filter: blur(85px);
-
-}
-
-.lk5-glow-a {
-  width: 520px;
-  height: 520px;
-
-  left: -260px;
-  top: 8vh;
-
-  opacity: 0.24;
-  background: rgba(52, 120, 255, 0.12);
-
-  animation: lk5GlowA 20s ease-in-out infinite;
-}
-
-.lk5-glow-b {
-  width: 600px;
-  height: 600px;
-
-  right: -320px;
-  top: 22vh;
-
-  opacity: 0.18;
-  background: rgba(100, 199, 255, 0.07);
-
-  animation: lk5GlowB 24s ease-in-out infinite;
-}
-
-.lk5-glow-c {
-  width: 720px;
-  height: 720px;
-
-  left: 31%;
-  bottom: -510px;
-
-  opacity: 0.14;
-  background: rgba(52, 120, 255, 0.055);
-
-  animation: lk5GlowC 27s ease-in-out infinite;
-}
-
-/* =========================================================
-   ORBITAS
-========================================================= */
-
-.lk5-orbit {
-  position: absolute;
-  display: block;
-
-  z-index: 3;
-
-  border-radius: 50%;
   pointer-events: none;
 }
 
-.lk5-orbit-a {
-  width: 760px;
-  height: 760px;
-
-  right: -420px;
-  top: -190px;
-
-  border: 1px solid rgba(125, 211, 252, 0.065);
+.lgb-shape {
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.08), rgba(40, 103, 245, 0.03));
+  box-shadow: 0 0 42px rgba(40, 103, 245, 0.05);
+  opacity: 0.12;
 }
 
-.lk5-orbit-b {
-  width: 820px;
-  height: 820px;
-
-  left: -480px;
-  bottom: -420px;
-
-  border: 1px solid rgba(108, 146, 255, 0.055);
+.lgb-shape-1 {
+  width: 420px;
+  height: 250px;
+  top: 4%;
+  left: -150px;
+  border-radius: 38px;
+  transform: rotate(-12deg) skewX(-6deg);
 }
 
-/* =========================================================
-   CAMPO DE PARTICULAS
-========================================================= */
-
-.lk5-particles {
-  position: absolute;
-  inset: -20px;
-
-  z-index: 6;
-
-  overflow: hidden;
-  pointer-events: none;
-
-  transform:
-    translate3d(
-      var(--lk5-parallax-x, 0),
-      var(--lk5-parallax-y, 0),
-      0
-    );
-
-  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+.lgb-shape-2 {
+  width: 360px;
+  height: 360px;
+  top: 17%;
+  right: -170px;
+  border-radius: 42%;
+  border-color: rgba(139, 255, 79, 0.13);
+  background: linear-gradient(135deg, rgba(139, 255, 79, 0.07), rgba(23, 56, 143, 0.05));
+  opacity: 0.1;
+  transform: rotate(22deg);
 }
 
-/* Bolinha padrao */
-.lk5-particle {
-  position: absolute;
+.lgb-shape-3 {
+  width: 310px;
+  height: 190px;
+  top: 36%;
+  left: 7%;
+  clip-path: polygon(12% 0, 100% 18%, 82% 100%, 0 78%);
+  border-color: rgba(125, 211, 252, 0.1);
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.07), rgba(75, 47, 145, 0.07));
+  opacity: 0.1;
+}
 
-  left: var(--x);
-  top: var(--y);
+.lgb-shape-4 {
+  width: 460px;
+  height: 230px;
+  top: 52%;
+  right: -140px;
+  border-radius: 32px;
+  border-color: rgba(75, 47, 145, 0.18);
+  background: linear-gradient(135deg, rgba(75, 47, 145, 0.08), rgba(40, 103, 245, 0.04));
+  opacity: 0.13;
+  transform: rotate(10deg);
+}
 
-  width: var(--size);
-  height: var(--size);
+.lgb-shape-5 {
+  width: 390px;
+  height: 270px;
+  top: 72%;
+  left: -130px;
+  border-radius: 46px;
+  border-color: rgba(139, 255, 79, 0.11);
+  background: linear-gradient(135deg, rgba(139, 255, 79, 0.055), rgba(125, 211, 252, 0.045));
+  opacity: 0.11;
+  transform: rotate(15deg);
+}
 
-  display: block;
-
+.lgb-shape-6 {
+  width: 340px;
+  height: 340px;
+  right: 8%;
+  bottom: 3%;
   border-radius: 50%;
-
-  opacity: var(--opacity-low);
-
-  background: rgba(255, 255, 255, 0.92);
-
-  box-shadow:
-    0 0 calc(var(--size) * 2.5)
-      rgba(255, 255, 255, 0.38),
-    0 0 calc(var(--size) * 6)
-      rgba(125, 211, 252, 0.16);
-
-  transform: translate3d(0, 0, 0);
-
-
-  animation:
-    lk5ParticleMove
-      var(--duration)
-      ease-in-out
-      var(--delay)
-      infinite
-      alternate,
-
-    lk5ParticlePulse
-      var(--pulse-duration)
-      ease-in-out
-      var(--pulse-delay)
-      infinite;
+  border-color: rgba(125, 211, 252, 0.11);
+  background: linear-gradient(145deg, rgba(23, 56, 143, 0.08), rgba(125, 211, 252, 0.03));
+  opacity: 0.09;
 }
 
-/* Bolinhas azuladas */
-.lk5-particle.is-blue {
-  background: rgba(125, 211, 252, 0.94);
-
-  box-shadow:
-    0 0 calc(var(--size) * 3)
-      rgba(125, 211, 252, 0.48),
-    0 0 calc(var(--size) * 8)
-      rgba(65, 135, 255, 0.19);
+.lgb-line {
+  width: min(520px, 38vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.2), rgba(139, 255, 79, 0.08), transparent);
+  opacity: 0.28;
 }
 
-/* Bolinhas mais brilhantes */
-.lk5-particle.is-bright {
-  background: #ffffff;
-
-  box-shadow:
-    0 0 calc(var(--size) * 4)
-      rgba(255, 255, 255, 0.62),
-    0 0 calc(var(--size) * 10)
-      rgba(125, 211, 252, 0.24);
+.lgb-line-1 {
+  top: 21%;
+  left: 12%;
+  transform: rotate(-8deg);
 }
 
-/* Algumas bolinhas em formato de anel */
-.lk5-particle.is-ring {
-  background: rgba(255, 255, 255, 0.06);
-
-  border: 1px solid rgba(255, 255, 255, 0.54);
-
-  box-shadow:
-    0 0 10px rgba(255, 255, 255, 0.15),
-    0 0 22px rgba(125, 211, 252, 0.1);
+.lgb-line-2 {
+  top: 49%;
+  right: 8%;
+  transform: rotate(7deg);
 }
 
-/* Algumas particulas suaves e maiores */
-.lk5-particle.is-soft {
-  filter: blur(0.35px);
-  opacity: 0.32;
-
-  box-shadow:
-    0 0 12px rgba(255, 255, 255, 0.25),
-    0 0 30px rgba(86, 146, 255, 0.16);
+.lgb-line-3 {
+  bottom: 12%;
+  left: 18%;
+  transform: rotate(-4deg);
 }
 
 /* =========================================================
    CONTEUDO DO SITE ACIMA DO FUNDO
 ========================================================= */
 
-.linka-page > *:not(.linka-bg-pro-v5) {
+.linka-page > *:not(.linka-global-background-v2) {
   position: relative;
   z-index: 1;
 }
@@ -365,247 +232,80 @@ body {
   z-index: 2147483000 !important;
 }
 
-/* =========================================================
-   ANIMACOES
-========================================================= */
-
-@keyframes lk5Noise {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  25% {
-    transform: translate3d(-1%, 1%, 0);
-  }
-
-  50% {
-    transform: translate3d(1%, -1%, 0);
-  }
-
-  75% {
-    transform: translate3d(1%, 1%, 0);
-  }
-
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes lk5GlowA {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(38px, 28px, 0) scale(1.06);
-  }
-}
-
-@keyframes lk5GlowB {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(-42px, 22px, 0) scale(1.05);
-  }
-}
-
-@keyframes lk5GlowC {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(24px, -32px, 0) scale(1.04);
-  }
-}
-
-@keyframes lk5ParticleMove {
-  0% {
-    transform:
-      translate3d(0, 0, 0)
-      scale(0.82);
-  }
-
-  35% {
-    transform:
-      translate3d(
-        calc(var(--move-x) * -0.35),
-        calc(var(--move-y) * -0.35),
-        0
-      )
-      scale(1);
-  }
-
-  70% {
-    transform:
-      translate3d(
-        var(--move-x),
-        var(--move-y),
-        0
-      )
-      scale(1.13);
-  }
-
-  100% {
-    transform:
-      translate3d(
-        var(--move-x-end),
-        var(--move-y-end),
-        0
-      )
-      scale(0.92);
-  }
-}
-
-@keyframes lk5ParticlePulse {
-  0%,
-  100% {
-    opacity: var(--opacity-low);
-  }
-
-  50% {
-    opacity: var(--opacity-high);
-  }
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
 @media (max-width: 820px) {
-  .linka-bg-pro-v5 {
+  .linka-global-background-v2::before {
+    background-size: 118px 118px;
+    opacity: 0.14;
+  }
+
+  .linka-global-background-v2::after {
     background:
-      radial-gradient(
-        circle at 20% 10%,
-        rgba(68, 119, 255, 0.12),
-        transparent 35%
-      ),
-      radial-gradient(
-        circle at 88% 28%,
-        rgba(94, 199, 255, 0.055),
-        transparent 40%
-      ),
-      radial-gradient(
-        circle at 50% 94%,
-        rgba(103, 116, 255, 0.05),
-        transparent 42%
-      ),
-      linear-gradient(
-        180deg,
-        #050609 0%,
-        #060811 48%,
-        #030405 100%
-      ) !important;
+      radial-gradient(circle at 22% 10%, rgba(40, 103, 245, 0.09), transparent 32%),
+      radial-gradient(circle at 90% 36%, rgba(125, 211, 252, 0.055), transparent 34%),
+      radial-gradient(circle at 52% 82%, rgba(75, 47, 145, 0.07), transparent 40%);
+    opacity: 0.78;
   }
 
-  .lk5-glow-a {
-    width: 390px;
-    height: 390px;
-
-    left: -220px;
-    top: 12vh;
+  .lgb-shape {
+    opacity: 0.08;
   }
 
-  .lk5-glow-b {
-    width: 430px;
-    height: 430px;
-
-    right: -260px;
-    top: 30vh;
+  .lgb-shape-1 {
+    width: 260px;
+    height: 180px;
+    top: 3%;
+    left: -120px;
   }
 
-  .lk5-glow-c {
-    width: 520px;
-    height: 520px;
-
-    left: 15%;
-    bottom: -380px;
+  .lgb-shape-2 {
+    width: 220px;
+    height: 220px;
+    top: 24%;
+    right: -130px;
   }
 
-  .lk5-orbit-a {
-    width: 490px;
-    height: 490px;
-
-    right: -315px;
-    top: -30px;
+  .lgb-shape-3 {
+    width: 210px;
+    height: 140px;
+    top: 43%;
+    left: -46px;
   }
 
-  .lk5-orbit-b {
-    width: 570px;
-    height: 570px;
-
-    left: -380px;
-    bottom: -310px;
-  }
-}
-
-/* =========================================================
-   CELULAR
-========================================================= */
-
-@media (max-width: 480px) {
-  .linka-bg-pro-v5 {
-    background:
-      radial-gradient(
-        circle at 18% 8%,
-        rgba(68, 119, 255, 0.105),
-        transparent 38%
-      ),
-      radial-gradient(
-        circle at 90% 28%,
-        rgba(94, 199, 255, 0.045),
-        transparent 43%
-      ),
-      radial-gradient(
-        circle at 50% 94%,
-        rgba(103, 116, 255, 0.04),
-        transparent 46%
-      ),
-      linear-gradient(
-        180deg,
-        #050609 0%,
-        #06070d 50%,
-        #030405 100%
-      ) !important;
+  .lgb-shape-4 {
+    display: none;
   }
 
-  .lk5-noise {
-    opacity: 0.02;
+  .lgb-shape-5 {
+    width: 230px;
+    height: 160px;
+    top: 70%;
+    left: -95px;
   }
 
-  .lk5-particle {
-    box-shadow:
-      0 0 calc(var(--size) * 2)
-        rgba(255, 255, 255, 0.34),
-      0 0 calc(var(--size) * 5)
-        rgba(125, 211, 252, 0.13);
+  .lgb-shape-6 {
+    width: 210px;
+    height: 210px;
+    right: -78px;
+    bottom: 4%;
   }
 
-  /* Nao escondemos as bolinhas no celular */
-  .lk5-particles {
-    inset: -10px;
-  }
-}
-
-/* =========================================================
-   ACESSIBILIDADE
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  .lk5-noise,
-  .lk5-glow,
-  .lk5-particle {
-    animation: none !important;
+  .lgb-line {
+    width: 58vw;
+    opacity: 0.16;
   }
 
-  .lk5-particles {
-    transform: none !important;
-    transition: none !important;
+  .lgb-line-1 {
+    top: 18%;
+    left: 9%;
+  }
+
+  .lgb-line-2 {
+    display: none;
+  }
+
+  .lgb-line-3 {
+    bottom: 15%;
+    left: 18%;
   }
 }
 
@@ -631,10 +331,6 @@ body {
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
   contain:paint!important;
-}
-
-.linka-space-bg{
-  z-index:0!important;
 }
 
 .linka-v8-hero,
@@ -5566,14 +5262,6 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   .lf4-bottom{margin-top:38px;flex-direction:column;align-items:flex-start;gap:8px;font-size:11.5px}
 }
 
-
-
-html.linka-doc-paused .lk5-noise,
-html.linka-doc-paused .lk5-glow,
-html.linka-doc-paused .lk5-particle{
-  animation-play-state:paused!important;
-}
-
 .linka-copy-v64.linka-perf-paused::before,
 .linka-copy-v64.linka-perf-paused::after,
 .linka-perf-paused .lov64-kicker span,
@@ -5595,10 +5283,6 @@ html.linka-doc-paused .lk5-particle{
 }
 
 @media(max-width:640px){
-  .lk5-glow{
-    filter:blur(72px);
-  }
-
   .linka-copy-v64::before{
     filter:blur(54px);
   }
