@@ -1,73 +1,62 @@
 import type { CSSProperties } from "react";
 
-import {
-  LINKA_PROMO_LOGO_URL,
-  WHATSAPP_ICON_URL,
-  WHATSAPP_PROMO_URL,
-} from "./constants";
-
-const burstAngles = ["0deg", "45deg", "90deg", "135deg", "180deg", "225deg", "270deg", "315deg"];
+import { WHATSAPP_ICON_URL, WHATSAPP_PROMO_URL } from "./constants";
 
 export default function PromoSection() {
   return (
-    <section className="linka-promo-v8" data-linka-promo="" id="pricing-grid">
+    <section
+      className="linka-promo-v8"
+      data-linka-promo=""
+      data-unlock-step="0"
+      id="pricing-grid"
+      style={{ "--unlock-progress": 0 } as CSSProperties}
+    >
       <div aria-hidden="true" className="lp8-bg" />
       <div className="lp8-shell">
         <div className="lp8-visual">
-          <div className="lp8-stage">
-            <div className="lp8-core">
-              <div className="lp8-sphere" />
-              <div className="lp8-ring lp8-ring-a" />
-              <div className="lp8-ring lp8-ring-b" />
-              <div className="lp8-glow" />
-              <img
-                alt="Linka Aqui"
-                className="lp8-logo"
-                decoding="async"
-                src={LINKA_PROMO_LOGO_URL}
-              />
-              <button aria-label="Ativar núcleo Linka" className="lp8-core-btn" type="button" />
-              <a className="lp8-discount" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
-                <span>25%</span>
-                <small>OFF liberado</small>
-              </a>
-              <div className="lp8-hint">
-                Clique no <b>núcleo Linka</b>
-                <br />e desbloqueie sua condição especial
+          <div className="lp8-benefit-card">
+            <span aria-hidden="true" className="lp8-card-shine" />
+            <div className="lp8-card-top">
+              <span className="lp8-card-badge">BENEFÍCIO BLOQUEADO</span>
+              <span aria-hidden="true" className="lp8-card-chip" />
+            </div>
+
+            <div className="lp8-card-main">
+              <p className="lp8-card-title">Condição especial Linka</p>
+              <strong className="lp8-value" aria-live="polite">
+                <span className="lp8-value-locked">••% OFF</span>
+                <span className="lp8-value-unlocked">25% OFF</span>
+              </strong>
+              <p className="lp8-unlocked-copy">Para criar seu Site ou Landing Page com a Linka.</p>
+            </div>
+
+            <div className="lp8-segments" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+
+            <div className="lp8-unlock-area">
+              <p className="lp8-unlock-status">ARRASTE PARA DESBLOQUEAR</p>
+              <div className="lp8-unlock-track">
+                <span aria-hidden="true" className="lp8-unlock-fill" />
+                <button
+                  aria-label="Arraste para desbloquear o benefício de 25% OFF"
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={0}
+                  className="lp8-drag-key"
+                  role="slider"
+                  type="button"
+                >
+                  <span aria-hidden="true" className="lp8-key-mark" />
+                </button>
               </div>
             </div>
 
-            <div className="lp8-progress">
-              <div className="lp8-progress-top">
-                <span>Ativando presença digital...</span>
-                <strong className="lp8-percent">0%</strong>
-              </div>
-              <div className="lp8-progress-track">
-                <i className="lp8-progress-fill" />
-              </div>
-            </div>
-
-            <div className="lp8-flash" />
-            <div className="lp8-burst">
-              {burstAngles.map((angle) => (
-                <i key={angle} style={{ "--a": angle } as CSSProperties} />
-              ))}
-            </div>
-
-            <div aria-hidden="true" className="lp8-reward">
-              <button aria-label="Fechar desconto" className="lp8-close" type="button">
-                ×
-              </button>
-              <div className="lp8-badge">Benefício exclusivo desbloqueado</div>
-              <h3>
-                Você liberou
-                <strong>25% OFF</strong>
-              </h3>
-              <p>Para criar seu Site ou Landing Page com a Linka.</p>
-              <a className="lp8-reward-cta" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
-                Resgatar meu 25% OFF
-              </a>
-            </div>
+            <a className="lp8-reward-cta" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
+              RESGATAR MEU 25% OFF
+            </a>
           </div>
         </div>
 

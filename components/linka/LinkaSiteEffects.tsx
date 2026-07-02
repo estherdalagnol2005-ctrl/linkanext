@@ -53,13 +53,14 @@ const COPY = {
       "Uma presença digital bem construída transmite valor instantâneo, melhora sua imagem e aproxima sua empresa de clientes mais preparados para comprar.",
     card3s: "Percepção de valor",
     stack: "STACK PREMIUM",
-    promoOff: "OFF liberado",
-    promoHint: "Clique no <b>núcleo Linka</b><br>e desbloqueie sua condição especial",
-    promoProgress: "Ativando presença digital...",
-    promoBadge: "Benefício exclusivo desbloqueado",
-    promoWon: "Você liberou <strong>25% OFF</strong>",
+    promoCardTitle: "Condição especial Linka",
+    promoLockedBadge: "BENEFÍCIO BLOQUEADO",
+    promoUnlockHint: "ARRASTE PARA DESBLOQUEAR",
+    promoActivating: "ATIVANDO BENEFÍCIO",
+    promoUnlockedBadge: "BENEFÍCIO DESBLOQUEADO",
     promoRewardBody: "Para criar seu Site ou Landing Page com a Linka.",
-    promoClaim: "Resgatar meu 25% OFF",
+    promoClaim: "RESGATAR MEU 25% OFF",
+    promoDragAria: "Arraste para desbloquear o benefício de 25% OFF",
     promoKicker: "<span></span> Promoção de lançamento",
     promoTitle:
       "Aproveite nossa promoção especial.<strong>E gere alto valor para sua empresa.</strong>",
@@ -76,7 +77,6 @@ const COPY = {
     footerTagline: "Conexões digitais com mais clareza, valor e presença.",
     switchAria: "Escolher idioma",
     headerStartAria: "Voltar para o início",
-    coreAria: "Ativar núcleo Linka",
     closeAria: "Fechar desconto",
     techAria: "Tecnologias utilizadas pela Linka",
     platformsAria: "Plataformas de inteligência artificial, tráfego e comunicação",
@@ -143,13 +143,14 @@ const COPY = {
       "A well-built digital presence communicates value instantly, elevates your image and connects your company with customers who are more ready to buy.",
     card3s: "Perceived value",
     stack: "PREMIUM STACK",
-    promoOff: "OFF unlocked",
-    promoHint: "Click the <b>Linka core</b><br>and unlock your special offer",
-    promoProgress: "Activating your digital presence...",
-    promoBadge: "Exclusive benefit unlocked",
-    promoWon: "You unlocked <strong>25% OFF</strong>",
+    promoCardTitle: "Special Linka offer",
+    promoLockedBadge: "LOCKED BENEFIT",
+    promoUnlockHint: "DRAG TO UNLOCK",
+    promoActivating: "ACTIVATING BENEFIT",
+    promoUnlockedBadge: "BENEFIT UNLOCKED",
     promoRewardBody: "For your Linka Website or Landing Page.",
-    promoClaim: "Claim my 25% OFF",
+    promoClaim: "CLAIM MY 25% OFF",
+    promoDragAria: "Drag to unlock the 25% OFF benefit",
     promoKicker: "<span></span> Launch offer",
     promoTitle: "Enjoy our special launch offer.<strong>And create greater value for your company.</strong>",
     promoBody:
@@ -163,7 +164,6 @@ const COPY = {
     footerTagline: "Digital connections with greater clarity, value and presence.",
     switchAria: "Choose language",
     headerStartAria: "Back to the top",
-    coreAria: "Activate the Linka core",
     closeAria: "Close discount",
     techAria: "Technologies used by Linka",
     platformsAria: "Artificial intelligence, advertising and communication platforms",
@@ -229,13 +229,14 @@ const COPY = {
       "Una presencia digital bien construida transmite valor al instante, mejora tu imagen y acerca tu empresa a clientes más preparados para comprar.",
     card3s: "Percepción de valor",
     stack: "STACK PREMIUM",
-    promoOff: "OFF liberado",
-    promoHint: "Haz clic en el <b>núcleo Linka</b><br>y desbloquea tu condición especial",
-    promoProgress: "Activando presencia digital...",
-    promoBadge: "Beneficio exclusivo desbloqueado",
-    promoWon: "Liberaste <strong>25% OFF</strong>",
+    promoCardTitle: "Condición especial Linka",
+    promoLockedBadge: "BENEFICIO BLOQUEADO",
+    promoUnlockHint: "ARRASTRA PARA DESBLOQUEAR",
+    promoActivating: "ACTIVANDO BENEFICIO",
+    promoUnlockedBadge: "BENEFICIO DESBLOQUEADO",
     promoRewardBody: "Para crear tu sitio web o landing page con Linka.",
-    promoClaim: "Reclamar mi 25% OFF",
+    promoClaim: "RECLAMAR MI 25% OFF",
+    promoDragAria: "Arrastra para desbloquear el beneficio de 25% OFF",
     promoKicker: "<span></span> Promoción de lanzamiento",
     promoTitle: "Aprovecha nuestra promoción especial.<strong>Y genera alto valor para tu empresa.</strong>",
     promoBody:
@@ -249,7 +250,6 @@ const COPY = {
     footerTagline: "Conexiones digitales con más claridad, valor y presencia.",
     switchAria: "Elegir idioma",
     headerStartAria: "Volver al inicio",
-    coreAria: "Activar núcleo Linka",
     closeAria: "Cerrar descuento",
     techAria: "Tecnologías utilizadas por Linka",
     platformsAria: "Plataformas de inteligencia artificial, publicidad y comunicación",
@@ -516,23 +516,20 @@ function applyLanguage(nextLang: Language) {
     mainVideoAria("phone", lang),
   );
 
-  setText(".lp8-discount small", copy.promoOff);
-  setHtml(".lp8-hint", copy.promoHint);
-  setText(".lp8-progress-top > span", copy.promoProgress);
-  setText(".lp8-badge", copy.promoBadge);
-  setHtml(".lp8-reward h3", copy.promoWon);
-  setText(".lp8-reward > p", copy.promoRewardBody);
-  setText(".lp8-reward-cta", copy.promoClaim);
   setHtml(".lp8-kicker", copy.promoKicker);
   setHtml(".lp8-copy h2", copy.promoTitle);
   setText(".lp8-copy > p", copy.promoBody);
 
   const promoSection = document.querySelector<HTMLElement>(".linka-promo-v8");
   const promoIsUnlocked = Boolean(promoSection?.classList.contains("is-unlocked"));
+  const promoIsActivating = Boolean(promoSection?.classList.contains("is-activating"));
+  setText(".lp8-card-title", copy.promoCardTitle);
+  setText(".lp8-card-badge", promoIsUnlocked ? copy.promoUnlockedBadge : copy.promoLockedBadge);
+  setText(".lp8-unlock-status", promoIsUnlocked ? copy.promoUnlockedBadge : promoIsActivating ? copy.promoActivating : copy.promoUnlockHint);
+  setText(".lp8-unlocked-copy", copy.promoRewardBody);
+  setText(".lp8-reward-cta", copy.promoClaim);
   setText(".lp8-main-cta > span", promoIsUnlocked ? copy.promoClaim : copy.promoCta);
-  setAttributeForAll(".lp8-core-btn", "aria-label", copy.coreAria);
-  setAttributeForAll(".lp8-close", "aria-label", copy.closeAria);
-  setAttributeForAll(".lp8-discount", "href", whatsappUrl("discount", lang));
+  setAttributeForAll(".lp8-drag-key", "aria-label", copy.promoDragAria);
   setAttributeForAll(".lp8-reward-cta", "href", whatsappUrl("discount", lang));
 
   const mainPromo = document.querySelector<HTMLAnchorElement>(".lp8-main-cta");
@@ -1547,42 +1544,87 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
     if (section.dataset.ready === "true") return;
     section.dataset.ready = "true";
 
-    const trigger = section.querySelector<HTMLButtonElement>(".lp8-core-btn");
-    const percent = section.querySelector<HTMLElement>(".lp8-percent");
-    const fill = section.querySelector<HTMLElement>(".lp8-progress-fill");
-    const reward = section.querySelector<HTMLElement>(".lp8-reward");
-    const close = section.querySelector<HTMLButtonElement>(".lp8-close");
+    const card = section.querySelector<HTMLElement>(".lp8-benefit-card");
+    const track = section.querySelector<HTMLElement>(".lp8-unlock-track");
+    const handle = section.querySelector<HTMLButtonElement>(".lp8-drag-key");
+    const status = section.querySelector<HTMLElement>(".lp8-unlock-status");
     const rewardCta = section.querySelector<HTMLAnchorElement>(".lp8-reward-cta");
-    const discount = section.querySelector<HTMLAnchorElement>(".lp8-discount");
     const mainCta = section.querySelector<HTMLAnchorElement>(".lp8-main-cta");
     const fadeItems = [
       section.querySelector<HTMLElement>(".lp8-kicker"),
       section.querySelector<HTMLElement>(".lp8-copy h2"),
       section.querySelector<HTMLElement>(".lp8-copy p"),
       section.querySelector<HTMLElement>(".lp8-main-cta"),
-      section.querySelector<HTMLElement>(".lp8-stage"),
+      section.querySelector<HTMLElement>(".lp8-benefit-card"),
     ].filter((item): item is HTMLElement => Boolean(item));
 
-    fadeItems.forEach((item) => item.classList.add("lp8-fade"));
+    if (!card || !track || !handle) return;
+    const promoTrack = track;
+    const dragHandle = handle;
+    const statusElement = status;
+
     if (rewardCta) rewardCta.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
-    if (discount) discount.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
 
-    let running = false;
     let unlocked = false;
+    let dragging = false;
+    let progress = 0;
+    let frame = 0;
+    let returnTimer = 0;
+    const unlockThreshold = 0.88;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    function setProgress(value: number) {
-      const safe = Math.max(0, Math.min(25, value));
-      if (percent) percent.textContent = `${safe}%`;
-      if (fill) fill.style.width = `${(safe / 25) * 100}%`;
+    function currentCopy() {
+      return COPY[window.LINKA_I18N?.current() ?? "en"];
+    }
+
+    function updateTrackDistance() {
+      const distance = Math.max(0, promoTrack.clientWidth - dragHandle.offsetWidth - 10);
+      section.style.setProperty("--lp8-track-distance", `${distance}px`);
+    }
+
+    function setUnlockText() {
+      if (!statusElement) return;
+      const copy = currentCopy();
+      if (unlocked) statusElement.textContent = copy.promoUnlockedBadge;
+      else if (progress > 0.04 || dragging) statusElement.textContent = copy.promoActivating;
+      else statusElement.textContent = copy.promoUnlockHint;
+    }
+
+    function applyProgress(value: number) {
+      progress = Math.max(0, Math.min(1, value));
+      const percent = Math.round(progress * 100);
+      const step = progress >= 1 ? 3 : progress >= 0.66 ? 2 : progress >= 0.33 ? 1 : 0;
+
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        section.style.setProperty("--unlock-progress", progress.toFixed(4));
+        section.dataset.unlockStep = String(step);
+        dragHandle.setAttribute("aria-valuenow", String(percent));
+        section.classList.toggle("is-activating", !unlocked && (dragging || progress > 0.04));
+        setUnlockText();
+        frame = 0;
+      });
+    }
+
+    function resetProgress() {
+      if (returnTimer) window.clearTimeout(returnTimer);
+      section.classList.add("is-returning");
+      dragging = false;
+      applyProgress(0);
+      returnTimer = window.setTimeout(() => {
+        section.classList.remove("is-returning");
+        returnTimer = 0;
+      }, prefersReduced ? 0 : 360);
     }
 
     function unlock() {
-      running = false;
+      if (unlocked) return;
       unlocked = true;
 
-      section.classList.remove("is-activating");
-      section.classList.add("is-unlocked", "is-burst");
-      setProgress(25);
+      dragging = false;
+      section.classList.remove("is-activating", "is-dragging", "is-returning");
+      section.classList.add("is-unlocked");
+      applyProgress(1);
 
       if (mainCta) {
         const currentLanguage = window.LINKA_I18N?.current() ?? "en";
@@ -1591,64 +1633,103 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
         mainCta.target = "_blank";
         mainCta.innerHTML = `<span>${label}</span><i><img src="${WHATSAPP_ICON_URL}" alt=""></i>`;
       }
-
-      schedule(() => {
-        section.classList.add("is-reward-visible");
-        reward?.setAttribute("aria-hidden", "false");
-      }, 420);
-
-      schedule(() => section.classList.remove("is-burst"), 1300);
+      window.LINKA_I18N?.apply(window.LINKA_I18N.current());
     }
 
-    function start() {
-      if (running || unlocked) return;
+    function progressFromPointer(clientX: number) {
+      updateTrackDistance();
+      const rect = promoTrack.getBoundingClientRect();
+      const handleWidth = dragHandle.offsetWidth;
+      const max = Math.max(1, rect.width - handleWidth - 10);
+      const value = (clientX - rect.left - handleWidth / 2) / max;
+      applyProgress(value);
+    }
 
-      running = true;
-      section.classList.add("is-activating");
-      setProgress(0);
+    function handlePointerDown(event: PointerEvent) {
+      if (unlocked || event.button !== 0) return;
+      event.preventDefault();
+      dragging = true;
+      section.classList.add("is-dragging");
+      section.classList.remove("is-returning");
+      try {
+        dragHandle.setPointerCapture(event.pointerId);
+      } catch {
+        // Window-level listeners keep the drag stable when pointer capture is unavailable.
+      }
+      progressFromPointer(event.clientX);
+    }
 
-      const steps = [5, 10, 15, 20, 25];
-      let index = 0;
+    function handlePointerMove(event: PointerEvent) {
+      if (!dragging || unlocked) return;
+      progressFromPointer(event.clientX);
+    }
 
-      function next() {
-        setProgress(steps[index]);
-        index += 1;
+    function handlePointerUp(event: PointerEvent) {
+      if (!dragging || unlocked) return;
+      dragging = false;
+      section.classList.remove("is-dragging");
+      if (dragHandle.hasPointerCapture(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
+      if (progress >= unlockThreshold) unlock();
+      else resetProgress();
+    }
 
-        if (index < steps.length) schedule(next, 360);
-        else schedule(unlock, 420);
+    function handleKeyDown(event: KeyboardEvent) {
+      if (unlocked) return;
+      const keySteps: Record<string, number> = {
+        ArrowRight: 0.08,
+        ArrowUp: 0.08,
+        ArrowLeft: -0.08,
+        ArrowDown: -0.08,
+      };
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        unlock();
+        return;
       }
 
-      schedule(next, 260);
+      if (event.key === "Home") {
+        event.preventDefault();
+        applyProgress(0);
+        return;
+      }
+
+      if (event.key === "End") {
+        event.preventDefault();
+        unlock();
+        return;
+      }
+
+      if (event.key in keySteps) {
+        event.preventDefault();
+        applyProgress(progress + keySteps[event.key]);
+        if (progress >= unlockThreshold) unlock();
+      }
     }
 
-    function closeReward() {
-      section.classList.remove("is-reward-visible");
-      reward?.setAttribute("aria-hidden", "true");
-    }
+    updateTrackDistance();
+    applyProgress(0);
 
-    trigger?.addEventListener("click", start);
-    close?.addEventListener("click", closeReward);
+    promoTrack.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+    dragHandle.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", updateTrackDistance, { passive: true });
 
-    const isMobile = window.matchMedia("(max-width:520px)").matches;
     const context = gsap.context(() => {
-      gsap.set(fadeItems, { opacity: 0, y: isMobile ? 22 : 34, force3D: true });
-      gsap.to(fadeItems, {
-        opacity: 1,
-        y: 0,
-        duration: isMobile ? 0.72 : 0.9,
-        stagger: isMobile ? 0.08 : 0.12,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: isMobile ? "top 84%" : "top 76%",
-          once: true,
-        },
-      });
+      gsap.set(fadeItems, { opacity: 1, y: 0, clearProps: "transform,opacity,visibility" });
     }, section);
 
     addCleanup(() => {
-      trigger?.removeEventListener("click", start);
-      close?.removeEventListener("click", closeReward);
+      if (frame) window.cancelAnimationFrame(frame);
+      if (returnTimer) window.clearTimeout(returnTimer);
+      promoTrack.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      dragHandle.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", updateTrackDistance);
       context.revert();
       delete section.dataset.ready;
     });
