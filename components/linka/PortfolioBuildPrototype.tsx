@@ -9,6 +9,8 @@ const projects = [
     id: "marcenaria",
     name: "Marcenaria",
     displayTitle: "Site de Captação — Baptista",
+    titleType: "Site de Captação",
+    titleBrand: "Baptista",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenariadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenaria.mp4",
   },
@@ -16,6 +18,8 @@ const projects = [
     id: "nutricionista",
     name: "Nutricionista",
     displayTitle: "Landing Page de Conversão — Manoella Santos",
+    titleType: "Landing Page de Conversão",
+    titleBrand: "Manoella Santos",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionista.mp4",
   },
@@ -23,6 +27,8 @@ const projects = [
     id: "casa-sea",
     name: "Casa Sea",
     displayTitle: "Landing Page — Casa Sea",
+    titleType: "Landing Page",
+    titleBrand: "Casa Sea",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
   },
@@ -30,6 +36,8 @@ const projects = [
     id: "barbearia",
     name: "Barbearia",
     displayTitle: "Site de Conversão — Escobar",
+    titleType: "Site de Conversão",
+    titleBrand: "Escobar",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbeariadesktop-1.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbearia.mp4",
   },
@@ -37,6 +45,8 @@ const projects = [
     id: "quatorze",
     name: "Quatorze",
     displayTitle: "Landing Page — Quatorze Hair Spa",
+    titleType: "Landing Page",
+    titleBrand: "Quatorze Hair Spa",
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
   },
@@ -432,7 +442,6 @@ export default function PortfolioBuildPrototype() {
           ".lpb-phone",
           ".lpb-project-meta",
           ".lpb-controls",
-          ".lpb-glow",
         ],
         { autoAlpha: 1, clearProps: "transform,filter" },
       );
@@ -503,8 +512,7 @@ export default function PortfolioBuildPrototype() {
           },
         })
         .to(".lpb-notebook", { y: -12, ease: "none" }, 0)
-        .to(".lpb-phone", { y: -22, x: 8, ease: "none" }, 0)
-        .to(".lpb-glow", { y: 18, scale: 1.035, opacity: 0.78, ease: "none" }, 0);
+        .to(".lpb-phone", { y: -22, x: 8, ease: "none" }, 0);
     }, section);
 
     return () => context.revert();
@@ -540,7 +548,6 @@ export default function PortfolioBuildPrototype() {
   return (
     <section className="lpb-section" aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
       <div className="lpb-shell">
-        <div className="lpb-glow" aria-hidden="true" />
         <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
 
         <div
@@ -638,10 +645,17 @@ export default function PortfolioBuildPrototype() {
         </div>
 
         <div className="lpb-project-meta">
-          <span>
-            {String(titleIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+          <span className="lpb-counter" aria-label={`${titleIndex + 1} de ${projects.length}`}>
+            <span className="lpb-counter-current">{String(titleIndex + 1).padStart(2, "0")}</span>
+            <span className="lpb-counter-separator">/</span>
+            <span className="lpb-counter-total">{String(projects.length).padStart(2, "0")}</span>
           </span>
-          <strong ref={titleRef}>{titleProject.displayTitle}</strong>
+          <strong className="lpb-project-title" ref={titleRef}>
+            <span className="lpb-project-title-type">{titleProject.titleType}</span>
+            <span className="lpb-project-title-separator"> — </span>
+            <span className="lpb-project-title-brand">{titleProject.titleBrand}</span>
+          </strong>
+          <span className="lpb-signal-line" aria-hidden="true" />
         </div>
 
         <div className="lpb-controls" aria-label="Navegar projetos">
