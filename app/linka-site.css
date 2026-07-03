@@ -4312,10 +4312,10 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
   .lp8-benefit-card{
     width:100%;
-    min-height:clamp(350px,90vw,390px);
+    min-height:0;
     display:flex;
     flex-direction:column;
-    padding:13px;
+    padding:13px 13px 26px;
     border-radius:21px 12px 21px 12px;
   }
 
@@ -4411,6 +4411,10 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     min-height:42px;
     font-size:11px;
   }
+
+  .linka-promo-v8.is-unlocked .lp8-reward-cta{
+    align-self:end;
+  }
 }
 
 @media(max-width:390px){
@@ -4425,7 +4429,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 @media(max-width:380px){
   .lp8-benefit-card{
-    padding:12px;
+    padding:12px 12px 24px;
   }
 
   .lp8-copy h2{
