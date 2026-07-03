@@ -36,7 +36,8 @@ export default function PromoSection() {
               <span />
             </div>
 
-            <div className="lp8-unlock-area">
+            <div className="lp8-action-slot">
+              <div className="lp8-unlock-area">
               <p className="lp8-unlock-status">ARRASTE PARA DESBLOQUEAR</p>
               <div className="lp8-unlock-track">
                 <span aria-hidden="true" className="lp8-unlock-fill" />
@@ -63,11 +64,12 @@ export default function PromoSection() {
                   <span />
                 </span>
               </div>
-            </div>
+              </div>
 
-            <a className="lp8-reward-cta" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
-              RESGATAR MEU 25% OFF
-            </a>
+              <a className="lp8-reward-cta" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
+                RESGATAR MEU 25% OFF
+              </a>
+            </div>
           </div>
         </div>
 
