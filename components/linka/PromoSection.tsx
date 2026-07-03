@@ -49,8 +49,19 @@ export default function PromoSection() {
                   role="slider"
                   type="button"
                 >
-                  <span aria-hidden="true" className="lp8-key-mark" />
+                  <span aria-hidden="true" className="lp8-key-lock">
+                    <svg focusable="false" viewBox="0 0 24 24">
+                      <path d="M7.5 10V7.7a4.5 4.5 0 0 1 9 0V10" />
+                      <rect height="9.5" rx="2.4" width="13" x="5.5" y="10" />
+                      <path d="M12 14.1v2.2" />
+                    </svg>
+                  </span>
                 </button>
+                <span aria-hidden="true" className="lp8-track-arrow">
+                  <span />
+                  <span />
+                  <span />
+                </span>
               </div>
             </div>
 
