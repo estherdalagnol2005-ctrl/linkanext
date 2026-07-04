@@ -193,23 +193,17 @@ export default function Preloader() {
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
     if (root) {
-      const preloaderSvg = root.querySelector<SVGSVGElement>(".linka-preloader-svg");
-      const drawStroke = root.querySelector<SVGPathElement>(".linka-preloader-draw-line");
-      const fillStroke = root.querySelector<SVGPathElement>(".linka-preloader-fill-stroke");
+      const paint = root.querySelector(".linka-preloader-paint");
       const name = root.querySelector(".linka-preloader-name");
 
-      [drawStroke, fillStroke].forEach((path) => {
-        if (!path) return;
-        const length = path.getTotalLength();
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: reducedMotion ? 0 : length,
-          autoAlpha: reducedMotion ? 0.85 : 0,
-        });
+      gsap.set(paint, {
+        autoAlpha: reducedMotion ? 0.9 : 0,
+        xPercent: reducedMotion ? -50 : -132,
+        yPercent: reducedMotion ? -50 : 22,
+        rotate: reducedMotion ? -4 : -12,
+        scale: reducedMotion ? 1.08 : 0.22,
       });
-      gsap.set(fillStroke, { strokeWidth: reducedMotion ? 180 : 18, autoAlpha: reducedMotion ? 0.95 : 0 });
       gsap.set(name, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 10 });
-      gsap.set(preloaderSvg, { xPercent: -50, yPercent: -50 });
     }
 
     const finishReveal = () => {
@@ -287,7 +281,7 @@ export default function Preloader() {
         };
 
         revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1250);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-draw-line, .linka-preloader-fill-stroke, .linka-preloader-svg, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
 
         if (reducedMotion) {
           gsap.to(root, {
@@ -299,32 +293,20 @@ export default function Preloader() {
           return;
         }
 
-        const preloaderSvg = root.querySelector(".linka-preloader-svg");
-        const drawStroke = root.querySelector(".linka-preloader-draw-line");
-        const fillStroke = root.querySelector(".linka-preloader-fill-stroke");
-        const veil = root.querySelector(".linka-preloader-veil");
+        const paint = root.querySelector(".linka-preloader-paint");
         const name = root.querySelector(".linka-preloader-name");
 
         gsap
           .timeline({ onComplete: finishAnimation })
-          .to(drawStroke, {
+          .to(paint, {
             autoAlpha: 1,
-            strokeDashoffset: 0,
-            strokeWidth: 7,
-            duration: 0.26,
-            ease: "power3.out",
+            xPercent: -50,
+            yPercent: -50,
+            rotate: -4,
+            scale: 1.12,
+            duration: 0.34,
+            ease: "power4.out",
           })
-          .to(
-            fillStroke,
-            {
-              autoAlpha: 1,
-              strokeDashoffset: 0,
-              strokeWidth: 190,
-              duration: 0.3,
-              ease: "power3.inOut",
-            },
-            "-=0.08",
-          )
           .to(
             name,
             {
@@ -333,35 +315,26 @@ export default function Preloader() {
               duration: 0.14,
               ease: "power2.out",
             },
-            "-=0.08",
+            "-=0.02",
           )
-          .to(veil, { opacity: 0.52, duration: 0.12, ease: "power1.out" }, "-=0.12")
           .to({}, { duration: 0.08 })
           .to(
             name,
             { autoAlpha: 0, y: -8, duration: 0.14, ease: "power2.in" },
           )
           .to(
-            preloaderSvg,
+            paint,
             {
-              xPercent: 92,
-              yPercent: -66,
-              duration: 0.34,
-              ease: "power4.inOut",
-            },
-            "-=0.06",
-          )
-          .to(
-            [drawStroke, fillStroke],
-            {
-              autoAlpha: 0,
-              strokeDashoffset: -80,
-              duration: 0.2,
+              xPercent: 58,
+              yPercent: -128,
+              rotate: 11,
+              scale: 0.72,
+              duration: 0.36,
               ease: "power3.inOut",
             },
-            "-=0.22",
+            "-=0.04",
           )
-          .to(root, { opacity: 0, duration: 0.16, ease: "power2.out" }, "-=0.14");
+          .to(root, { opacity: 0, duration: 0.12, ease: "power2.out" }, "-=0.08");
       });
     };
 
@@ -411,7 +384,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-draw-line, .linka-preloader-fill-stroke, .linka-preloader-svg, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
       }
     };
   }, []);
@@ -427,39 +400,8 @@ export default function Preloader() {
       role="status"
       style={{ "--linka-preloader-progress": progress / 100 } as PreloaderStyle}
     >
-      <div className="linka-preloader-stage" aria-hidden="true">
-        <span className="linka-preloader-veil" />
-        <svg
-          aria-hidden="true"
-          className="linka-preloader-svg"
-          preserveAspectRatio="none"
-          viewBox="0 0 100 100"
-        >
-          <defs>
-            <linearGradient id="linka-preloader-line-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-              <stop offset="0%" stopColor="#f7fbff" stopOpacity="0.08" />
-              <stop offset="48%" stopColor="#f4f0d4" stopOpacity="0.98" />
-              <stop offset="78%" stopColor="#b7ff32" stopOpacity="0.72" />
-              <stop offset="100%" stopColor="#f7fbff" stopOpacity="0.16" />
-            </linearGradient>
-            <linearGradient id="linka-preloader-fill-gradient" x1="0%" x2="100%" y1="22%" y2="78%">
-              <stop offset="0%" stopColor="#1a201d" stopOpacity="0.99" />
-              <stop offset="42%" stopColor="#a7aa8d" stopOpacity="0.99" />
-              <stop offset="72%" stopColor="#c7d2a5" stopOpacity="0.99" />
-              <stop offset="100%" stopColor="#101411" stopOpacity="0.99" />
-            </linearGradient>
-          </defs>
-          <path
-            className="linka-preloader-fill-stroke"
-            d="M -22 66 C 9 18 31 92 55 45 S 95 13 122 62"
-          />
-          <path
-            className="linka-preloader-draw-line"
-            d="M -22 66 C 9 18 31 92 55 45 S 95 13 122 62"
-          />
-        </svg>
-        <span className="linka-preloader-name">LINKA</span>
-      </div>
+      <div className="linka-preloader-paint" aria-hidden="true" />
+      <div className="linka-preloader-name" aria-hidden="true">LINKA</div>
       <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
   );
