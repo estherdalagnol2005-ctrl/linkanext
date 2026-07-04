@@ -202,41 +202,40 @@ export default function Preloader() {
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
     if (root) {
-      const lines = root.querySelectorAll(".linka-preloader-line");
-      const accents = root.querySelectorAll(".linka-preloader-accent");
+      const wave = root.querySelector<SVGSVGElement>(".linka-preloader-wave");
+      const paths = root.querySelectorAll<SVGPathElement>(".linka-wave-path");
+      const fill = root.querySelector<SVGPathElement>(".linka-wave-fill");
 
-      gsap.set(lines, {
-        autoAlpha: reducedMotion ? 1 : 0,
-        scaleX: reducedMotion ? 1 : 0.08,
-        xPercent: (index) => (index % 2 === 0 ? -42 : 42),
-        transformOrigin: (index) => (index % 2 === 0 ? "0% 50%" : "100% 50%"),
+      paths.forEach((path) => {
+        const length = path.getTotalLength();
+        gsap.set(path, {
+          strokeDasharray: length,
+          strokeDashoffset: reducedMotion ? 0 : length,
+          autoAlpha: reducedMotion ? 0.72 : 0,
+        });
       });
-      gsap.set(accents, { autoAlpha: reducedMotion ? 0.5 : 0, scaleX: reducedMotion ? 1 : 0.2 });
+      gsap.set(fill, {
+        autoAlpha: reducedMotion ? 0.42 : 0,
+        scaleY: reducedMotion ? 1 : 0.04,
+        yPercent: reducedMotion ? 0 : 18,
+        transformOrigin: "50% 66%",
+      });
+      gsap.set(wave, { xPercent: 0, yPercent: 0 });
 
       if (!reducedMotion) {
         gsap
-          .timeline({ defaults: { ease: "power3.out" } })
-          .to(lines, {
+          .timeline({ defaults: { ease: "power2.out" } })
+          .to(paths, {
             autoAlpha: 1,
-            scaleX: (index) => 0.42 + index * 0.08,
-            xPercent: 0,
-            duration: 0.75,
-            stagger: 0.075,
+            strokeDashoffset: 0,
+            duration: 1.05,
+            stagger: 0.14,
           })
-          .to(
-            accents,
-            {
-              autoAlpha: 1,
-              scaleX: 1,
-              duration: 0.55,
-              stagger: 0.06,
-            },
-            "-=0.42",
-          )
-          .to(lines, {
-            scaleX: (index) => 0.52 + index * 0.06,
-            duration: 1.8,
-            stagger: 0.04,
+          .to(fill, { autoAlpha: 0.28, scaleY: 0.24, yPercent: 8, duration: 0.65, ease: "sine.out" }, "-=0.58")
+          .to(fill, {
+            scaleY: 0.32,
+            yPercent: 5,
+            duration: 1.6,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
@@ -319,7 +318,7 @@ export default function Preloader() {
         };
 
         revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1900);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-line, .linka-preloader-accent"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-wave-path, .linka-wave-fill, .linka-preloader-wave"));
 
         if (reducedMotion) {
           gsap.to(root, {
@@ -331,51 +330,57 @@ export default function Preloader() {
           return;
         }
 
-        const lines = root.querySelectorAll(".linka-preloader-line");
-        const accents = root.querySelectorAll(".linka-preloader-accent");
+        const wave = root.querySelector(".linka-preloader-wave");
+        const paths = root.querySelectorAll(".linka-wave-path");
+        const fill = root.querySelector(".linka-wave-fill");
         const veil = root.querySelector(".linka-preloader-veil");
 
         gsap
           .timeline({ onComplete: finishAnimation })
-          .to(lines, {
+          .to(paths, {
             autoAlpha: 1,
-            scaleX: 1.18,
-            xPercent: 0,
-            duration: 0.52,
-            stagger: 0.045,
-            ease: "power3.inOut",
+            strokeDashoffset: 0,
+            strokeWidth: (index) => (index === 0 ? 5.8 : 2.6),
+            duration: 0.34,
+            ease: "power2.out",
           })
           .to(
-            accents,
+            fill,
             {
               autoAlpha: 1,
-              scaleX: 1.15,
-              duration: 0.38,
-              stagger: 0.03,
-              ease: "power2.out",
+              scaleY: 2.75,
+              yPercent: -42,
+              duration: 0.58,
+              ease: "power3.inOut",
             },
-            "<",
+            "-=0.18",
           )
-          .to(veil, { opacity: 0.92, duration: 0.18, ease: "power1.out" }, "-=0.1")
-          .to({}, { duration: 0.16 })
-          .to(lines, {
-            xPercent: (index) => (index % 2 === 0 ? 118 : -118),
-            scaleX: 0.38,
-            autoAlpha: 0,
-            duration: 0.7,
-            stagger: 0.055,
+          .to(veil, { opacity: 0.72, duration: 0.18, ease: "power1.out" }, "-=0.18")
+          .to({}, { duration: 0.12 })
+          .to(wave, {
+            xPercent: 112,
+            yPercent: -18,
+            duration: 0.56,
             ease: "power4.inOut",
           })
           .to(
-            accents,
+            paths,
             {
-              xPercent: (index) => (index % 2 === 0 ? 92 : -92),
+              strokeDashoffset: -140,
               autoAlpha: 0,
-              duration: 0.5,
-              stagger: 0.025,
+              duration: 0.34,
+              ease: "power2.inOut",
+            },
+            "-=0.5",
+          )
+          .to(
+            fill,
+            {
+            autoAlpha: 0,
+              duration: 0.36,
               ease: "power3.inOut",
             },
-            "-=0.62",
+            "-=0.42",
           )
           .to(root, { opacity: 0, duration: 0.24, ease: "power2.out" }, "-=0.22");
       });
@@ -428,7 +433,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-line, .linka-preloader-accent"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-wave-path, .linka-wave-fill, .linka-preloader-wave"));
       }
     };
   }, []);
@@ -446,16 +451,38 @@ export default function Preloader() {
     >
       <div className="linka-preloader-stage" aria-hidden="true">
         <span className="linka-preloader-veil" />
-        <span className="linka-preloader-accent linka-preloader-accent-a" />
-        <span className="linka-preloader-accent linka-preloader-accent-b" />
-        <div className="linka-preloader-lines">
-          <span className="linka-preloader-line line-a" />
-          <span className="linka-preloader-line line-b" />
-          <span className="linka-preloader-line line-c" />
-          <span className="linka-preloader-line line-d" />
-          <span className="linka-preloader-line line-e" />
-          <span className="linka-preloader-line line-f" />
-        </div>
+        <svg
+          aria-hidden="true"
+          className="linka-preloader-wave"
+          preserveAspectRatio="none"
+          viewBox="0 0 100 100"
+        >
+          <defs>
+            <linearGradient id="linka-wave-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
+              <stop offset="0%" stopColor="#64c7ff" stopOpacity="0.12" />
+              <stop offset="42%" stopColor="#7dd3fc" stopOpacity="0.95" />
+              <stop offset="76%" stopColor="#b7ff32" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#64c7ff" stopOpacity="0.16" />
+            </linearGradient>
+            <linearGradient id="linka-wave-fill" x1="0%" x2="100%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="#0a1833" stopOpacity="0.98" />
+              <stop offset="50%" stopColor="#103e82" stopOpacity="0.96" />
+              <stop offset="100%" stopColor="#06101f" stopOpacity="0.98" />
+            </linearGradient>
+          </defs>
+          <path
+            className="linka-wave-fill"
+            d="M -8 70 C 9 48 18 83 32 58 C 44 36 55 38 67 59 C 78 79 89 70 108 42 L 108 118 L -8 118 Z"
+          />
+          <path
+            className="linka-wave-path linka-wave-path-base"
+            d="M -8 70 C 9 48 18 83 32 58 C 44 36 55 38 67 59 C 78 79 89 70 108 42"
+          />
+          <path
+            className="linka-wave-path linka-wave-path-accent"
+            d="M -6 63 C 10 40 23 76 35 55 C 48 34 59 40 70 58 C 82 77 92 66 106 46"
+          />
+        </svg>
       </div>
       <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
