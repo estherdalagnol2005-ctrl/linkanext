@@ -5399,7 +5399,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 body.linka-preload-lock{
-  height:100vh!important;
+  height:100dvh!important;
   overflow:hidden!important;
   touch-action:none;
 }
@@ -5414,12 +5414,14 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .linka-preloader{
-  position:fixed;
+  position:fixed!important;
   inset:0;
-  z-index:2147483000;
+  width:100vw;
+  height:100dvh;
+  min-height:100dvh;
+  z-index:2147483000!important;
   display:grid;
   place-items:center;
-  min-height:100svh;
   overflow:hidden;
   color:#f7fbff;
   background:
@@ -5429,6 +5431,17 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   isolation:isolate;
   pointer-events:auto;
   --linka-preloader-progress:0;
+}
+
+@supports not (height: 100dvh){
+  body.linka-preload-lock{
+    height:100vh!important;
+  }
+
+  .linka-preloader{
+    height:100vh;
+    min-height:100vh;
+  }
 }
 
 .linka-preloader::before{
@@ -5471,7 +5484,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
     radial-gradient(circle at 72% 54%, rgba(100,199,255,.13), transparent 36%);
 }
 
-.linka-preloader-wave{
+.linka-preloader-svg{
   position:absolute;
   inset:-8vh -10vw;
   z-index:2;
@@ -5483,8 +5496,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   will-change:transform,opacity;
 }
 
-.linka-brush-draw,
-.linka-brush-texture{
+.linka-preloader-draw-line,
+.linka-preloader-texture{
   fill:none;
   stroke-linecap:round;
   stroke-linejoin:round;
@@ -5492,9 +5505,9 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   will-change:transform,opacity,stroke-dashoffset,stroke-width;
 }
 
-.linka-brush-fill{
+.linka-preloader-fill-stroke{
   fill:none;
-  stroke:url(#linka-brush-fill);
+  stroke:url(#linka-preloader-fill-gradient);
   stroke-linecap:round;
   stroke-linejoin:round;
   stroke-width:14;
@@ -5502,18 +5515,18 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   will-change:transform,opacity,stroke-dashoffset,stroke-width;
 }
 
-.linka-brush-draw{
-  stroke:url(#linka-brush-stroke);
+.linka-preloader-draw-line{
+  stroke:url(#linka-preloader-line-gradient);
   stroke-width:4.6;
 }
 
-.linka-brush-texture{
+.linka-preloader-texture{
   stroke:rgba(232,248,255,.34);
   stroke-width:.9;
   opacity:.66;
 }
 
-.linka-brush-texture-b{
+.linka-preloader-texture-b{
   stroke:rgba(183,255,50,.25);
   stroke-width:.7;
 }
@@ -5547,17 +5560,17 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 @media (max-width: 640px){
-  .linka-preloader-wave{
+  .linka-preloader-svg{
     inset:-7vh -28vw;
     width:156vw;
-    height:114vh;
+    height:114dvh;
   }
 
-  .linka-brush-draw{
+  .linka-preloader-draw-line{
     stroke-width:5.2;
   }
 
-  .linka-brush-fill{
+  .linka-preloader-fill-stroke{
     stroke-width:16;
   }
 
@@ -5568,10 +5581,10 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 @media (prefers-reduced-motion: reduce){
-  .linka-preloader-wave,
-  .linka-brush-draw,
-  .linka-brush-fill,
-  .linka-brush-texture,
+  .linka-preloader-svg,
+  .linka-preloader-draw-line,
+  .linka-preloader-fill-stroke,
+  .linka-preloader-texture,
   .linka-preloader-name{
     transition:none;
   }

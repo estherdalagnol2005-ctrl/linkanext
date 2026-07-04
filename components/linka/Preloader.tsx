@@ -193,10 +193,10 @@ export default function Preloader() {
     const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
     if (root) {
-      const wave = root.querySelector<SVGSVGElement>(".linka-preloader-wave");
-      const drawStroke = root.querySelector<SVGPathElement>(".linka-brush-draw");
-      const fillStroke = root.querySelector<SVGPathElement>(".linka-brush-fill");
-      const textureStrokes = root.querySelectorAll<SVGPathElement>(".linka-brush-texture");
+      const preloaderSvg = root.querySelector<SVGSVGElement>(".linka-preloader-svg");
+      const drawStroke = root.querySelector<SVGPathElement>(".linka-preloader-draw-line");
+      const fillStroke = root.querySelector<SVGPathElement>(".linka-preloader-fill-stroke");
+      const textureStrokes = root.querySelectorAll<SVGPathElement>(".linka-preloader-texture");
       const name = root.querySelector(".linka-preloader-name");
 
       [drawStroke, fillStroke, ...textureStrokes].forEach((path) => {
@@ -210,7 +210,7 @@ export default function Preloader() {
       });
       gsap.set(fillStroke, { strokeWidth: reducedMotion ? 120 : 14, autoAlpha: reducedMotion ? 0.92 : 0 });
       gsap.set(name, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 14 });
-      gsap.set(wave, { xPercent: 0, yPercent: 0 });
+      gsap.set(preloaderSvg, { xPercent: 0, yPercent: 0 });
 
       if (!reducedMotion) {
         gsap
@@ -301,7 +301,7 @@ export default function Preloader() {
         };
 
         revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1900);
-        gsap.killTweensOf(root.querySelectorAll(".linka-brush-draw, .linka-brush-fill, .linka-brush-texture, .linka-preloader-wave, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-draw-line, .linka-preloader-fill-stroke, .linka-preloader-texture, .linka-preloader-svg, .linka-preloader-name"));
 
         if (reducedMotion) {
           gsap.to(root, {
@@ -313,10 +313,10 @@ export default function Preloader() {
           return;
         }
 
-        const wave = root.querySelector(".linka-preloader-wave");
-        const drawStroke = root.querySelector(".linka-brush-draw");
-        const fillStroke = root.querySelector(".linka-brush-fill");
-        const textureStrokes = root.querySelectorAll(".linka-brush-texture");
+        const preloaderSvg = root.querySelector(".linka-preloader-svg");
+        const drawStroke = root.querySelector(".linka-preloader-draw-line");
+        const fillStroke = root.querySelector(".linka-preloader-fill-stroke");
+        const textureStrokes = root.querySelectorAll(".linka-preloader-texture");
         const veil = root.querySelector(".linka-preloader-veil");
         const name = root.querySelector(".linka-preloader-name");
 
@@ -368,7 +368,7 @@ export default function Preloader() {
             { autoAlpha: 0, y: -12, duration: 0.22, ease: "power2.in" },
           )
           .to(
-            wave,
+            preloaderSvg,
             {
               xPercent: 112,
               yPercent: -12,
@@ -437,7 +437,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        gsap.killTweensOf(root.querySelectorAll(".linka-brush-draw, .linka-brush-fill, .linka-brush-texture, .linka-preloader-wave, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-draw-line, .linka-preloader-fill-stroke, .linka-preloader-texture, .linka-preloader-svg, .linka-preloader-name"));
       }
     };
   }, []);
@@ -457,18 +457,18 @@ export default function Preloader() {
         <span className="linka-preloader-veil" />
         <svg
           aria-hidden="true"
-          className="linka-preloader-wave"
+          className="linka-preloader-svg"
           preserveAspectRatio="none"
           viewBox="0 0 100 100"
         >
           <defs>
-            <linearGradient id="linka-brush-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
+            <linearGradient id="linka-preloader-line-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
               <stop offset="0%" stopColor="#64c7ff" stopOpacity="0.12" />
               <stop offset="42%" stopColor="#7dd3fc" stopOpacity="0.95" />
               <stop offset="76%" stopColor="#b7ff32" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#64c7ff" stopOpacity="0.16" />
             </linearGradient>
-            <linearGradient id="linka-brush-fill" x1="0%" x2="100%" y1="22%" y2="78%">
+            <linearGradient id="linka-preloader-fill-gradient" x1="0%" x2="100%" y1="22%" y2="78%">
               <stop offset="0%" stopColor="#06101f" stopOpacity="0.98" />
               <stop offset="44%" stopColor="#0f407e" stopOpacity="0.98" />
               <stop offset="74%" stopColor="#174f83" stopOpacity="0.96" />
@@ -476,19 +476,19 @@ export default function Preloader() {
             </linearGradient>
           </defs>
           <path
-            className="linka-brush-fill"
+            className="linka-preloader-fill-stroke"
             d="M -10 58 C 1 36 16 29 28 47 C 39 64 49 78 64 55 C 78 33 88 19 111 34"
           />
           <path
-            className="linka-brush-draw"
+            className="linka-preloader-draw-line"
             d="M -10 58 C 1 36 16 29 28 47 C 39 64 49 78 64 55 C 78 33 88 19 111 34"
           />
           <path
-            className="linka-brush-texture linka-brush-texture-a"
+            className="linka-preloader-texture linka-preloader-texture-a"
             d="M -5 50 C 9 39 20 40 31 53 C 43 67 52 68 65 49 C 78 31 90 28 106 40"
           />
           <path
-            className="linka-brush-texture linka-brush-texture-b"
+            className="linka-preloader-texture linka-preloader-texture-b"
             d="M -8 66 C 8 45 18 43 30 56 C 43 70 53 75 68 58 C 82 42 91 35 109 44"
           />
         </svg>
