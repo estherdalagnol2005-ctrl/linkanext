@@ -323,7 +323,7 @@ export default function PortfolioBuildPrototype() {
 
   const requestProject = useCallback((projectIndex: number, direction: TransitionDirection) => {
     const nextIndex = wrapIndex(projectIndex);
-    if (nextIndex === requestedIndexRef.current) return;
+    if (nextIndex === requestedIndexRef.current && nextIndex === displayedIndexRef.current) return;
 
     transitionTimelineRef.current?.kill();
     transitionTimelineRef.current = null;
@@ -499,6 +499,7 @@ export default function PortfolioBuildPrototype() {
       });
 
       gsap.set(titleRef.current, { autoAlpha: 1, y: 0 });
+      transitionTimelineRef.current = null;
       requestedIndexRef.current = displayedIndexRef.current;
       setTransitionRequest(null);
     };
@@ -552,6 +553,7 @@ export default function PortfolioBuildPrototype() {
           gsap.set(mobileChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
           updateVideoSlotState(desktopChannel.incomingVideo, desktopChannel.currentVideo);
           updateVideoSlotState(mobileChannel.incomingVideo, mobileChannel.currentVideo);
+          transitionTimelineRef.current = null;
           setTransitionRequest(null);
           preloadProjectNeighbors(index);
         },
