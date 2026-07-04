@@ -5419,15 +5419,12 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   width:100vw;
   height:100dvh;
   min-height:100dvh;
-  z-index:2147483000!important;
+  z-index:999999!important;
   display:grid;
   place-items:center;
   overflow:hidden;
   color:#f7fbff;
-  background:
-    radial-gradient(circle at 24% 24%, rgba(100,199,255,.14), transparent 32%),
-    radial-gradient(circle at 72% 70%, rgba(183,255,50,.08), transparent 34%),
-    linear-gradient(140deg, #020409 0%, #07111d 48%, #020308 100%);
+  background:#020408;
   isolation:isolate;
   pointer-events:auto;
   --linka-preloader-progress:0;
@@ -5449,10 +5446,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   position:absolute;
   inset:-20%;
   z-index:0;
-  opacity:calc(.13 + (var(--linka-preloader-progress) * .14));
-  background:
-    radial-gradient(circle at 18% 24%, rgba(125,211,252,.22), transparent 30%),
-    radial-gradient(circle at 76% 58%, rgba(64,103,255,.16), transparent 32%);
+  opacity:.16;
+  background:linear-gradient(135deg, rgba(255,255,255,.05), transparent 46%, rgba(183,255,50,.04));
   transform:scale(1.04);
 }
 
@@ -5478,26 +5473,24 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   inset:0;
   z-index:0;
   display:block;
-  opacity:calc(.18 + (var(--linka-preloader-progress) * .18));
-  background:
-    radial-gradient(circle at 20% 36%, rgba(183,255,50,.08), transparent 28%),
-    radial-gradient(circle at 72% 54%, rgba(100,199,255,.13), transparent 36%);
+  opacity:.18;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.05), transparent);
 }
 
 .linka-preloader-svg{
   position:absolute;
-  inset:-8vh -10vw;
+  left:50%;
+  top:50%;
   z-index:2;
   display:block;
-  width:120vw;
-  height:116vh;
+  width:168vw;
+  height:150dvh;
   overflow:visible;
-  transform:translateZ(0);
+  transform:translate3d(-50%,-50%,0);
   will-change:transform,opacity;
 }
 
-.linka-preloader-draw-line,
-.linka-preloader-texture{
+.linka-preloader-draw-line{
   fill:none;
   stroke-linecap:round;
   stroke-linejoin:round;
@@ -5510,7 +5503,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   stroke:url(#linka-preloader-fill-gradient);
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-width:14;
+  stroke-width:18;
   opacity:0;
   will-change:transform,opacity,stroke-dashoffset,stroke-width;
 }
@@ -5518,17 +5511,6 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 .linka-preloader-draw-line{
   stroke:url(#linka-preloader-line-gradient);
   stroke-width:4.6;
-}
-
-.linka-preloader-texture{
-  stroke:rgba(232,248,255,.34);
-  stroke-width:.9;
-  opacity:.66;
-}
-
-.linka-preloader-texture-b{
-  stroke:rgba(183,255,50,.25);
-  stroke-width:.7;
 }
 
 .linka-preloader-name{
@@ -5539,12 +5521,12 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   transform:translate(-50%,-50%);
   color:rgba(247,252,255,.96);
   font-family:"Manrope","Inter",system-ui,sans-serif;
-  font-size:clamp(3.8rem,10vw,9rem);
+  font-size:clamp(3.4rem,9vw,8rem);
   font-weight:950;
   line-height:.86;
-  letter-spacing:.08em;
+  letter-spacing:.06em;
   text-transform:uppercase;
-  text-shadow:0 10px 34px rgba(0,0,0,.28);
+  text-shadow:0 8px 22px rgba(0,0,0,.24);
   pointer-events:none;
   will-change:transform,opacity;
 }
@@ -5561,9 +5543,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 @media (max-width: 640px){
   .linka-preloader-svg{
-    inset:-7vh -28vw;
-    width:156vw;
-    height:114dvh;
+    width:220vw;
+    height:156dvh;
   }
 
   .linka-preloader-draw-line{
@@ -5571,7 +5552,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   }
 
   .linka-preloader-fill-stroke{
-    stroke-width:16;
+    stroke-width:20;
   }
 
   .linka-preloader-name{
@@ -5584,7 +5565,6 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   .linka-preloader-svg,
   .linka-preloader-draw-line,
   .linka-preloader-fill-stroke,
-  .linka-preloader-texture,
   .linka-preloader-name{
     transition:none;
   }
