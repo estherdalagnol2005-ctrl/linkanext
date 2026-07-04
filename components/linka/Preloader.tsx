@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,6 +17,10 @@ const MIN_DURATION = 1200;
 const MAX_DURATION = 6000;
 const PRELOADER_DONE_EVENT = "linka:preloader:done";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+type PreloaderStyle = CSSProperties & {
+  "--linka-preloader-progress": number;
+};
 
 function wait(ms: number, signal?: AbortSignal) {
   return new Promise<void>((resolve) => {
@@ -193,6 +198,51 @@ export default function Preloader() {
     const { signal } = abortController;
 
     document.body.classList.add("linka-preload-lock");
+    const root = rootRef.current;
+    const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
+
+    if (root) {
+      const lines = root.querySelectorAll(".linka-preloader-line");
+      const accents = root.querySelectorAll(".linka-preloader-accent");
+
+      gsap.set(lines, {
+        autoAlpha: reducedMotion ? 1 : 0,
+        scaleX: reducedMotion ? 1 : 0.08,
+        xPercent: (index) => (index % 2 === 0 ? -42 : 42),
+        transformOrigin: (index) => (index % 2 === 0 ? "0% 50%" : "100% 50%"),
+      });
+      gsap.set(accents, { autoAlpha: reducedMotion ? 0.5 : 0, scaleX: reducedMotion ? 1 : 0.2 });
+
+      if (!reducedMotion) {
+        gsap
+          .timeline({ defaults: { ease: "power3.out" } })
+          .to(lines, {
+            autoAlpha: 1,
+            scaleX: (index) => 0.42 + index * 0.08,
+            xPercent: 0,
+            duration: 0.75,
+            stagger: 0.075,
+          })
+          .to(
+            accents,
+            {
+              autoAlpha: 1,
+              scaleX: 1,
+              duration: 0.55,
+              stagger: 0.06,
+            },
+            "-=0.42",
+          )
+          .to(lines, {
+            scaleX: (index) => 0.52 + index * 0.06,
+            duration: 1.8,
+            stagger: 0.04,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+      }
+    }
 
     const finishReveal = () => {
       if (didFinishReveal) return;
@@ -256,7 +306,6 @@ export default function Preloader() {
 
     const revealPage = async () => {
       const root = rootRef.current;
-      const reducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
       if (!root) {
         finishReveal();
@@ -269,14 +318,66 @@ export default function Preloader() {
           resolve();
         };
 
-        revealFallbackTimer = window.setTimeout(finishAnimation, 1800);
+        revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1900);
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-line, .linka-preloader-accent"));
 
-        gsap.to(root, {
-          opacity: 0,
-          duration: reducedMotion ? 0.16 : 0.42,
-          ease: reducedMotion ? "power1.out" : "power3.inOut",
-          onComplete: finishAnimation,
-        });
+        if (reducedMotion) {
+          gsap.to(root, {
+            opacity: 0,
+            duration: 0.22,
+            ease: "power1.out",
+            onComplete: finishAnimation,
+          });
+          return;
+        }
+
+        const lines = root.querySelectorAll(".linka-preloader-line");
+        const accents = root.querySelectorAll(".linka-preloader-accent");
+        const veil = root.querySelector(".linka-preloader-veil");
+
+        gsap
+          .timeline({ onComplete: finishAnimation })
+          .to(lines, {
+            autoAlpha: 1,
+            scaleX: 1.18,
+            xPercent: 0,
+            duration: 0.52,
+            stagger: 0.045,
+            ease: "power3.inOut",
+          })
+          .to(
+            accents,
+            {
+              autoAlpha: 1,
+              scaleX: 1.15,
+              duration: 0.38,
+              stagger: 0.03,
+              ease: "power2.out",
+            },
+            "<",
+          )
+          .to(veil, { opacity: 0.92, duration: 0.18, ease: "power1.out" }, "-=0.1")
+          .to({}, { duration: 0.16 })
+          .to(lines, {
+            xPercent: (index) => (index % 2 === 0 ? 118 : -118),
+            scaleX: 0.38,
+            autoAlpha: 0,
+            duration: 0.7,
+            stagger: 0.055,
+            ease: "power4.inOut",
+          })
+          .to(
+            accents,
+            {
+              xPercent: (index) => (index % 2 === 0 ? 92 : -92),
+              autoAlpha: 0,
+              duration: 0.5,
+              stagger: 0.025,
+              ease: "power3.inOut",
+            },
+            "-=0.62",
+          )
+          .to(root, { opacity: 0, duration: 0.24, ease: "power2.out" }, "-=0.22");
       });
     };
 
@@ -327,8 +428,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        const content = root.querySelector(".linka-preloader-content");
-        if (content) gsap.killTweensOf(content);
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-line, .linka-preloader-accent"));
       }
     };
   }, []);
@@ -342,33 +442,22 @@ export default function Preloader() {
       aria-live="polite"
       className="linka-preloader"
       role="status"
+      style={{ "--linka-preloader-progress": progress / 100 } as PreloaderStyle}
     >
-      <div className="linka-preloader-bg" aria-hidden="true">
-        <span className="linka-preloader-glow linka-preloader-glow-a" />
-        <span className="linka-preloader-glow linka-preloader-glow-b" />
-        <span className="linka-preloader-orbit" />
-      </div>
-
-      <div className="linka-preloader-content">
-        <span className="linka-preloader-star" aria-hidden="true">
-          *
-        </span>
-        <div className="linka-preloader-logo-frame">
-          <img
-            alt="Linka"
-            className="linka-preloader-logo"
-            decoding="async"
-            fetchPriority="high"
-            height={1024}
-            src={LINKA_PRELOADER_LOGO_URL}
-            width={1536}
-          />
+      <div className="linka-preloader-stage" aria-hidden="true">
+        <span className="linka-preloader-veil" />
+        <span className="linka-preloader-accent linka-preloader-accent-a" />
+        <span className="linka-preloader-accent linka-preloader-accent-b" />
+        <div className="linka-preloader-lines">
+          <span className="linka-preloader-line line-a" />
+          <span className="linka-preloader-line line-b" />
+          <span className="linka-preloader-line line-c" />
+          <span className="linka-preloader-line line-d" />
+          <span className="linka-preloader-line line-e" />
+          <span className="linka-preloader-line line-f" />
         </div>
-        <div className="linka-preloader-progress" aria-hidden="true">
-          <span style={{ transform: `scaleX(${progress / 100})` }} />
-        </div>
-        <span className="linka-preloader-percent">{progress}%</span>
       </div>
+      <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
   );
 }
