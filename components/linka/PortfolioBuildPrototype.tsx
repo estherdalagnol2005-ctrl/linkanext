@@ -502,15 +502,11 @@ export default function PortfolioBuildPrototype() {
       );
     };
 
-    const commitDisplayedProject = (
-      desktopChannel: PreparedVideoChannel,
-      mobileChannel: PreparedVideoChannel,
-    ) => {
+    const commitDisplayedProject = (primaryChannelName: VideoChannel, primaryChannel: PreparedVideoChannel) => {
       if (committed || transitionTokenRef.current !== token) return;
       committed = true;
 
-      setActiveSlotRef("desktop", desktopChannel.incomingSlot);
-      setActiveSlotRef("mobile", mobileChannel.incomingSlot);
+      setActiveSlotRef(primaryChannelName, primaryChannel.incomingSlot);
       displayedIndexRef.current = index;
       requestedIndexRef.current = index;
 
@@ -520,16 +516,22 @@ export default function PortfolioBuildPrototype() {
       });
     };
 
-    const failSafely = (desktopChannel: PreparedVideoChannel | null, mobileChannel: PreparedVideoChannel | null) => {
+    const restoreChannel = (channel: PreparedVideoChannel | null) => {
+      if (!channel) return;
+      channel.incomingVideo.pause();
+      gsap.set(channel.currentVideo, { opacity: 1, visibility: "visible", x: 0 });
+      gsap.set(channel.incomingVideo, { opacity: 0, visibility: "visible", x: 0 });
+      updateVideoSlotState(channel.currentVideo, channel.incomingVideo);
+    };
+
+    const failPrimarySafely = (
+      primaryChannel: PreparedVideoChannel | null,
+      secondaryChannel: PreparedVideoChannel | null,
+    ) => {
       if (transitionTokenRef.current !== token) return;
 
-      [desktopChannel, mobileChannel].forEach((channel) => {
-        if (!channel) return;
-        channel.incomingVideo.pause();
-        gsap.set(channel.currentVideo, { opacity: 1, visibility: "visible", x: 0 });
-        gsap.set(channel.incomingVideo, { opacity: 0, visibility: "visible", x: 0 });
-        updateVideoSlotState(channel.currentVideo, channel.incomingVideo);
-      });
+      restoreChannel(primaryChannel);
+      restoreChannel(secondaryChannel);
 
       gsap.set(titleRef.current, { autoAlpha: 1, y: 0 });
       transitionTimelineRef.current = null;
@@ -537,37 +539,89 @@ export default function PortfolioBuildPrototype() {
       setTransitionRequest(null);
     };
 
-    const runTransition = async () => {
-      const desktopChannel = buildChannel("desktop");
-      const mobileChannel = buildChannel("mobile");
-
-      if (!desktopChannel || !mobileChannel) {
-        failSafely(desktopChannel, mobileChannel);
+    const completeSecondaryChannel = (channelName: VideoChannel, channel: PreparedVideoChannel) => {
+      if (transitionTokenRef.current !== token || displayedIndexRef.current !== index || disposed) {
+        restoreChannel(channel);
         return;
       }
 
-      const [desktopReady, mobileReady] = await Promise.all([
-        prepareChannel("desktop", desktopChannel),
-        prepareChannel("mobile", mobileChannel),
-      ]);
+      gsap.to(channel.currentVideo, { opacity: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION, ease: "power2.out" });
+      gsap.to(channel.incomingVideo, {
+        opacity: 1,
+        x: 0,
+        duration: VIDEO_TRANSITION_DURATION,
+        ease: "power2.out",
+        onComplete: () => {
+          if (transitionTokenRef.current !== token || displayedIndexRef.current !== index || disposed) return;
+
+          channel.currentVideo.pause();
+          gsap.set(channel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
+          updateVideoSlotState(channel.incomingVideo, channel.currentVideo);
+          setActiveSlotRef(channelName, channel.incomingSlot);
+        },
+      });
+    };
+
+    const runTransition = async () => {
+      const primaryChannelName: VideoChannel = viewportMode === "mobile" ? "mobile" : "desktop";
+      const secondaryChannelName: VideoChannel = viewportMode === "mobile" ? "desktop" : "mobile";
+      const primaryChannel = buildChannel(primaryChannelName);
+      const secondaryChannel = buildChannel(secondaryChannelName);
+
+      if (!primaryChannel) {
+        failPrimarySafely(primaryChannel, secondaryChannel);
+        return;
+      }
+
+      const primaryReady = await prepareChannel(primaryChannelName, primaryChannel);
 
       if (disposed || transitionTokenRef.current !== token) return;
 
-      if (!desktopReady || !mobileReady) {
-        failSafely(desktopChannel, mobileChannel);
+      if (!primaryReady) {
+        failPrimarySafely(primaryChannel, secondaryChannel);
         return;
       }
 
+      const secondaryReadyPromise = secondaryChannel
+        ? prepareChannel(secondaryChannelName, secondaryChannel)
+        : Promise.resolve(false);
+
+      void secondaryReadyPromise.then((secondaryReady) => {
+        if (!secondaryChannel) return;
+
+        if (!secondaryReady) {
+          restoreChannel(secondaryChannel);
+          return;
+        }
+
+        const completeWhenPrimaryCommitted = () => {
+          if (transitionTokenRef.current !== token || disposed) {
+            restoreChannel(secondaryChannel);
+            return;
+          }
+
+          if (displayedIndexRef.current === index) {
+            completeSecondaryChannel(secondaryChannelName, secondaryChannel);
+            return;
+          }
+
+          if (requestedIndexRef.current !== index) {
+            restoreChannel(secondaryChannel);
+            return;
+          }
+
+          window.setTimeout(completeWhenPrimaryCommitted, 40);
+        };
+
+        completeWhenPrimaryCommitted();
+      });
+
       if (reduceMotion) {
-        gsap.set(desktopChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
-        gsap.set(desktopChannel.incomingVideo, { opacity: 1, visibility: "visible", x: 0 });
-        gsap.set(mobileChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
-        gsap.set(mobileChannel.incomingVideo, { opacity: 1, visibility: "visible", x: 0 });
-        commitDisplayedProject(desktopChannel, mobileChannel);
-        desktopChannel.currentVideo.pause();
-        mobileChannel.currentVideo.pause();
-        updateVideoSlotState(desktopChannel.incomingVideo, desktopChannel.currentVideo);
-        updateVideoSlotState(mobileChannel.incomingVideo, mobileChannel.currentVideo);
+        gsap.set(primaryChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
+        gsap.set(primaryChannel.incomingVideo, { opacity: 1, visibility: "visible", x: 0 });
+        commitDisplayedProject(primaryChannelName, primaryChannel);
+        primaryChannel.currentVideo.pause();
+        updateVideoSlotState(primaryChannel.incomingVideo, primaryChannel.currentVideo);
         setTransitionRequest(null);
         preloadProjectNeighbors(index);
         return;
@@ -580,12 +634,9 @@ export default function PortfolioBuildPrototype() {
         onComplete: () => {
           if (transitionTokenRef.current !== token) return;
 
-          desktopChannel.currentVideo.pause();
-          mobileChannel.currentVideo.pause();
-          gsap.set(desktopChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
-          gsap.set(mobileChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
-          updateVideoSlotState(desktopChannel.incomingVideo, desktopChannel.currentVideo);
-          updateVideoSlotState(mobileChannel.incomingVideo, mobileChannel.currentVideo);
+          primaryChannel.currentVideo.pause();
+          gsap.set(primaryChannel.currentVideo, { opacity: 0, visibility: "visible", x: 0 });
+          updateVideoSlotState(primaryChannel.incomingVideo, primaryChannel.currentVideo);
           transitionTimelineRef.current = null;
           setTransitionRequest(null);
           preloadProjectNeighbors(index);
@@ -595,12 +646,10 @@ export default function PortfolioBuildPrototype() {
       transitionTimelineRef.current = timeline;
 
       timeline
-        .to(desktopChannel.currentVideo, { opacity: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
-        .to(desktopChannel.incomingVideo, { opacity: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0)
-        .to(mobileChannel.currentVideo, { opacity: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
-        .to(mobileChannel.incomingVideo, { opacity: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0)
+        .to(primaryChannel.currentVideo, { opacity: 0, x: outgoingOffset, duration: VIDEO_TRANSITION_DURATION }, 0)
+        .to(primaryChannel.incomingVideo, { opacity: 1, x: 0, duration: VIDEO_TRANSITION_DURATION }, 0)
         .to(titleRef.current, { autoAlpha: 0, y: direction * -6, duration: midpoint }, 0)
-        .call(() => commitDisplayedProject(desktopChannel, mobileChannel), undefined, midpoint)
+        .call(() => commitDisplayedProject(primaryChannelName, primaryChannel), undefined, midpoint)
         .fromTo(
           titleRef.current,
           { autoAlpha: 0, y: direction * 6 },
@@ -614,7 +663,7 @@ export default function PortfolioBuildPrototype() {
     return () => {
       disposed = true;
     };
-  }, [prepareVideoSlot, preloadProjectNeighbors, setActiveSlotRef, transitionRequest]);
+  }, [prepareVideoSlot, preloadProjectNeighbors, setActiveSlotRef, transitionRequest, viewportMode]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -625,6 +674,62 @@ export default function PortfolioBuildPrototype() {
 
     return () => mediaQuery.removeEventListener("change", syncViewportMode);
   }, []);
+
+  useEffect(() => {
+    if (transitionRequest) return;
+
+    let cancelled = false;
+
+    const syncVisibleChannel = async () => {
+      const channel: VideoChannel = viewportMode === "mobile" ? "mobile" : "desktop";
+      const isDesktop = channel === "desktop";
+      const activeSlot = isDesktop ? activeDesktopSlotRef.current : activeMobileSlotRef.current;
+      const incomingSlot = (activeSlot === 0 ? 1 : 0) as VideoSlot;
+      const slotsRef = isDesktop ? desktopVideoSlotsRef : mobileVideoSlotsRef;
+      const sourcesRef = isDesktop ? desktopSlotSourcesRef : mobileSlotSourcesRef;
+      const currentVideo = slotsRef.current[activeSlot];
+      const incomingVideo = slotsRef.current[incomingSlot];
+      const projectIndex = displayedIndexRef.current;
+      const project = projects[projectIndex];
+      const desiredSrc = isDesktop ? project.desktopVideo : project.mobileVideo;
+
+      if (!currentVideo || !incomingVideo || sourcesRef.current[activeSlot] === desiredSrc) {
+        if (currentVideo) void playVideo(currentVideo);
+        return;
+      }
+
+      const token = transitionTokenRef.current;
+      gsap.set(incomingVideo, { opacity: 0, visibility: "visible", x: 0 });
+      updateVideoSlotState(currentVideo, incomingVideo);
+
+      const ready = await prepareVideoSlot(
+        incomingVideo,
+        desiredSrc,
+        sourcesRef,
+        incomingSlot,
+        token,
+        `Projeto ${project.name} no ${isDesktop ? "notebook" : "celular"}`,
+      );
+
+      if (cancelled || !ready || transitionTokenRef.current !== token || displayedIndexRef.current !== projectIndex) {
+        gsap.set(incomingVideo, { opacity: 0, visibility: "visible", x: 0 });
+        updateVideoSlotState(currentVideo, incomingVideo);
+        return;
+      }
+
+      currentVideo.pause();
+      gsap.set(currentVideo, { opacity: 0, visibility: "visible", x: 0 });
+      gsap.set(incomingVideo, { opacity: 1, visibility: "visible", x: 0 });
+      updateVideoSlotState(incomingVideo, currentVideo);
+      setActiveSlotRef(channel, incomingSlot);
+    };
+
+    void syncVisibleChannel();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [prepareVideoSlot, setActiveSlotRef, transitionRequest, viewportMode]);
 
   useLayoutEffect(() => {
     const desktopActive = desktopVideoSlotsRef.current[0];
