@@ -5473,44 +5473,67 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 .linka-preloader-wave{
   position:absolute;
-  inset:-7vh -8vw;
+  inset:-8vh -10vw;
   z-index:2;
   display:block;
-  width:116vw;
-  height:114vh;
+  width:120vw;
+  height:116vh;
   overflow:visible;
   transform:translateZ(0);
   will-change:transform,opacity;
 }
 
-.linka-wave-path,
-.linka-wave-fill{
+.linka-brush-draw,
+.linka-brush-texture{
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
-  transform-box:fill-box;
   will-change:transform,opacity,stroke-dashoffset,stroke-width;
 }
 
-.linka-wave-fill{
-  fill:url(#linka-wave-fill);
-  opacity:0;
-  transform-origin:50% 66%;
-}
-
-.linka-wave-path{
+.linka-brush-fill{
   fill:none;
-  stroke:url(#linka-wave-stroke);
+  stroke:url(#linka-brush-fill);
   stroke-linecap:round;
   stroke-linejoin:round;
+  stroke-width:14;
+  opacity:0;
+  will-change:transform,opacity,stroke-dashoffset,stroke-width;
 }
 
-.linka-wave-path-base{
-  stroke-width:3.8;
-  filter:drop-shadow(0 0 10px rgba(100,199,255,.22));
+.linka-brush-draw{
+  stroke:url(#linka-brush-stroke);
+  stroke-width:4.6;
 }
 
-.linka-wave-path-accent{
-  stroke-width:1.3;
-  opacity:.72;
+.linka-brush-texture{
+  stroke:rgba(232,248,255,.34);
+  stroke-width:.9;
+  opacity:.66;
+}
+
+.linka-brush-texture-b{
+  stroke:rgba(183,255,50,.25);
+  stroke-width:.7;
+}
+
+.linka-preloader-name{
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:4;
+  transform:translate(-50%,-50%);
+  color:rgba(247,252,255,.96);
+  font-family:"Manrope","Inter",system-ui,sans-serif;
+  font-size:clamp(3.8rem,10vw,9rem);
+  font-weight:950;
+  line-height:.86;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  text-shadow:0 10px 34px rgba(0,0,0,.28);
+  pointer-events:none;
+  will-change:transform,opacity;
 }
 
 .linka-preloader-status{
@@ -5525,25 +5548,31 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 @media (max-width: 640px){
   .linka-preloader-wave{
-    inset:-6vh -22vw;
-    width:144vw;
-    height:112vh;
+    inset:-7vh -28vw;
+    width:156vw;
+    height:114vh;
   }
 
-  .linka-wave-path-base{
-    stroke-width:4.4;
-    filter:none;
+  .linka-brush-draw{
+    stroke-width:5.2;
   }
 
-  .linka-wave-path-accent{
-    stroke-width:1.45;
+  .linka-brush-fill{
+    stroke-width:16;
+  }
+
+  .linka-preloader-name{
+    font-size:clamp(3.1rem,18vw,5.8rem);
+    letter-spacing:.06em;
   }
 }
 
 @media (prefers-reduced-motion: reduce){
   .linka-preloader-wave,
-  .linka-wave-path,
-  .linka-wave-fill{
+  .linka-brush-draw,
+  .linka-brush-fill,
+  .linka-brush-texture,
+  .linka-preloader-name{
     transition:none;
   }
 }

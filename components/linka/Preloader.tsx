@@ -5,8 +5,6 @@ import type { CSSProperties } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { LINKA_PRELOADER_LOGO_URL } from "./constants";
-
 declare global {
   interface Window {
     __LINKA_PRELOADER_DONE__?: boolean;
@@ -69,13 +67,6 @@ async function decodeImage(image: HTMLImageElement, signal?: AbortSignal) {
   if (typeof image.decode === "function") {
     await image.decode().catch(() => undefined);
   }
-}
-
-function decodeLogo(signal?: AbortSignal) {
-  const logo = new Image();
-  logo.decoding = "async";
-  logo.src = LINKA_PRELOADER_LOGO_URL;
-  return decodeImage(logo, signal);
 }
 
 function decodeHeroImages(signal?: AbortSignal) {
@@ -203,10 +194,13 @@ export default function Preloader() {
 
     if (root) {
       const wave = root.querySelector<SVGSVGElement>(".linka-preloader-wave");
-      const paths = root.querySelectorAll<SVGPathElement>(".linka-wave-path");
-      const fill = root.querySelector<SVGPathElement>(".linka-wave-fill");
+      const drawStroke = root.querySelector<SVGPathElement>(".linka-brush-draw");
+      const fillStroke = root.querySelector<SVGPathElement>(".linka-brush-fill");
+      const textureStrokes = root.querySelectorAll<SVGPathElement>(".linka-brush-texture");
+      const name = root.querySelector(".linka-preloader-name");
 
-      paths.forEach((path) => {
+      [drawStroke, fillStroke, ...textureStrokes].forEach((path) => {
+        if (!path) return;
         const length = path.getTotalLength();
         gsap.set(path, {
           strokeDasharray: length,
@@ -214,32 +208,21 @@ export default function Preloader() {
           autoAlpha: reducedMotion ? 0.72 : 0,
         });
       });
-      gsap.set(fill, {
-        autoAlpha: reducedMotion ? 0.42 : 0,
-        scaleY: reducedMotion ? 1 : 0.04,
-        yPercent: reducedMotion ? 0 : 18,
-        transformOrigin: "50% 66%",
-      });
+      gsap.set(fillStroke, { strokeWidth: reducedMotion ? 120 : 14, autoAlpha: reducedMotion ? 0.92 : 0 });
+      gsap.set(name, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 14 });
       gsap.set(wave, { xPercent: 0, yPercent: 0 });
 
       if (!reducedMotion) {
         gsap
           .timeline({ defaults: { ease: "power2.out" } })
-          .to(paths, {
+          .to(drawStroke, {
             autoAlpha: 1,
             strokeDashoffset: 0,
-            duration: 1.05,
-            stagger: 0.14,
+            duration: 0.95,
           })
-          .to(fill, { autoAlpha: 0.28, scaleY: 0.24, yPercent: 8, duration: 0.65, ease: "sine.out" }, "-=0.58")
-          .to(fill, {
-            scaleY: 0.32,
-            yPercent: 5,
-            duration: 1.6,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
+          .to(textureStrokes, { autoAlpha: 0.72, strokeDashoffset: 0, duration: 0.72, stagger: 0.08 }, "-=0.68")
+          .to(fillStroke, { autoAlpha: 0.56, strokeDashoffset: 0, strokeWidth: 24, duration: 0.82 }, "-=0.76")
+          .to(fillStroke, { strokeWidth: 32, autoAlpha: 0.64, duration: 1.3, repeat: -1, yoyo: true, ease: "sine.inOut" });
       }
     }
 
@@ -318,7 +301,7 @@ export default function Preloader() {
         };
 
         revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1900);
-        gsap.killTweensOf(root.querySelectorAll(".linka-wave-path, .linka-wave-fill, .linka-preloader-wave"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-brush-draw, .linka-brush-fill, .linka-brush-texture, .linka-preloader-wave, .linka-preloader-name"));
 
         if (reducedMotion) {
           gsap.to(root, {
@@ -331,52 +314,74 @@ export default function Preloader() {
         }
 
         const wave = root.querySelector(".linka-preloader-wave");
-        const paths = root.querySelectorAll(".linka-wave-path");
-        const fill = root.querySelector(".linka-wave-fill");
+        const drawStroke = root.querySelector(".linka-brush-draw");
+        const fillStroke = root.querySelector(".linka-brush-fill");
+        const textureStrokes = root.querySelectorAll(".linka-brush-texture");
         const veil = root.querySelector(".linka-preloader-veil");
+        const name = root.querySelector(".linka-preloader-name");
 
         gsap
           .timeline({ onComplete: finishAnimation })
-          .to(paths, {
+          .to(drawStroke, {
             autoAlpha: 1,
             strokeDashoffset: 0,
-            strokeWidth: (index) => (index === 0 ? 5.8 : 2.6),
-            duration: 0.34,
+            strokeWidth: 6,
+            duration: 0.28,
             ease: "power2.out",
           })
           .to(
-            fill,
+            textureStrokes,
             {
               autoAlpha: 1,
-              scaleY: 2.75,
-              yPercent: -42,
-              duration: 0.58,
+              strokeDashoffset: 0,
+              duration: 0.24,
+              stagger: 0.04,
+              ease: "power2.out",
+            },
+            "-=0.2",
+          )
+          .to(
+            fillStroke,
+            {
+              autoAlpha: 1,
+              strokeDashoffset: 0,
+              strokeWidth: 138,
+              duration: 0.62,
               ease: "power3.inOut",
             },
             "-=0.18",
           )
-          .to(veil, { opacity: 0.72, duration: 0.18, ease: "power1.out" }, "-=0.18")
-          .to({}, { duration: 0.12 })
-          .to(wave, {
-            xPercent: 112,
-            yPercent: -18,
-            duration: 0.56,
-            ease: "power4.inOut",
-          })
           .to(
-            paths,
+            name,
             {
-              strokeDashoffset: -140,
-              autoAlpha: 0,
-              duration: 0.34,
-              ease: "power2.inOut",
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.24,
+              ease: "power2.out",
             },
-            "-=0.5",
+            "-=0.32",
+          )
+          .to(veil, { opacity: 0.74, duration: 0.18, ease: "power1.out" }, "-=0.2")
+          .to({}, { duration: 0.18 })
+          .to(
+            name,
+            { autoAlpha: 0, y: -12, duration: 0.22, ease: "power2.in" },
           )
           .to(
-            fill,
+            wave,
             {
-            autoAlpha: 0,
+              xPercent: 112,
+              yPercent: -12,
+              duration: 0.58,
+              ease: "power4.inOut",
+            },
+            "-=0.16",
+          )
+          .to(
+            [drawStroke, fillStroke, ...Array.from(textureStrokes)],
+            {
+              autoAlpha: 0,
+              strokeDashoffset: -120,
               duration: 0.36,
               ease: "power3.inOut",
             },
@@ -390,7 +395,6 @@ export default function Preloader() {
       let completed = 0;
       const resources = [
         waitForFonts(),
-        decodeLogo(signal),
         decodeHeroImages(signal),
         waitForInitialVideoFrame(signal),
         waitForMainScripts(signal),
@@ -433,7 +437,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        gsap.killTweensOf(root.querySelectorAll(".linka-wave-path, .linka-wave-fill, .linka-preloader-wave"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-brush-draw, .linka-brush-fill, .linka-brush-texture, .linka-preloader-wave, .linka-preloader-name"));
       }
     };
   }, []);
@@ -458,31 +462,37 @@ export default function Preloader() {
           viewBox="0 0 100 100"
         >
           <defs>
-            <linearGradient id="linka-wave-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
+            <linearGradient id="linka-brush-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
               <stop offset="0%" stopColor="#64c7ff" stopOpacity="0.12" />
               <stop offset="42%" stopColor="#7dd3fc" stopOpacity="0.95" />
               <stop offset="76%" stopColor="#b7ff32" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#64c7ff" stopOpacity="0.16" />
             </linearGradient>
-            <linearGradient id="linka-wave-fill" x1="0%" x2="100%" y1="0%" y2="100%">
-              <stop offset="0%" stopColor="#0a1833" stopOpacity="0.98" />
-              <stop offset="50%" stopColor="#103e82" stopOpacity="0.96" />
-              <stop offset="100%" stopColor="#06101f" stopOpacity="0.98" />
+            <linearGradient id="linka-brush-fill" x1="0%" x2="100%" y1="22%" y2="78%">
+              <stop offset="0%" stopColor="#06101f" stopOpacity="0.98" />
+              <stop offset="44%" stopColor="#0f407e" stopOpacity="0.98" />
+              <stop offset="74%" stopColor="#174f83" stopOpacity="0.96" />
+              <stop offset="100%" stopColor="#07101d" stopOpacity="0.98" />
             </linearGradient>
           </defs>
           <path
-            className="linka-wave-fill"
-            d="M -8 70 C 9 48 18 83 32 58 C 44 36 55 38 67 59 C 78 79 89 70 108 42 L 108 118 L -8 118 Z"
+            className="linka-brush-fill"
+            d="M -10 58 C 1 36 16 29 28 47 C 39 64 49 78 64 55 C 78 33 88 19 111 34"
           />
           <path
-            className="linka-wave-path linka-wave-path-base"
-            d="M -8 70 C 9 48 18 83 32 58 C 44 36 55 38 67 59 C 78 79 89 70 108 42"
+            className="linka-brush-draw"
+            d="M -10 58 C 1 36 16 29 28 47 C 39 64 49 78 64 55 C 78 33 88 19 111 34"
           />
           <path
-            className="linka-wave-path linka-wave-path-accent"
-            d="M -6 63 C 10 40 23 76 35 55 C 48 34 59 40 70 58 C 82 77 92 66 106 46"
+            className="linka-brush-texture linka-brush-texture-a"
+            d="M -5 50 C 9 39 20 40 31 53 C 43 67 52 68 65 49 C 78 31 90 28 106 40"
+          />
+          <path
+            className="linka-brush-texture linka-brush-texture-b"
+            d="M -8 66 C 8 45 18 43 30 56 C 43 70 53 75 68 58 C 82 42 91 35 109 44"
           />
         </svg>
+        <span className="linka-preloader-name">LINKA</span>
       </div>
       <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
