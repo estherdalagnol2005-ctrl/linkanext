@@ -323,6 +323,71 @@ export default function PortfolioBuildPrototype() {
     gsap.set(titleRef.current, { autoAlpha: 1, y: 0 });
   }, []);
 
+  const commitMobileProject = useCallback((projectIndex: number) => {
+    const nextIndex = wrapIndex(projectIndex);
+    const project = projects[nextIndex];
+
+    transitionTimelineRef.current?.kill();
+    transitionTimelineRef.current = null;
+    clearPendingVideoWaits();
+    transitionTokenRef.current += 1;
+    setTransitionRequest(null);
+    requestedIndexRef.current = nextIndex;
+    displayedIndexRef.current = nextIndex;
+    setHasInteracted(true);
+
+    ([
+      ["desktop", desktopVideoSlotsRef, activeDesktopSlotRef, desktopSlotSourcesRef, project.desktopVideo, "notebook"],
+      ["mobile", mobileVideoSlotsRef, activeMobileSlotRef, mobileSlotSourcesRef, project.mobileVideo, "celular"],
+    ] as const).forEach(([, slotsRef, activeSlotRef, sourcesRef, src, label]) => {
+      const activeSlot = activeSlotRef.current;
+      const hiddenSlot = (activeSlot === 0 ? 1 : 0) as VideoSlot;
+      const activeVideo = slotsRef.current[activeSlot];
+      const hiddenVideo = slotsRef.current[hiddenSlot];
+
+      if (hiddenVideo) {
+        hiddenVideo.pause();
+        gsap.set(hiddenVideo, { opacity: 0, visibility: "visible", x: 0 });
+      }
+
+      if (!activeVideo) return;
+
+      activeVideo.pause();
+      activeVideo.muted = true;
+      activeVideo.defaultMuted = true;
+      activeVideo.playsInline = true;
+      activeVideo.setAttribute("playsinline", "");
+      activeVideo.setAttribute("webkit-playsinline", "");
+      activeVideo.setAttribute("aria-label", `Projeto ${project.name} no ${label}`);
+
+      if (sourcesRef.current[activeSlot] !== src || activeVideo.currentSrc !== src) {
+        sourcesRef.current[activeSlot] = src;
+        activeVideo.src = src;
+        activeVideo.load();
+      }
+
+      gsap.set(activeVideo, { opacity: 1, visibility: "visible", x: 0 });
+
+      if (hiddenVideo) {
+        updateVideoSlotState(activeVideo, hiddenVideo);
+      } else {
+        activeVideo.classList.add("is-current");
+        activeVideo.classList.remove("is-incoming");
+      }
+
+      void playVideo(activeVideo);
+    });
+
+    gsap.set(titleRef.current, { autoAlpha: 1, y: 0 });
+
+    flushSync(() => {
+      setSelectedIndex(nextIndex);
+      setTitleIndex(nextIndex);
+    });
+
+    preloadProjectNeighbors(nextIndex);
+  }, [preloadProjectNeighbors]);
+
   const requestProject = useCallback((projectIndex: number, direction: TransitionDirection) => {
     const nextIndex = wrapIndex(projectIndex);
     if (nextIndex === requestedIndexRef.current && nextIndex === displayedIndexRef.current) return;
@@ -337,34 +402,60 @@ export default function PortfolioBuildPrototype() {
     setTransitionRequest({ index: nextIndex, direction, token: transitionTokenRef.current });
   }, [normalizeVisibleSlots]);
 
+  const isMobileInteraction = useCallback(() => {
+    if (typeof window === "undefined") return viewportMode === "mobile";
+
+    return viewportMode === "mobile" || window.matchMedia("(max-width: 767px)").matches;
+  }, [viewportMode]);
+
   const changeProject = useCallback((direction: TransitionDirection) => {
+    if (isMobileInteraction()) {
+      commitMobileProject(displayedIndexRef.current + direction);
+      return;
+    }
+
     requestProject(requestedIndexRef.current + direction, direction);
-  }, [requestProject]);
+  }, [commitMobileProject, isMobileInteraction, requestProject]);
 
   const goToProject = useCallback((projectIndex: number) => {
     const normalizedIndex = wrapIndex(projectIndex);
+    if (isMobileInteraction()) {
+      commitMobileProject(normalizedIndex);
+      return;
+    }
+
     const direction = normalizedIndex > requestedIndexRef.current ? 1 : -1;
     requestProject(normalizedIndex, direction);
-  }, [requestProject]);
+  }, [commitMobileProject, isMobileInteraction, requestProject]);
+
+  function activateTouchControl(callback: () => void) {
+    const now = window.performance.now();
+    if (now - lastTouchControlActivationRef.current < TOUCH_CLICK_SUPPRESSION_MS) return;
+
+    lastTouchControlActivationRef.current = now;
+    callback();
+  }
+
+  function handleControlPointerDown(event: React.PointerEvent<HTMLButtonElement>, callback: () => void) {
+    if (event.pointerType === "mouse") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    activateTouchControl(callback);
+  }
 
   function handleControlPointerUp(event: React.PointerEvent<HTMLButtonElement>, callback: () => void) {
     if (event.pointerType === "mouse") return;
 
     event.preventDefault();
     event.stopPropagation();
-    lastTouchControlActivationRef.current = window.performance.now();
-    callback();
+    activateTouchControl(callback);
   }
 
   function handleControlTouchEnd(event: React.TouchEvent<HTMLButtonElement>, callback: () => void) {
     event.preventDefault();
     event.stopPropagation();
-
-    const now = window.performance.now();
-    if (now - lastTouchControlActivationRef.current < TOUCH_CLICK_SUPPRESSION_MS) return;
-
-    lastTouchControlActivationRef.current = now;
-    callback();
+    activateTouchControl(callback);
   }
 
   function handleControlClick(event: React.MouseEvent<HTMLButtonElement>, callback: () => void) {
@@ -1017,6 +1108,7 @@ export default function PortfolioBuildPrototype() {
           <button
             type="button"
             aria-label="Projeto anterior"
+            onPointerDown={(event) => handleControlPointerDown(event, () => changeProject(-1))}
             onPointerUp={(event) => handleControlPointerUp(event, () => changeProject(-1))}
             onTouchEnd={(event) => handleControlTouchEnd(event, () => changeProject(-1))}
             onClick={(event) => handleControlClick(event, () => changeProject(-1))}
@@ -1031,6 +1123,7 @@ export default function PortfolioBuildPrototype() {
                 aria-label={`Ver projeto ${project.name}`}
                 aria-pressed={index === selectedIndex}
                 key={project.id}
+                onPointerDown={(event) => handleControlPointerDown(event, () => goToProject(index))}
                 onPointerUp={(event) => handleControlPointerUp(event, () => goToProject(index))}
                 onTouchEnd={(event) => handleControlTouchEnd(event, () => goToProject(index))}
                 onClick={(event) => handleControlClick(event, () => goToProject(index))}
@@ -1040,6 +1133,7 @@ export default function PortfolioBuildPrototype() {
           <button
             type="button"
             aria-label="Proximo projeto"
+            onPointerDown={(event) => handleControlPointerDown(event, () => changeProject(1))}
             onPointerUp={(event) => handleControlPointerUp(event, () => changeProject(1))}
             onTouchEnd={(event) => handleControlTouchEnd(event, () => changeProject(1))}
             onClick={(event) => handleControlClick(event, () => changeProject(1))}
