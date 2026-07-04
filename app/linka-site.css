@@ -2407,6 +2407,7 @@ body {
   position:relative;
   z-index:20;
   pointer-events:auto;
+  touch-action:manipulation;
 }
 
 .linka-portfolio-mount .lpb-controls button{
@@ -2424,6 +2425,8 @@ body {
   font:900 30px/1 "Space Grotesk",Manrope,Arial,sans-serif;
   letter-spacing:0;
   pointer-events:auto;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
   transition:
     transform .16s ease,
     border-color .18s ease,
@@ -2450,6 +2453,7 @@ body {
   display:flex;
   align-items:center;
   gap:7px;
+  touch-action:manipulation;
 }
 
 .linka-portfolio-mount .lpb-dots button{

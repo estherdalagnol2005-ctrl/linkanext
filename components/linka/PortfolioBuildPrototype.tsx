@@ -61,6 +61,7 @@ const MOBILE_FLICK_VELOCITY = 0.42;
 const VIDEO_TRANSITION_DURATION = 0.22;
 const VIDEO_START_TIME = 0.8;
 const VIDEO_LOOP_THRESHOLD = 0.18;
+const TOUCH_CLICK_SUPPRESSION_MS = 520;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -122,6 +123,7 @@ export default function PortfolioBuildPrototype() {
   const dragAbandoned = useRef(false);
   const dragPointerId = useRef<number | null>(null);
   const dragCaptured = useRef(false);
+  const lastTouchControlActivationRef = useRef(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [titleIndex, setTitleIndex] = useState(0);
   const [transitionRequest, setTransitionRequest] = useState<TransitionRequest | null>(null);
@@ -344,6 +346,37 @@ export default function PortfolioBuildPrototype() {
     const direction = normalizedIndex > requestedIndexRef.current ? 1 : -1;
     requestProject(normalizedIndex, direction);
   }, [requestProject]);
+
+  function handleControlPointerUp(event: React.PointerEvent<HTMLButtonElement>, callback: () => void) {
+    if (event.pointerType === "mouse") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    lastTouchControlActivationRef.current = window.performance.now();
+    callback();
+  }
+
+  function handleControlTouchEnd(event: React.TouchEvent<HTMLButtonElement>, callback: () => void) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const now = window.performance.now();
+    if (now - lastTouchControlActivationRef.current < TOUCH_CLICK_SUPPRESSION_MS) return;
+
+    lastTouchControlActivationRef.current = now;
+    callback();
+  }
+
+  function handleControlClick(event: React.MouseEvent<HTMLButtonElement>, callback: () => void) {
+    event.stopPropagation();
+
+    if (window.performance.now() - lastTouchControlActivationRef.current < TOUCH_CLICK_SUPPRESSION_MS) {
+      event.preventDefault();
+      return;
+    }
+
+    callback();
+  }
 
   function endDragCapture(target: HTMLDivElement) {
     if (dragCaptured.current && dragPointerId.current !== null && target.hasPointerCapture(dragPointerId.current)) {
@@ -876,7 +909,13 @@ export default function PortfolioBuildPrototype() {
         </div>
 
         <div className="lpb-controls" aria-label="Navegar projetos">
-          <button type="button" aria-label="Projeto anterior" onClick={() => changeProject(-1)}>
+          <button
+            type="button"
+            aria-label="Projeto anterior"
+            onPointerUp={(event) => handleControlPointerUp(event, () => changeProject(-1))}
+            onTouchEnd={(event) => handleControlTouchEnd(event, () => changeProject(-1))}
+            onClick={(event) => handleControlClick(event, () => changeProject(-1))}
+          >
             &lsaquo;
           </button>
           <div className="lpb-dots" aria-label="Selecionar projeto">
@@ -887,11 +926,19 @@ export default function PortfolioBuildPrototype() {
                 aria-label={`Ver projeto ${project.name}`}
                 aria-pressed={index === selectedIndex}
                 key={project.id}
-                onClick={() => goToProject(index)}
+                onPointerUp={(event) => handleControlPointerUp(event, () => goToProject(index))}
+                onTouchEnd={(event) => handleControlTouchEnd(event, () => goToProject(index))}
+                onClick={(event) => handleControlClick(event, () => goToProject(index))}
               />
             ))}
           </div>
-          <button type="button" aria-label="Proximo projeto" onClick={() => changeProject(1)}>
+          <button
+            type="button"
+            aria-label="Proximo projeto"
+            onPointerUp={(event) => handleControlPointerUp(event, () => changeProject(1))}
+            onTouchEnd={(event) => handleControlTouchEnd(event, () => changeProject(1))}
+            onClick={(event) => handleControlClick(event, () => changeProject(1))}
+          >
             &rsaquo;
           </button>
         </div>
