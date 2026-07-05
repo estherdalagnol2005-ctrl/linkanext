@@ -5481,11 +5481,17 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 }
 
 .linka-preloader-name{
+  --linka-name-scale:1;
   position:absolute;
   left:50%;
   top:50%;
   z-index:4;
-  transform:translate(-50%,-50%);
+  width:max-content;
+  max-width:90vw;
+  text-align:center;
+  translate:-50% -50%;
+  scale:var(--linka-name-scale);
+  transform:none;
   color:rgba(247,252,255,.96);
   font-family:"Manrope","Inter",system-ui,sans-serif;
   font-size:clamp(3.2rem,8vw,7.4rem);

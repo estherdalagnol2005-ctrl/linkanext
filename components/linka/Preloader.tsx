@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-const MIN_DURATION = 1200;
+const MIN_DURATION = 100;
 const MAX_DURATION = 6000;
 const PRELOADER_DONE_EVENT = "linka:preloader:done";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -196,6 +196,7 @@ export default function Preloader() {
       const paint = root.querySelector(".linka-preloader-paint");
       const name = root.querySelector(".linka-preloader-name");
 
+      root.classList.remove("is-painted");
       if (name) name.textContent = "";
 
       gsap.set(paint, {
@@ -207,7 +208,10 @@ export default function Preloader() {
         rotate: reducedMotion ? -6 : -10,
         scale: reducedMotion ? 1.04 : 0.34,
       });
-      gsap.set(name, { autoAlpha: 0, y: reducedMotion ? 0 : 10 });
+      gsap.set(name, {
+        autoAlpha: 0,
+        "--linka-name-scale": reducedMotion ? 1 : 0.96,
+      });
 
       if (!reducedMotion) {
         gsap.to(paint, {
@@ -217,7 +221,7 @@ export default function Preloader() {
           yPercent: -52,
           rotate: -7,
           scale: 0.4,
-          duration: 1.05,
+          duration: 0.72,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
@@ -299,7 +303,7 @@ export default function Preloader() {
           resolve();
         };
 
-        revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 2100);
+        revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 420 : 1500);
         gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
 
         if (reducedMotion) {
@@ -326,7 +330,7 @@ export default function Preloader() {
             rotate: -4,
             scale: 1.12,
             borderRadius: "54% 46% 55% 45% / 46% 58% 42% 54%",
-            duration: 0.7,
+            duration: 0.42,
             ease: "power4.out",
           })
           .call(() => {
@@ -337,15 +341,15 @@ export default function Preloader() {
             name,
             {
               autoAlpha: 1,
-              y: 0,
-              duration: 0.18,
+              "--linka-name-scale": 1,
+              duration: 0.14,
               ease: "power2.out",
             },
           )
           .to({}, { duration: 0.12 })
           .to(
             name,
-            { autoAlpha: 0, y: -8, duration: 0.12, ease: "power2.in" },
+            { autoAlpha: 0, "--linka-name-scale": 0.98, duration: 0.09, ease: "power2.in" },
           )
           .to(
             paint,
@@ -357,12 +361,12 @@ export default function Preloader() {
               rotate: 10,
               scale: 0.72,
               borderRadius: "42% 58% 38% 62% / 62% 40% 60% 38%",
-              duration: 0.48,
+              duration: 0.34,
               ease: "power3.inOut",
             },
             "-=0.02",
           )
-          .to(root, { opacity: 0, duration: 0.14, ease: "power2.out" }, "-=0.1");
+          .to(root, { opacity: 0, duration: 0.1, ease: "power2.out" }, "-=0.08");
       });
     };
 
@@ -385,12 +389,13 @@ export default function Preloader() {
           });
 
       const allCriticalResources = Promise.all(resources.map(track));
-      await Promise.race([allCriticalResources, wait(MAX_DURATION, signal)]);
+      await Promise.race([allCriticalResources, wait(MIN_DURATION, signal), wait(MAX_DURATION, signal)]);
 
       if (cancelled) return;
 
       progressTargetRef.current = 100;
-      await waitForDisplayedProgress();
+      displayedProgressRef.current = 100;
+      setProgress(100);
       if (!cancelled) await revealPage();
     };
 
