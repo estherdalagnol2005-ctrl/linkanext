@@ -194,14 +194,23 @@ export default function Preloader() {
 
     if (root) {
       const paint = root.querySelector(".linka-preloader-paint");
+      const streaks = root.querySelectorAll(".linka-preloader-streak");
       const name = root.querySelector(".linka-preloader-name");
 
       gsap.set(paint, {
         autoAlpha: reducedMotion ? 0.9 : 0,
-        xPercent: reducedMotion ? -50 : -132,
-        yPercent: reducedMotion ? -50 : 22,
+        xPercent: reducedMotion ? -50 : -92,
+        yPercent: reducedMotion ? -50 : 36,
         rotate: reducedMotion ? -4 : -12,
-        scale: reducedMotion ? 1.08 : 0.22,
+        scale: reducedMotion ? 1.08 : 0.16,
+      });
+      gsap.set(streaks, {
+        autoAlpha: reducedMotion ? 0.35 : 0,
+        xPercent: -150,
+        yPercent: 38,
+        rotate: -12,
+        scaleX: 0.2,
+        scaleY: 0.72,
       });
       gsap.set(name, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 10 });
     }
@@ -281,7 +290,7 @@ export default function Preloader() {
         };
 
         revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1250);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-streak, .linka-preloader-name"));
 
         if (reducedMotion) {
           gsap.to(root, {
@@ -294,10 +303,21 @@ export default function Preloader() {
         }
 
         const paint = root.querySelector(".linka-preloader-paint");
+        const streaks = root.querySelectorAll(".linka-preloader-streak");
         const name = root.querySelector(".linka-preloader-name");
 
         gsap
           .timeline({ onComplete: finishAnimation })
+          .to(streaks, {
+            autoAlpha: 0.95,
+            xPercent: -18,
+            yPercent: -16,
+            rotate: -7,
+            scaleX: 1,
+            duration: 0.18,
+            stagger: 0.035,
+            ease: "power3.out",
+          })
           .to(paint, {
             autoAlpha: 1,
             xPercent: -50,
@@ -306,7 +326,7 @@ export default function Preloader() {
             scale: 1.12,
             duration: 0.34,
             ease: "power4.out",
-          })
+          }, "-=0.08")
           .to(
             name,
             {
@@ -334,6 +354,13 @@ export default function Preloader() {
             },
             "-=0.04",
           )
+          .to(streaks, {
+            autoAlpha: 0,
+            xPercent: 72,
+            yPercent: -138,
+            duration: 0.24,
+            ease: "power3.inOut",
+          }, "-=0.34")
           .to(root, { opacity: 0, duration: 0.12, ease: "power2.out" }, "-=0.08");
       });
     };
@@ -384,7 +411,7 @@ export default function Preloader() {
       const root = rootRef.current;
       if (root) {
         gsap.killTweensOf(root);
-        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
+        gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-streak, .linka-preloader-name"));
       }
     };
   }, []);
@@ -401,6 +428,8 @@ export default function Preloader() {
       style={{ "--linka-preloader-progress": progress / 100 } as PreloaderStyle}
     >
       <div className="linka-preloader-paint" aria-hidden="true" />
+      <div className="linka-preloader-streak linka-preloader-streak-a" aria-hidden="true" />
+      <div className="linka-preloader-streak linka-preloader-streak-b" aria-hidden="true" />
       <div className="linka-preloader-name" aria-hidden="true">LINKA</div>
       <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
