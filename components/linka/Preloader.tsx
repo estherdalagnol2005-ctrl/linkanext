@@ -196,6 +196,8 @@ export default function Preloader() {
       const paint = root.querySelector(".linka-preloader-paint");
       const name = root.querySelector(".linka-preloader-name");
 
+      if (name) name.textContent = "";
+
       gsap.set(paint, {
         autoAlpha: 1,
         x: 0,
@@ -329,6 +331,7 @@ export default function Preloader() {
           })
           .call(() => {
             root.classList.add("is-painted");
+            if (name) name.textContent = "LINKA";
           })
           .to(
             name,
@@ -426,7 +429,7 @@ export default function Preloader() {
       style={{ "--linka-preloader-progress": progress / 100 } as PreloaderStyle}
     >
       <div className="linka-preloader-paint" aria-hidden="true" />
-      <div className="linka-preloader-name" aria-hidden="true">LINKA</div>
+      <div className="linka-preloader-name" aria-hidden="true" />
       <span className="linka-preloader-status">Carregando experiencia Linka</span>
     </div>
   );
