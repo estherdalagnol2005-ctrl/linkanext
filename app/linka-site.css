@@ -5466,8 +5466,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   left:50%;
   top:50%;
   z-index:2;
-  width:220vw;
-  height:190dvh;
+  width:240vw;
+  height:220dvh;
   border-radius:48% 52% 42% 58% / 58% 44% 56% 42%;
   background:
     radial-gradient(circle at 28% 24%, rgba(247,251,255,.12), transparent 20%),
@@ -5475,7 +5475,7 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   box-shadow:inset 0 0 48px rgba(255,255,255,.06);
   opacity:1;
   pointer-events:none;
-  transform:translate3d(-150%,-50%,0) rotate(-10deg) scale(.18);
+  transform:translate3d(-74%,-50%,0) rotate(-10deg) scale(.34);
   transform-origin:50% 50%;
   will-change:transform,opacity;
 }
@@ -5495,8 +5495,14 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
   text-transform:uppercase;
   text-shadow:0 8px 22px rgba(0,0,0,.24);
   opacity:0;
+  visibility:hidden;
   pointer-events:none;
   will-change:transform,opacity;
+}
+
+.linka-preloader:not(.is-painted) .linka-preloader-name{
+  opacity:0!important;
+  visibility:hidden!important;
 }
 
 .linka-preloader-status{
@@ -5511,8 +5517,8 @@ body.linka-preload-lock .linka-page > :not(.linka-preloader){
 
 @media (max-width: 640px){
   .linka-preloader-paint{
-    width:260vw;
-    height:198dvh;
+    width:270vw;
+    height:220dvh;
   }
 
   .linka-preloader-name{

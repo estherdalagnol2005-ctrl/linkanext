@@ -197,13 +197,30 @@ export default function Preloader() {
       const name = root.querySelector(".linka-preloader-name");
 
       gsap.set(paint, {
-        autoAlpha: reducedMotion ? 0.92 : 1,
-        xPercent: reducedMotion ? -50 : -150,
+        autoAlpha: 1,
+        x: 0,
+        y: 0,
+        xPercent: reducedMotion ? -50 : -74,
         yPercent: reducedMotion ? -50 : -50,
         rotate: reducedMotion ? -6 : -10,
-        scale: reducedMotion ? 1.04 : 0.18,
+        scale: reducedMotion ? 1.04 : 0.34,
       });
-      gsap.set(name, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 10 });
+      gsap.set(name, { autoAlpha: 0, y: reducedMotion ? 0 : 10 });
+
+      if (!reducedMotion) {
+        gsap.to(paint, {
+          x: 0,
+          y: 0,
+          xPercent: -64,
+          yPercent: -52,
+          rotate: -7,
+          scale: 0.4,
+          duration: 1.05,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
     }
 
     const finishReveal = () => {
@@ -280,7 +297,7 @@ export default function Preloader() {
           resolve();
         };
 
-        revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 1250);
+        revealFallbackTimer = window.setTimeout(finishAnimation, reducedMotion ? 520 : 2100);
         gsap.killTweensOf(root.querySelectorAll(".linka-preloader-paint, .linka-preloader-name"));
 
         if (reducedMotion) {
@@ -300,13 +317,18 @@ export default function Preloader() {
           .timeline({ onComplete: finishAnimation })
           .to(paint, {
             autoAlpha: 1,
+            x: 0,
+            y: 0,
             xPercent: -50,
             yPercent: -50,
             rotate: -4,
-            scale: 1.08,
+            scale: 1.12,
             borderRadius: "54% 46% 55% 45% / 46% 58% 42% 54%",
-            duration: 0.65,
+            duration: 0.7,
             ease: "power4.out",
+          })
+          .call(() => {
+            root.classList.add("is-painted");
           })
           .to(
             name,
@@ -316,9 +338,8 @@ export default function Preloader() {
               duration: 0.18,
               ease: "power2.out",
             },
-            "-=0.04",
           )
-          .to({}, { duration: 0.18 })
+          .to({}, { duration: 0.12 })
           .to(
             name,
             { autoAlpha: 0, y: -8, duration: 0.12, ease: "power2.in" },
@@ -326,12 +347,14 @@ export default function Preloader() {
           .to(
             paint,
             {
+              x: 0,
+              y: 0,
               xPercent: 64,
               yPercent: -112,
               rotate: 10,
               scale: 0.72,
               borderRadius: "42% 58% 38% 62% / 62% 40% 60% 38%",
-              duration: 0.55,
+              duration: 0.48,
               ease: "power3.inOut",
             },
             "-=0.02",
