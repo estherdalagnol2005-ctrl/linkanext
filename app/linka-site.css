@@ -3403,7 +3403,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   position:relative;
   isolation:isolate;
   overflow:hidden!important;
-  padding:clamp(68px,6.4vw,104px) 18px clamp(72px,6.8vw,112px)!important;
+  padding:clamp(58px,5.4vw,86px) 18px clamp(60px,5.6vw,90px)!important;
   color:#fff;
   font-family:Manrope,Arial,sans-serif;
 }
@@ -3417,8 +3417,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .linka-feedbacks::before{
-  left:50%;
-  top:58%;
+  left:62%;
+  top:53%;
   z-index:-2;
   width:min(1080px,94vw);
   height:min(620px,58vw);
@@ -3445,7 +3445,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lfb-orbit-line{
   position:absolute;
   left:50%;
-  top:55%;
+  top:52%;
   z-index:-1;
   width:min(1220px,96vw);
   height:1px;
@@ -3457,8 +3457,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 .lfb-scanline{
   position:absolute;
-  left:50%;
-  top:57%;
+  left:62%;
+  top:52%;
   z-index:-1;
   width:min(880px,86vw);
   height:min(410px,42vw);
@@ -3477,14 +3477,18 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   margin:0 auto;
   position:relative;
   z-index:2;
+  display:grid;
+  grid-template-columns:minmax(310px,.82fr) minmax(560px,1.18fr);
+  gap:clamp(30px,4vw,64px);
+  align-items:center;
 }
 
 .lfb-head{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(230px,300px);
-  gap:clamp(24px,3.8vw,52px);
-  align-items:end;
-  margin-bottom:clamp(26px,3.4vw,42px);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:clamp(20px,2.4vw,30px);
+  margin-bottom:0;
 }
 
 .lfb-kicker{
@@ -3512,22 +3516,22 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lfb-title-block h2{
-  max-width:760px;
+  max-width:560px;
   color:#f5f3ee;
   font:950 clamp(2.2rem,3.45vw,3.9rem)/.96 "Space Grotesk",Manrope,sans-serif;
   letter-spacing:-.04em;
 }
 
 .lfb-title-block p{
-  max-width:650px;
+  max-width:500px;
   margin-top:clamp(14px,1.7vw,20px);
   color:rgba(245,243,238,.68);
   font:650 clamp(.95rem,1.35vw,1.12rem)/1.62 Manrope,Arial,sans-serif;
 }
 
 .lfb-proof{
-  justify-self:end;
-  width:min(100%,288px);
+  justify-self:start;
+  width:min(100%,300px);
   min-height:112px;
   padding:17px 18px 16px;
   border:1px solid rgba(125,211,252,.24);
@@ -3555,7 +3559,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lfb-orbit{
-  min-height:clamp(520px,49vw,620px);
+  min-height:clamp(500px,43vw,560px);
   position:relative;
   display:grid;
   place-items:center;
@@ -3571,8 +3575,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lfb-orbit-ring{
   left:50%;
   top:48%;
-  width:min(780px,74vw);
-  height:min(430px,40vw);
+  width:min(660px,100%);
+  height:min(390px,34vw);
   transform:translate3d(-50%,-50%,0) rotate(-7deg);
   border:1px solid rgba(125,211,252,.18);
   border-radius:50%;
@@ -3609,8 +3613,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lfb-orbit-core{
   left:50%;
   top:49%;
-  width:min(520px,54vw);
-  height:min(310px,30vw);
+  width:min(460px,70%);
+  height:min(280px,27vw);
   transform:translate3d(-50%,-50%,0);
   border-radius:999px;
   background:
@@ -3636,9 +3640,9 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
 .lfb-active-card{
   z-index:4;
-  width:min(520px,86vw);
-  min-height:304px;
-  padding:30px 30px 26px;
+  width:min(460px,76%);
+  min-height:296px;
+  padding:28px 28px 24px;
   border-color:rgba(139,255,79,.32);
   border-radius:28px;
   display:flex;
@@ -3745,9 +3749,9 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lfb-orbit-card{
   position:absolute;
   z-index:3;
-  width:190px;
-  min-height:120px;
-  padding:16px 16px 15px;
+  width:172px;
+  min-height:112px;
+  padding:15px 15px 14px;
   border-radius:20px;
   display:grid;
   gap:8px;
@@ -3766,27 +3770,27 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lfb-slot-1{
-  left:7%;
-  top:12%;
-  transform:translate3d(0,0,-80px) rotate(-7deg) scale(.92);
+  left:0;
+  top:8%;
+  transform:translate3d(0,0,-80px) rotate(-7deg) scale(.9);
 }
 
 .lfb-slot-2{
-  right:7%;
-  top:10%;
-  transform:translate3d(0,0,-60px) rotate(6deg) scale(.94);
+  right:0;
+  top:9%;
+  transform:translate3d(0,0,-60px) rotate(6deg) scale(.92);
 }
 
 .lfb-slot-3{
-  left:10%;
-  bottom:8%;
-  transform:translate3d(0,0,-70px) rotate(5deg) scale(.9);
+  left:3%;
+  bottom:13%;
+  transform:translate3d(0,0,-70px) rotate(5deg) scale(.88);
 }
 
 .lfb-slot-4{
-  right:10%;
-  bottom:7%;
-  transform:translate3d(0,0,-90px) rotate(-5deg) scale(.9);
+  right:3%;
+  bottom:12%;
+  transform:translate3d(0,0,-90px) rotate(-5deg) scale(.88);
 }
 
 .lfb-mini-index{
@@ -3809,7 +3813,7 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 .lfb-controls{
   position:absolute;
   left:50%;
-  bottom:0;
+  bottom:4px;
   z-index:6;
   display:flex;
   align-items:center;
@@ -3894,8 +3898,12 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     padding:58px 16px 70px!important;
   }
 
+  .lfb-shell{
+    display:block;
+  }
+
   .lfb-head{
-    grid-template-columns:1fr;
+    display:flex;
     gap:22px;
     margin-bottom:28px;
   }
