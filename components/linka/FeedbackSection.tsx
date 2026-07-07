@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 type FeedbackLanguage = "pt" | "en" | "es";
 
 type FeedbackItem = {
+  id: string;
   name: string;
   project: string;
   tag: string;
@@ -18,6 +19,9 @@ type FeedbackCopy = {
   subtitle: string;
   proofLabel: string;
   proofValue: string;
+  orbitLabel: string;
+  previousLabel: string;
+  nextLabel: string;
   cards: FeedbackItem[];
 };
 
@@ -32,30 +36,37 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
       "Feedbacks e percepcoes de projetos criados para transformar marcas em experiencias digitais mais memoraveis.",
     proofLabel: "Prova social em construcao",
     proofValue: "4 percepcoes de projetos digitais",
+    orbitLabel: "Selecione um feedback",
+    previousLabel: "Feedback anterior",
+    nextLabel: "Proximo feedback",
     cards: [
       {
+        id: "01",
         name: "Cliente Linka",
-        project: "Site de captacao",
+        project: "Site de captacao - Baptista",
         tag: "Clareza e posicionamento",
-        text: "A entrega ficou muito mais clara, profissional e alinhada com o posicionamento da marca.",
+        text: "A presenca digital ficou muito mais profissional e transmitiu exatamente o nivel da marca.",
       },
       {
+        id: "02",
         name: "Cliente Linka",
-        project: "Landing page",
+        project: "Landing page de conversao - Nutricionista",
         tag: "Conversao",
-        text: "A pagina ficou objetiva, bonita e pensada para transformar visitantes em contatos reais.",
+        text: "A pagina ficou mais objetiva, elegante e com muito mais potencial de transformar visitas em contatos.",
       },
       {
+        id: "03",
         name: "Cliente Linka",
-        project: "Presenca digital",
-        tag: "Experiencia digital",
-        text: "O processo trouxe direcao visual, organizacao e uma experiencia muito mais premium para a marca.",
+        project: "Landing page - Casa Sea",
+        tag: "Experiencia",
+        text: "A proposta visual ficou mais memoravel, alinhada e muito mais forte para apresentar o restaurante.",
       },
       {
+        id: "04",
         name: "Cliente Linka",
-        project: "Reposicionamento digital",
-        tag: "Marca mais memoravel",
-        text: "A comunicacao passou a parecer mais consistente, atual e facil de entender em todos os pontos de contato.",
+        project: "Landing page - Escobar",
+        tag: "Percepcao premium",
+        text: "A marca passou a ter uma apresentacao mais solida, mais refinada e muito mais convincente.",
       },
     ],
   },
@@ -67,30 +78,37 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
       "Feedback and project perceptions from experiences designed to make brands clearer, sharper, and more memorable.",
     proofLabel: "Social proof in progress",
     proofValue: "4 digital project perceptions",
+    orbitLabel: "Select a feedback",
+    previousLabel: "Previous feedback",
+    nextLabel: "Next feedback",
     cards: [
       {
+        id: "01",
         name: "Linka client",
-        project: "Lead generation website",
+        project: "Lead generation website - Baptista",
         tag: "Clarity and positioning",
-        text: "The delivery felt clearer, more professional, and much more aligned with the brand's positioning.",
+        text: "The digital presence felt much more professional and communicated the exact level of the brand.",
       },
       {
+        id: "02",
         name: "Linka client",
-        project: "Landing page",
+        project: "Conversion landing page - Nutritionist",
         tag: "Conversion",
-        text: "The page became focused, polished, and built to turn visitors into real conversations.",
+        text: "The page became more objective, elegant, and much stronger at turning visits into conversations.",
       },
       {
+        id: "03",
         name: "Linka client",
-        project: "Digital presence",
-        tag: "Digital experience",
-        text: "The process brought visual direction, structure, and a more premium experience for the brand.",
+        project: "Landing page - Casa Sea",
+        tag: "Experience",
+        text: "The visual proposal became more memorable, aligned, and much stronger for presenting the restaurant.",
       },
       {
+        id: "04",
         name: "Linka client",
-        project: "Digital repositioning",
-        tag: "More memorable brand",
-        text: "The communication started to feel more consistent, current, and easier to understand across touchpoints.",
+        project: "Landing page - Escobar",
+        tag: "Premium perception",
+        text: "The brand gained a more solid, refined, and convincing digital presentation.",
       },
     ],
   },
@@ -102,30 +120,37 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
       "Feedbacks y percepciones de proyectos creados para transformar marcas en experiencias digitales mas memorables.",
     proofLabel: "Prueba social en construccion",
     proofValue: "4 percepciones de proyectos digitales",
+    orbitLabel: "Selecciona un feedback",
+    previousLabel: "Feedback anterior",
+    nextLabel: "Siguiente feedback",
     cards: [
       {
+        id: "01",
         name: "Cliente Linka",
-        project: "Sitio de captacion",
+        project: "Sitio de captacion - Baptista",
         tag: "Claridad y posicionamiento",
-        text: "La entrega se sintio mucho mas clara, profesional y alineada con el posicionamiento de la marca.",
+        text: "La presencia digital se sintio mucho mas profesional y transmitio exactamente el nivel de la marca.",
       },
       {
+        id: "02",
         name: "Cliente Linka",
-        project: "Landing page",
+        project: "Landing page de conversion - Nutricionista",
         tag: "Conversion",
-        text: "La pagina quedo objetiva, cuidada y pensada para convertir visitantes en contactos reales.",
+        text: "La pagina quedo mas objetiva, elegante y con mucho mas potencial para convertir visitas en contactos.",
       },
       {
+        id: "03",
         name: "Cliente Linka",
-        project: "Presencia digital",
-        tag: "Experiencia digital",
-        text: "El proceso aporto direccion visual, organizacion y una experiencia mucho mas premium para la marca.",
+        project: "Landing page - Casa Sea",
+        tag: "Experiencia",
+        text: "La propuesta visual quedo mas memorable, alineada y mucho mas fuerte para presentar el restaurante.",
       },
       {
+        id: "04",
         name: "Cliente Linka",
-        project: "Reposicionamiento digital",
-        tag: "Marca mas memorable",
-        text: "La comunicacion paso a sentirse mas consistente, actual y facil de entender en cada punto de contacto.",
+        project: "Landing page - Escobar",
+        tag: "Percepcion premium",
+        text: "La marca paso a tener una presentacion mas solida, refinada y mucho mas convincente.",
       },
     ],
   },
@@ -153,7 +178,9 @@ function currentLanguage(): FeedbackLanguage {
 
 export default function FeedbackSection() {
   const [language, setLanguage] = useState<FeedbackLanguage>("en");
+  const [activeIndex, setActiveIndex] = useState(0);
   const copy = useMemo(() => FEEDBACK_COPY[language], [language]);
+  const activeFeedback = copy.cards[activeIndex] ?? copy.cards[0];
 
   useEffect(() => {
     const syncLanguage = () => setLanguage(currentLanguage());
@@ -174,9 +201,22 @@ export default function FeedbackSection() {
     };
   }, []);
 
+  useEffect(() => {
+    setActiveIndex((current) => Math.min(current, copy.cards.length - 1));
+  }, [copy.cards.length]);
+
+  const goToPreviousFeedback = () => {
+    setActiveIndex((current) => (current - 1 + copy.cards.length) % copy.cards.length);
+  };
+
+  const goToNextFeedback = () => {
+    setActiveIndex((current) => (current + 1) % copy.cards.length);
+  };
+
   return (
     <section aria-label={copy.ariaLabel} className="linka-feedbacks">
       <div aria-hidden="true" className="lfb-orbit-line" />
+      <div aria-hidden="true" className="lfb-scanline" />
 
       <div className="lfb-shell">
         <div className="lfb-head">
@@ -196,25 +236,62 @@ export default function FeedbackSection() {
           </div>
         </div>
 
-        <div className="lfb-grid">
-          {copy.cards.slice(0, 3).map((feedback, index) => (
-            <article className={`lfb-card${index === 0 ? " is-featured" : ""}`} key={`${feedback.project}-${feedback.tag}`}>
-              <span className="lfb-card-index">{String(index + 1).padStart(2, "0")}</span>
-              <span aria-hidden="true" className="lfb-quote">
-                "
-              </span>
+        <div aria-label={copy.orbitLabel} className="lfb-orbit" role="group">
+          <div aria-hidden="true" className="lfb-orbit-ring" />
+          <div aria-hidden="true" className="lfb-orbit-core" />
 
-              <p>{feedback.text}</p>
+          <article className="lfb-active-card" key={`${language}-${activeFeedback.id}`}>
+            <span className="lfb-card-index">{activeFeedback.id}</span>
+            <span aria-hidden="true" className="lfb-quote">
+              "
+            </span>
 
-              <footer>
-                <div>
-                  <strong>{feedback.name}</strong>
-                  <span>{feedback.project}</span>
-                </div>
-                <em className="lfb-tag">{feedback.tag}</em>
-              </footer>
-            </article>
+            <p>{activeFeedback.text}</p>
+
+            <footer>
+              <div>
+                <strong>{activeFeedback.name}</strong>
+                <span>{activeFeedback.project}</span>
+              </div>
+              <em className="lfb-tag">{activeFeedback.tag}</em>
+            </footer>
+          </article>
+
+          {copy.cards.map((feedback, index) => (
+            <button
+              aria-label={`${copy.orbitLabel}: ${feedback.project}`}
+              aria-pressed={index === activeIndex}
+              className={`lfb-orbit-card lfb-slot-${index + 1}${index === activeIndex ? " is-active" : ""}`}
+              key={feedback.id}
+              onClick={() => setActiveIndex(index)}
+              type="button"
+            >
+              <span className="lfb-mini-index">{feedback.id}</span>
+              <strong>{feedback.tag}</strong>
+              <small>{feedback.project}</small>
+            </button>
           ))}
+
+          <div className="lfb-controls" aria-label={copy.orbitLabel}>
+            <button aria-label={copy.previousLabel} onClick={goToPreviousFeedback} type="button">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <div className="lfb-dots">
+              {copy.cards.map((feedback, index) => (
+                <button
+                  aria-label={`${copy.orbitLabel}: ${feedback.project}`}
+                  aria-pressed={index === activeIndex}
+                  className={index === activeIndex ? "is-active" : ""}
+                  key={`dot-${feedback.id}`}
+                  onClick={() => setActiveIndex(index)}
+                  type="button"
+                />
+              ))}
+            </div>
+            <button aria-label={copy.nextLabel} onClick={goToNextFeedback} type="button">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
