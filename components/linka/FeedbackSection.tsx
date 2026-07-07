@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 
 type FeedbackLanguage = "pt" | "en" | "es";
 
@@ -10,8 +10,6 @@ type FeedbackItem = {
   projectName: string;
   projectType: string;
   quote: string;
-  preview: string;
-  highlight: string;
 };
 
 type FeedbackCopy = {
@@ -28,6 +26,7 @@ type FeedbackCopy = {
 };
 
 const LANGUAGE_STORAGE_KEY = "linka-language-v2";
+const DRAG_THRESHOLD = 44;
 
 const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
   pt: {
@@ -38,7 +37,7 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
       "Comentarios e percepcoes de projetos criados para transformar marcas em experiencias digitais mais claras, memoraveis e profissionais.",
     proofLabel: "Comentarios de clientes",
     proofValue: "4 feedbacks de projetos Linka",
-    orbitLabel: "Selecione um depoimento",
+    orbitLabel: "Gire a orbita de depoimentos",
     previousLabel: "Depoimento anterior",
     nextLabel: "Proximo depoimento",
     cards: [
@@ -48,8 +47,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Baptista",
         projectType: "Site de captacao",
         quote: "A presenca digital ficou mais clara, profissional e alinhada com o nivel da marca.",
-        preview: "Mais clareza e posicionamento",
-        highlight: "Presenca mais profissional",
       },
       {
         id: "nutricao",
@@ -57,8 +54,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Nutricao",
         projectType: "Landing page de conversao",
         quote: "A pagina ficou objetiva, elegante e muito mais preparada para transformar visitas em contatos.",
-        preview: "Mais intencao de contato",
-        highlight: "Landing page mais estrategica",
       },
       {
         id: "casa-sea",
@@ -66,8 +61,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Casa Sea",
         projectType: "Landing page",
         quote: "A experiencia visual ficou mais memoravel e transmitiu melhor a proposta do negocio.",
-        preview: "Experiencia mais memoravel",
-        highlight: "Visual mais marcante",
       },
       {
         id: "escobar",
@@ -75,20 +68,18 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Escobar",
         projectType: "Site de conversao",
         quote: "A apresentacao da marca ficou mais solida, refinada e convincente para o publico certo.",
-        preview: "Mais percepcao de valor",
-        highlight: "Marca mais premium",
       },
     ],
   },
   en: {
-    ariaLabel: "Client feedback and project perceptions",
+    ariaLabel: "Client testimonials and project perceptions",
     kicker: "CLIENT FEEDBACKS",
     title: "What clients notice when a brand gets a stronger digital presence.",
     subtitle:
       "Comments and project perceptions from experiences designed to make brands clearer, more memorable, and more professional.",
     proofLabel: "Client comments",
     proofValue: "4 Linka project feedbacks",
-    orbitLabel: "Select a testimonial",
+    orbitLabel: "Rotate the testimonial orbit",
     previousLabel: "Previous testimonial",
     nextLabel: "Next testimonial",
     cards: [
@@ -98,8 +89,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Baptista",
         projectType: "Lead generation website",
         quote: "The digital presence became clearer, more professional, and aligned with the level of the brand.",
-        preview: "More clarity and positioning",
-        highlight: "More professional presence",
       },
       {
         id: "nutricao",
@@ -107,8 +96,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Nutrition",
         projectType: "Conversion landing page",
         quote: "The page became objective, elegant, and much better prepared to turn visits into contacts.",
-        preview: "More contact intent",
-        highlight: "More strategic landing page",
       },
       {
         id: "casa-sea",
@@ -116,8 +103,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Casa Sea",
         projectType: "Landing page",
         quote: "The visual experience became more memorable and communicated the business proposal more clearly.",
-        preview: "More memorable experience",
-        highlight: "More distinctive visual presence",
       },
       {
         id: "escobar",
@@ -125,20 +110,18 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Escobar",
         projectType: "Conversion website",
         quote: "The brand presentation became more solid, refined, and convincing for the right audience.",
-        preview: "More perceived value",
-        highlight: "More premium brand presence",
       },
     ],
   },
   es: {
-    ariaLabel: "Feedbacks y percepciones de clientes",
+    ariaLabel: "Testimonios y percepciones de clientes",
     kicker: "FEEDBACKS",
     title: "Lo que los clientes perciben cuando la marca gana presencia digital.",
     subtitle:
       "Comentarios y percepciones de proyectos creados para transformar marcas en experiencias digitales mas claras, memorables y profesionales.",
     proofLabel: "Comentarios de clientes",
     proofValue: "4 feedbacks de proyectos Linka",
-    orbitLabel: "Selecciona un testimonio",
+    orbitLabel: "Gira la orbita de testimonios",
     previousLabel: "Testimonio anterior",
     nextLabel: "Siguiente testimonio",
     cards: [
@@ -148,8 +131,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Baptista",
         projectType: "Sitio de captacion",
         quote: "La presencia digital quedo mas clara, profesional y alineada con el nivel de la marca.",
-        preview: "Mas claridad y posicionamiento",
-        highlight: "Presencia mas profesional",
       },
       {
         id: "nutricao",
@@ -157,8 +138,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Nutricion",
         projectType: "Landing page de conversion",
         quote: "La pagina quedo objetiva, elegante y mucho mas preparada para convertir visitas en contactos.",
-        preview: "Mas intencion de contacto",
-        highlight: "Landing page mas estrategica",
       },
       {
         id: "casa-sea",
@@ -166,8 +145,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Casa Sea",
         projectType: "Landing page",
         quote: "La experiencia visual quedo mas memorable y transmitio mejor la propuesta del negocio.",
-        preview: "Experiencia mas memorable",
-        highlight: "Visual mas distintivo",
       },
       {
         id: "escobar",
@@ -175,8 +152,6 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
         projectName: "Escobar",
         projectType: "Sitio de conversion",
         quote: "La presentacion de la marca quedo mas solida, refinada y convincente para el publico correcto.",
-        preview: "Mas percepcion de valor",
-        highlight: "Marca mas premium",
       },
     ],
   },
@@ -202,11 +177,18 @@ function currentLanguage(): FeedbackLanguage {
   return normalizeLanguage(document.documentElement.lang);
 }
 
+function wrapIndex(index: number, total: number) {
+  return ((index % total) + total) % total;
+}
+
 export default function FeedbackSection() {
   const [language, setLanguage] = useState<FeedbackLanguage>("en");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const copy = useMemo(() => FEEDBACK_COPY[language], [language]);
-  const activeFeedback = copy.cards[activeIndex] ?? copy.cards[0];
+  const dragRef = useRef({ startX: 0, startY: 0, deltaX: 0, deltaY: 0, active: false });
+  const suppressClickRef = useRef(false);
 
   useEffect(() => {
     const syncLanguage = () => setLanguage(currentLanguage());
@@ -231,12 +213,79 @@ export default function FeedbackSection() {
     setActiveIndex((current) => Math.min(current, copy.cards.length - 1));
   }, [copy.cards.length]);
 
+  const goToFeedback = (index: number) => {
+    setActiveIndex(wrapIndex(index, copy.cards.length));
+  };
+
   const goToPreviousFeedback = () => {
-    setActiveIndex((current) => (current - 1 + copy.cards.length) % copy.cards.length);
+    setActiveIndex((current) => wrapIndex(current - 1, copy.cards.length));
   };
 
   const goToNextFeedback = () => {
-    setActiveIndex((current) => (current + 1) % copy.cards.length);
+    setActiveIndex((current) => wrapIndex(current + 1, copy.cards.length));
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      deltaX: 0,
+      deltaY: 0,
+      active: true,
+    };
+    setIsDragging(false);
+    setDragOffset(0);
+    try {
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    } catch {
+      // Synthetic pointer events used by browser tests may not have an active pointer capture target.
+    }
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.active) return;
+
+    const deltaX = event.clientX - dragRef.current.startX;
+    const deltaY = event.clientY - dragRef.current.startY;
+    dragRef.current.deltaX = deltaX;
+    dragRef.current.deltaY = deltaY;
+
+    const isHorizontalDrag = Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
+    if (!isHorizontalDrag) return;
+
+    event.preventDefault();
+    setIsDragging(true);
+    setDragOffset(Math.max(-68, Math.min(68, deltaX)));
+  };
+
+  const finishDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.active) return;
+
+    const { deltaX, deltaY } = dragRef.current;
+    const shouldRotate = Math.abs(deltaX) > DRAG_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
+
+    if (shouldRotate) {
+      suppressClickRef.current = true;
+      if (deltaX < 0) {
+        goToNextFeedback();
+      } else {
+        goToPreviousFeedback();
+      }
+      window.setTimeout(() => {
+        suppressClickRef.current = false;
+      }, 180);
+    }
+
+    dragRef.current.active = false;
+    setIsDragging(false);
+    setDragOffset(0);
+    try {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+    } catch {
+      // Ignore release errors when the pointer was not captured by this element.
+    }
   };
 
   return (
@@ -266,39 +315,44 @@ export default function FeedbackSection() {
           <div aria-hidden="true" className="lfb-orbit-ring" />
           <div aria-hidden="true" className="lfb-orbit-core" />
 
-          <article className="lfb-active-card" key={`${language}-${activeFeedback.id}`}>
-            <span aria-hidden="true" className="lfb-quote">
-              "
-            </span>
+          <div
+            className={`lfb-orbit-stage${isDragging ? " is-dragging" : ""}`}
+            onPointerCancel={finishDrag}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={finishDrag}
+            style={{ "--lfb-drag-offset": `${dragOffset}px` } as CSSProperties}
+          >
+            {copy.cards.map((feedback, index) => {
+              const slot = wrapIndex(index - activeIndex, copy.cards.length);
+              const isActive = slot === 0;
 
-            <strong className="lfb-highlight">{activeFeedback.highlight}</strong>
-            <p>{activeFeedback.quote}</p>
-
-            <footer>
-              <div>
-                <strong>{activeFeedback.clientName}</strong>
-                <span>
-                  {activeFeedback.projectName} | {activeFeedback.projectType}
-                </span>
-              </div>
-            </footer>
-          </article>
-
-          {copy.cards.map((feedback, index) => (
-            <button
-              aria-label={`${copy.orbitLabel}: ${feedback.projectName}`}
-              aria-pressed={index === activeIndex}
-              className={`lfb-orbit-card lfb-slot-${index + 1}${index === activeIndex ? " is-active" : ""}`}
-              key={feedback.id}
-              onClick={() => setActiveIndex(index)}
-              type="button"
-            >
-              <strong>{feedback.preview}</strong>
-              <small>
-                {feedback.projectName} | {feedback.projectType}
-              </small>
-            </button>
-          ))}
+              return (
+                <button
+                  aria-label={`${copy.orbitLabel}: ${feedback.projectName}`}
+                  aria-pressed={isActive}
+                  className={`lfb-testimonial-card lfb-orbit-slot-${slot}${isActive ? " is-active" : ""}`}
+                  key={feedback.id}
+                  onClick={() => {
+                    if (suppressClickRef.current) return;
+                    goToFeedback(index);
+                  }}
+                  type="button"
+                >
+                  <span aria-hidden="true" className="lfb-testimonial-mark">
+                    "
+                  </span>
+                  <p>{feedback.quote}</p>
+                  <footer>
+                    <strong>{feedback.clientName}</strong>
+                    <span>
+                      {feedback.projectName} | {feedback.projectType}
+                    </span>
+                  </footer>
+                </button>
+              );
+            })}
+          </div>
 
           <div className="lfb-controls" aria-label={copy.orbitLabel}>
             <button aria-label={copy.previousLabel} onClick={goToPreviousFeedback} type="button">
@@ -311,7 +365,7 @@ export default function FeedbackSection() {
                   aria-pressed={index === activeIndex}
                   className={index === activeIndex ? "is-active" : ""}
                   key={`dot-${feedback.id}`}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => goToFeedback(index)}
                   type="button"
                 />
               ))}
