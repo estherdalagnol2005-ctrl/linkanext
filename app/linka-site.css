@@ -3688,27 +3688,28 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   pointer-events:none;
 }
 
-.lfb-card-index{
-  position:relative;
-  z-index:2;
-  color:rgba(125,211,252,.62);
-  font:950 11px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.16em;
-}
-
 .lfb-quote{
   position:absolute;
   right:24px;
   top:20px;
-  color:rgba(139,255,79,.22);
-  font:950 88px/.76 "Space Grotesk",Manrope,sans-serif;
+  color:rgba(139,255,79,.16);
+  font:950 58px/.76 "Space Grotesk",Manrope,sans-serif;
   pointer-events:none;
+}
+
+.lfb-highlight{
+  position:relative;
+  z-index:2;
+  max-width:88%;
+  color:#8bff4f;
+  font:950 clamp(.92rem,1.1vw,1.05rem)/1.18 "Space Grotesk",Manrope,sans-serif;
+  letter-spacing:-.015em;
 }
 
 .lfb-active-card p{
   position:relative;
   z-index:2;
-  margin:34px 0 30px;
+  margin:26px 0 28px;
   color:rgba(245,243,238,.86);
   font:780 clamp(1.02rem,1.5vw,1.25rem)/1.56 Manrope,Arial,sans-serif;
 }
@@ -3718,8 +3719,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   z-index:2;
   display:flex;
   align-items:flex-end;
-  justify-content:space-between;
-  gap:16px;
+  justify-content:flex-start;
+  gap:12px;
 }
 
 .lfb-active-card footer div{
@@ -3737,19 +3738,6 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   font:760 11px/1.2 Manrope,Arial,sans-serif;
 }
 
-.lfb-tag{
-  max-width:150px;
-  padding:8px 10px;
-  border:1px solid rgba(139,255,79,.18);
-  border-radius:999px;
-  color:rgba(139,255,79,.82);
-  background:rgba(139,255,79,.065);
-  font:900 9px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.08em;
-  text-align:center;
-  text-transform:uppercase;
-}
-
 .lfb-orbit-card{
   position:absolute;
   z-index:3;
@@ -3758,7 +3746,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   padding:15px 15px 14px;
   border-radius:20px;
   display:grid;
-  gap:8px;
+  align-content:center;
+  gap:9px;
   color:#f5f3ee;
   text-align:left;
   cursor:pointer;
@@ -3810,15 +3799,9 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     lfbFloatFour 7.4s ease-in-out 1.3s infinite;
 }
 
-.lfb-mini-index{
-  color:rgba(139,255,79,.78);
-  font:950 10px/1 Manrope,Arial,sans-serif;
-  letter-spacing:.14em;
-}
-
 .lfb-orbit-card strong{
   color:#f5f3ee;
-  font:950 14px/1.1 "Space Grotesk",Manrope,sans-serif;
+  font:950 13.5px/1.18 "Space Grotesk",Manrope,sans-serif;
   letter-spacing:-.02em;
 }
 
@@ -4122,11 +4105,11 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   .lfb-quote{
     right:16px;
     top:14px;
-    font-size:68px;
+    font-size:50px;
   }
 
   .lfb-active-card p{
-    margin:28px 0 22px;
+    margin:22px 0 22px;
     font-size:14.5px;
     line-height:1.58;
   }
@@ -4137,8 +4120,9 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     gap:12px;
   }
 
-  .lfb-tag{
-    max-width:100%;
+  .lfb-highlight{
+    max-width:92%;
+    font-size:14px;
   }
 
   .lfb-orbit-card{
@@ -4150,10 +4134,12 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 
   .lfb-orbit-card strong{
     font-size:11.5px;
+    line-height:1.18;
   }
 
   .lfb-orbit-card small{
-    display:none;
+    font-size:9.5px;
+    line-height:1.25;
   }
 
   .lfb-slot-1{

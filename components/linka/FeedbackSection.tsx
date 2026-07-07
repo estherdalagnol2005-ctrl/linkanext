@@ -6,10 +6,12 @@ type FeedbackLanguage = "pt" | "en" | "es";
 
 type FeedbackItem = {
   id: string;
-  name: string;
-  project: string;
-  tag: string;
-  text: string;
+  clientName: string;
+  projectName: string;
+  projectType: string;
+  quote: string;
+  preview: string;
+  highlight: string;
 };
 
 type FeedbackCopy = {
@@ -31,126 +33,150 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
   pt: {
     ariaLabel: "Depoimentos e percepcoes de clientes",
     kicker: "FEEDBACKS",
-    title: "O que muda quando a presenca digital parece profissional.",
+    title: "O que clientes percebem quando a marca ganha presenca digital.",
     subtitle:
-      "Feedbacks e percepcoes de projetos criados para transformar marcas em experiencias digitais mais memoraveis.",
-    proofLabel: "Prova social em construcao",
-    proofValue: "4 percepcoes de projetos digitais",
-    orbitLabel: "Selecione um feedback",
-    previousLabel: "Feedback anterior",
-    nextLabel: "Proximo feedback",
+      "Comentarios e percepcoes de projetos criados para transformar marcas em experiencias digitais mais claras, memoraveis e profissionais.",
+    proofLabel: "Comentarios de clientes",
+    proofValue: "4 feedbacks de projetos Linka",
+    orbitLabel: "Selecione um depoimento",
+    previousLabel: "Depoimento anterior",
+    nextLabel: "Proximo depoimento",
     cards: [
       {
-        id: "01",
-        name: "Cliente Linka",
-        project: "Site de captacao - Baptista",
-        tag: "Clareza e posicionamento",
-        text: "A presenca digital ficou muito mais profissional e transmitiu exatamente o nivel da marca.",
+        id: "baptista",
+        clientName: "Cliente Linka",
+        projectName: "Baptista",
+        projectType: "Site de captacao",
+        quote: "A presenca digital ficou mais clara, profissional e alinhada com o nivel da marca.",
+        preview: "Mais clareza e posicionamento",
+        highlight: "Presenca mais profissional",
       },
       {
-        id: "02",
-        name: "Cliente Linka",
-        project: "Landing page de conversao - Nutricionista",
-        tag: "Conversao",
-        text: "A pagina ficou mais objetiva, elegante e com muito mais potencial de transformar visitas em contatos.",
+        id: "nutricao",
+        clientName: "Cliente Linka",
+        projectName: "Nutricao",
+        projectType: "Landing page de conversao",
+        quote: "A pagina ficou objetiva, elegante e muito mais preparada para transformar visitas em contatos.",
+        preview: "Mais intencao de contato",
+        highlight: "Landing page mais estrategica",
       },
       {
-        id: "03",
-        name: "Cliente Linka",
-        project: "Landing page - Casa Sea",
-        tag: "Experiencia",
-        text: "A proposta visual ficou mais memoravel, alinhada e muito mais forte para apresentar o restaurante.",
+        id: "casa-sea",
+        clientName: "Cliente Linka",
+        projectName: "Casa Sea",
+        projectType: "Landing page",
+        quote: "A experiencia visual ficou mais memoravel e transmitiu melhor a proposta do negocio.",
+        preview: "Experiencia mais memoravel",
+        highlight: "Visual mais marcante",
       },
       {
-        id: "04",
-        name: "Cliente Linka",
-        project: "Landing page - Escobar",
-        tag: "Percepcao premium",
-        text: "A marca passou a ter uma apresentacao mais solida, mais refinada e muito mais convincente.",
+        id: "escobar",
+        clientName: "Cliente Linka",
+        projectName: "Escobar",
+        projectType: "Site de conversao",
+        quote: "A apresentacao da marca ficou mais solida, refinada e convincente para o publico certo.",
+        preview: "Mais percepcao de valor",
+        highlight: "Marca mais premium",
       },
     ],
   },
   en: {
     ariaLabel: "Client feedback and project perceptions",
-    kicker: "FEEDBACKS",
-    title: "What changes when your digital presence feels professional.",
+    kicker: "CLIENT FEEDBACKS",
+    title: "What clients notice when a brand gets a stronger digital presence.",
     subtitle:
-      "Feedback and project perceptions from experiences designed to make brands clearer, sharper, and more memorable.",
-    proofLabel: "Social proof in progress",
-    proofValue: "4 digital project perceptions",
-    orbitLabel: "Select a feedback",
-    previousLabel: "Previous feedback",
-    nextLabel: "Next feedback",
+      "Comments and project perceptions from experiences designed to make brands clearer, more memorable, and more professional.",
+    proofLabel: "Client comments",
+    proofValue: "4 Linka project feedbacks",
+    orbitLabel: "Select a testimonial",
+    previousLabel: "Previous testimonial",
+    nextLabel: "Next testimonial",
     cards: [
       {
-        id: "01",
-        name: "Linka client",
-        project: "Lead generation website - Baptista",
-        tag: "Clarity and positioning",
-        text: "The digital presence felt much more professional and communicated the exact level of the brand.",
+        id: "baptista",
+        clientName: "Linka client",
+        projectName: "Baptista",
+        projectType: "Lead generation website",
+        quote: "The digital presence became clearer, more professional, and aligned with the level of the brand.",
+        preview: "More clarity and positioning",
+        highlight: "More professional presence",
       },
       {
-        id: "02",
-        name: "Linka client",
-        project: "Conversion landing page - Nutritionist",
-        tag: "Conversion",
-        text: "The page became more objective, elegant, and much stronger at turning visits into conversations.",
+        id: "nutricao",
+        clientName: "Linka client",
+        projectName: "Nutrition",
+        projectType: "Conversion landing page",
+        quote: "The page became objective, elegant, and much better prepared to turn visits into contacts.",
+        preview: "More contact intent",
+        highlight: "More strategic landing page",
       },
       {
-        id: "03",
-        name: "Linka client",
-        project: "Landing page - Casa Sea",
-        tag: "Experience",
-        text: "The visual proposal became more memorable, aligned, and much stronger for presenting the restaurant.",
+        id: "casa-sea",
+        clientName: "Linka client",
+        projectName: "Casa Sea",
+        projectType: "Landing page",
+        quote: "The visual experience became more memorable and communicated the business proposal more clearly.",
+        preview: "More memorable experience",
+        highlight: "More distinctive visual presence",
       },
       {
-        id: "04",
-        name: "Linka client",
-        project: "Landing page - Escobar",
-        tag: "Premium perception",
-        text: "The brand gained a more solid, refined, and convincing digital presentation.",
+        id: "escobar",
+        clientName: "Linka client",
+        projectName: "Escobar",
+        projectType: "Conversion website",
+        quote: "The brand presentation became more solid, refined, and convincing for the right audience.",
+        preview: "More perceived value",
+        highlight: "More premium brand presence",
       },
     ],
   },
   es: {
     ariaLabel: "Feedbacks y percepciones de clientes",
     kicker: "FEEDBACKS",
-    title: "Lo que cambia cuando la presencia digital se ve profesional.",
+    title: "Lo que los clientes perciben cuando la marca gana presencia digital.",
     subtitle:
-      "Feedbacks y percepciones de proyectos creados para transformar marcas en experiencias digitales mas memorables.",
-    proofLabel: "Prueba social en construccion",
-    proofValue: "4 percepciones de proyectos digitales",
-    orbitLabel: "Selecciona un feedback",
-    previousLabel: "Feedback anterior",
-    nextLabel: "Siguiente feedback",
+      "Comentarios y percepciones de proyectos creados para transformar marcas en experiencias digitales mas claras, memorables y profesionales.",
+    proofLabel: "Comentarios de clientes",
+    proofValue: "4 feedbacks de proyectos Linka",
+    orbitLabel: "Selecciona un testimonio",
+    previousLabel: "Testimonio anterior",
+    nextLabel: "Siguiente testimonio",
     cards: [
       {
-        id: "01",
-        name: "Cliente Linka",
-        project: "Sitio de captacion - Baptista",
-        tag: "Claridad y posicionamiento",
-        text: "La presencia digital se sintio mucho mas profesional y transmitio exactamente el nivel de la marca.",
+        id: "baptista",
+        clientName: "Cliente Linka",
+        projectName: "Baptista",
+        projectType: "Sitio de captacion",
+        quote: "La presencia digital quedo mas clara, profesional y alineada con el nivel de la marca.",
+        preview: "Mas claridad y posicionamiento",
+        highlight: "Presencia mas profesional",
       },
       {
-        id: "02",
-        name: "Cliente Linka",
-        project: "Landing page de conversion - Nutricionista",
-        tag: "Conversion",
-        text: "La pagina quedo mas objetiva, elegante y con mucho mas potencial para convertir visitas en contactos.",
+        id: "nutricao",
+        clientName: "Cliente Linka",
+        projectName: "Nutricion",
+        projectType: "Landing page de conversion",
+        quote: "La pagina quedo objetiva, elegante y mucho mas preparada para convertir visitas en contactos.",
+        preview: "Mas intencion de contacto",
+        highlight: "Landing page mas estrategica",
       },
       {
-        id: "03",
-        name: "Cliente Linka",
-        project: "Landing page - Casa Sea",
-        tag: "Experiencia",
-        text: "La propuesta visual quedo mas memorable, alineada y mucho mas fuerte para presentar el restaurante.",
+        id: "casa-sea",
+        clientName: "Cliente Linka",
+        projectName: "Casa Sea",
+        projectType: "Landing page",
+        quote: "La experiencia visual quedo mas memorable y transmitio mejor la propuesta del negocio.",
+        preview: "Experiencia mas memorable",
+        highlight: "Visual mas distintivo",
       },
       {
-        id: "04",
-        name: "Cliente Linka",
-        project: "Landing page - Escobar",
-        tag: "Percepcion premium",
-        text: "La marca paso a tener una presentacion mas solida, refinada y mucho mas convincente.",
+        id: "escobar",
+        clientName: "Cliente Linka",
+        projectName: "Escobar",
+        projectType: "Sitio de conversion",
+        quote: "La presentacion de la marca quedo mas solida, refinada y convincente para el publico correcto.",
+        preview: "Mas percepcion de valor",
+        highlight: "Marca mas premium",
       },
     ],
   },
@@ -241,45 +267,47 @@ export default function FeedbackSection() {
           <div aria-hidden="true" className="lfb-orbit-core" />
 
           <article className="lfb-active-card" key={`${language}-${activeFeedback.id}`}>
-            <span className="lfb-card-index">{activeFeedback.id}</span>
             <span aria-hidden="true" className="lfb-quote">
               "
             </span>
 
-            <p>{activeFeedback.text}</p>
+            <strong className="lfb-highlight">{activeFeedback.highlight}</strong>
+            <p>{activeFeedback.quote}</p>
 
             <footer>
               <div>
-                <strong>{activeFeedback.name}</strong>
-                <span>{activeFeedback.project}</span>
+                <strong>{activeFeedback.clientName}</strong>
+                <span>
+                  {activeFeedback.projectName} | {activeFeedback.projectType}
+                </span>
               </div>
-              <em className="lfb-tag">{activeFeedback.tag}</em>
             </footer>
           </article>
 
           {copy.cards.map((feedback, index) => (
             <button
-              aria-label={`${copy.orbitLabel}: ${feedback.project}`}
+              aria-label={`${copy.orbitLabel}: ${feedback.projectName}`}
               aria-pressed={index === activeIndex}
               className={`lfb-orbit-card lfb-slot-${index + 1}${index === activeIndex ? " is-active" : ""}`}
               key={feedback.id}
               onClick={() => setActiveIndex(index)}
               type="button"
             >
-              <span className="lfb-mini-index">{feedback.id}</span>
-              <strong>{feedback.tag}</strong>
-              <small>{feedback.project}</small>
+              <strong>{feedback.preview}</strong>
+              <small>
+                {feedback.projectName} | {feedback.projectType}
+              </small>
             </button>
           ))}
 
           <div className="lfb-controls" aria-label={copy.orbitLabel}>
             <button aria-label={copy.previousLabel} onClick={goToPreviousFeedback} type="button">
-              <span aria-hidden="true">‹</span>
+              <span aria-hidden="true">{"<"}</span>
             </button>
             <div className="lfb-dots">
               {copy.cards.map((feedback, index) => (
                 <button
-                  aria-label={`${copy.orbitLabel}: ${feedback.project}`}
+                  aria-label={`${copy.orbitLabel}: ${feedback.projectName}`}
                   aria-pressed={index === activeIndex}
                   className={index === activeIndex ? "is-active" : ""}
                   key={`dot-${feedback.id}`}
@@ -289,7 +317,7 @@ export default function FeedbackSection() {
               ))}
             </div>
             <button aria-label={copy.nextLabel} onClick={goToNextFeedback} type="button">
-              <span aria-hidden="true">›</span>
+              <span aria-hidden="true">{">"}</span>
             </button>
           </div>
         </div>
