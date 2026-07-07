@@ -1,4 +1,5 @@
 import Footer from "./Footer";
+import FeedbackSection from "./FeedbackSection";
 import GlobalBackground from "./GlobalBackground";
 import Header from "./Header";
 import Hero from "./Hero";
@@ -18,6 +19,7 @@ export default function LinkaHome() {
       <main className="linka-site-content">
         <Hero />
         <PortfolioSection />
+        <FeedbackSection />
         <TechStackStrip />
         <PromoSection />
         <TransitionCta />
