@@ -17,8 +17,6 @@ type FeedbackCopy = {
   kicker: string;
   title: string;
   subtitle: string;
-  proofLabel: string;
-  proofValue: string;
   orbitLabel: string;
   previousLabel: string;
   nextLabel: string;
@@ -30,13 +28,10 @@ const DRAG_THRESHOLD = 40;
 
 const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
   pt: {
-    ariaLabel: "Depoimentos e percepcoes de clientes",
-    kicker: "FEEDBACKS",
-    title: "O que clientes percebem quando a marca ganha presenca digital.",
-    subtitle:
-      "Comentarios e percepcoes de projetos criados para transformar marcas em experiencias digitais mais claras, memoraveis e profissionais.",
-    proofLabel: "Comentarios de clientes",
-    proofValue: "4 feedbacks de projetos Linka",
+    ariaLabel: "Depoimentos de clientes",
+    kicker: "DEPOIMENTOS",
+    title: "Palavras gentis de clientes satisfeitos",
+    subtitle: "Comentários reais de marcas que confiaram na Linka.",
     orbitLabel: "Gire a orbita de depoimentos",
     previousLabel: "Depoimento anterior",
     nextLabel: "Proximo depoimento",
@@ -72,13 +67,10 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
     ],
   },
   en: {
-    ariaLabel: "Client testimonials and project perceptions",
-    kicker: "CLIENT FEEDBACKS",
-    title: "What clients notice when a brand gets a stronger digital presence.",
-    subtitle:
-      "Comments and project perceptions from experiences designed to make brands clearer, more memorable, and more professional.",
-    proofLabel: "Client comments",
-    proofValue: "4 Linka project feedbacks",
+    ariaLabel: "Client testimonials",
+    kicker: "TESTIMONIALS",
+    title: "Kind words from satisfied clients",
+    subtitle: "Real comments from brands that trusted Linka.",
     orbitLabel: "Rotate the testimonial orbit",
     previousLabel: "Previous testimonial",
     nextLabel: "Next testimonial",
@@ -114,13 +106,10 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
     ],
   },
   es: {
-    ariaLabel: "Testimonios y percepciones de clientes",
-    kicker: "FEEDBACKS",
-    title: "Lo que los clientes perciben cuando la marca gana presencia digital.",
-    subtitle:
-      "Comentarios y percepciones de proyectos creados para transformar marcas en experiencias digitales mas claras, memorables y profesionales.",
-    proofLabel: "Comentarios de clientes",
-    proofValue: "4 feedbacks de proyectos Linka",
+    ariaLabel: "Testimonios de clientes",
+    kicker: "TESTIMONIOS",
+    title: "Palabras de clientes satisfechos",
+    subtitle: "Comentarios reales de marcas que confiaron en Linka.",
     orbitLabel: "Gira la orbita de testimonios",
     previousLabel: "Testimonio anterior",
     nextLabel: "Siguiente testimonio",
@@ -311,11 +300,6 @@ export default function FeedbackSection() {
           <div className="lfb-title-block">
             <h2>{copy.title}</h2>
             <p>{copy.subtitle}</p>
-          </div>
-
-          <div className="lfb-proof" aria-label={copy.proofValue}>
-            <span>{copy.proofLabel}</span>
-            <strong>{copy.proofValue}</strong>
           </div>
         </div>
 
