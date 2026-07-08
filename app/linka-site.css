@@ -3761,8 +3761,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lfb-orbit-slot-1{
-  right:1%;
-  top:13%;
+  right:-1%;
+  top:5%;
   z-index:3;
   width:204px;
   min-height:144px;
@@ -3787,8 +3787,8 @@ html,body{max-width:100%!important;overflow-x:clip!important}
 }
 
 .lfb-orbit-slot-3{
-  left:1%;
-  top:13%;
+  left:-1%;
+  top:5%;
   z-index:3;
   width:204px;
   min-height:144px;
@@ -4116,33 +4116,33 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   }
 
   .lfb-orbit-slot-1{
-    right:5px;
-    top:20px;
-    width:122px;
-    min-height:98px;
-    padding:11px;
+    right:2px;
+    top:-14px;
+    width:118px;
+    min-height:88px;
+    padding:10px;
     border-radius:16px;
-    transform:translate3d(calc(var(--lfb-drag-offset,0px) * .34),0,-82px) rotate(5deg) scale(.8);
+    transform:translate3d(calc(var(--lfb-drag-offset,0px) * .34),0,-82px) rotate(5deg) scale(.78);
   }
 
   .lfb-orbit-slot-2{
     left:50%;
-    top:4px;
-    width:118px;
-    min-height:90px;
+    top:-18px;
+    width:112px;
+    min-height:82px;
     padding:10px;
     border-radius:16px;
-    transform:translateX(-50%) translate3d(calc(var(--lfb-drag-offset,0px) * .18),0,-146px) rotate(-2deg) scale(.74);
+    transform:translateX(-50%) translate3d(calc(var(--lfb-drag-offset,0px) * .18),0,-146px) rotate(-2deg) scale(.72);
   }
 
   .lfb-orbit-slot-3{
-    left:5px;
-    top:20px;
-    width:122px;
-    min-height:98px;
-    padding:11px;
+    left:2px;
+    top:-14px;
+    width:118px;
+    min-height:88px;
+    padding:10px;
     border-radius:16px;
-    transform:translate3d(calc(var(--lfb-drag-offset,0px) * .34),0,-82px) rotate(-5deg) scale(.8);
+    transform:translate3d(calc(var(--lfb-drag-offset,0px) * .34),0,-82px) rotate(-5deg) scale(.78);
   }
 
   .lfb-controls{
@@ -4154,6 +4154,70 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     width:40px;
     height:40px;
   }
+}
+
+@media(max-width:767px){
+  .lfb-orbit-stage{
+    perspective:none;
+    animation:none;
+  }
+
+  .lfb-orbit-stage.is-dragging .lfb-testimonial-card{
+    transition:none;
+  }
+
+  .lfb-testimonial-card{
+    transform-style:flat;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    transition:
+      transform .22s cubic-bezier(.2,.8,.2,1),
+      opacity .18s ease,
+      border-color .18s ease,
+      box-shadow .18s ease;
+  }
+
+  .lfb-testimonial-card::after{
+    animation:none;
+    opacity:.66;
+  }
+
+  .lfb-orbit-slot-0{
+    z-index:6;
+    opacity:1;
+    filter:none;
+    box-shadow:0 22px 68px rgba(0,0,0,.38),0 0 38px rgba(29,143,232,.1),0 0 24px rgba(139,255,79,.07),inset 0 1px 0 rgba(255,255,255,.1);
+    animation:lfbActiveMobileIn .2s cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  .lfb-orbit-slot-1,
+  .lfb-orbit-slot-2,
+  .lfb-orbit-slot-3{
+    z-index:2;
+    opacity:.5;
+    filter:saturate(.82) brightness(.82);
+    box-shadow:0 14px 38px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.07);
+    animation:none;
+  }
+
+  .lfb-orbit-slot-2{
+    z-index:1;
+    opacity:.34;
+  }
+
+  .lfb-controls{
+    z-index:8;
+  }
+
+  .lfb-controls > button,
+  .lfb-dots button{
+    touch-action:manipulation;
+  }
+}
+
+@keyframes lfbActiveMobileIn{
+  from{opacity:.72;filter:blur(2px)}
+  to{opacity:1;filter:blur(0)}
 }
 
 @media(prefers-reduced-motion:reduce){

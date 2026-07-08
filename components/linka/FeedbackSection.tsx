@@ -26,7 +26,7 @@ type FeedbackCopy = {
 };
 
 const LANGUAGE_STORAGE_KEY = "linka-language-v2";
-const DRAG_THRESHOLD = 44;
+const DRAG_THRESHOLD = 40;
 
 const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
   pt: {
@@ -225,6 +225,14 @@ export default function FeedbackSection() {
     setActiveIndex((current) => wrapIndex(current + 1, copy.cards.length));
   };
 
+  const handleCardPointerUp = (index: number) => {
+    const { deltaX, deltaY } = dragRef.current;
+    const isTap = Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8;
+    if (isTap) {
+      goToFeedback(index);
+    }
+  };
+
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
@@ -275,7 +283,7 @@ export default function FeedbackSection() {
       }
       window.setTimeout(() => {
         suppressClickRef.current = false;
-      }, 180);
+      }, 120);
     }
 
     dragRef.current.active = false;
@@ -337,6 +345,7 @@ export default function FeedbackSection() {
                     if (suppressClickRef.current) return;
                     goToFeedback(index);
                   }}
+                  onPointerUp={() => handleCardPointerUp(index)}
                   type="button"
                 >
                   <span aria-hidden="true" className="lfb-testimonial-mark">
