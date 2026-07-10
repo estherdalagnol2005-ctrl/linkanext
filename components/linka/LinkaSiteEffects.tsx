@@ -665,6 +665,14 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
       : [];
     const fieldPlanes = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-field-plane"));
     const fieldSignal = hero.querySelector<HTMLElement>(".lhx-field-signal");
+    const gameLayer = hero.querySelector<HTMLElement>(".lhx-game-layer");
+    const gameGrid = hero.querySelector<HTMLElement>(".lhx-game-grid");
+    const gameLines = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-game-line"));
+    const gameNodes = Array.from(hero.querySelectorAll<HTMLElement>(".lhx-game-node"));
+    const gameScan = hero.querySelector<HTMLElement>(".lhx-game-scan");
+    const gameProgressFill = hero.querySelector<HTMLElement>(".lhx-game-progress-fill");
+    const portalScan = hero.querySelector<HTMLElement>(".lhx-portal-scan");
+    const portalProgress = hero.querySelector<HTMLElement>(".lhx-portal-progress i");
 
     if (
       !scene ||
@@ -756,6 +764,14 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
             rewardAura,
             completion,
             ...completionItems,
+            gameLayer,
+            gameGrid,
+            gameScan,
+            gameProgressFill,
+            portalScan,
+            portalProgress,
+            ...gameLines,
+            ...gameNodes,
           ],
           { autoAlpha: 1, clearProps: "transform,opacity,visibility" },
         );
@@ -768,7 +784,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(titleLines, { yPercent: 108 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 14 });
         gsap.set(showcase, { autoAlpha: 0, y: 24, transformOrigin: "50% 50%" });
-        gsap.set(portal, { autoAlpha: 0, y: 18, scale: 0.96, transformOrigin: "50% 50%" });
+        gsap.set(portal, { autoAlpha: 0, x: 155, yPercent: 0, y: 18, scale: 0.96, transformOrigin: "50% 50%" });
         gsap.set(portalKicker, { autoAlpha: 0, x: -10 });
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 108 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
@@ -781,6 +797,15 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(trackNodes, { scale: 0.72, backgroundColor: "#07152F" });
         gsap.set(fieldPlanes, { autoAlpha: 0, y: 24, scale: 0.92 });
         gsap.set(fieldSignal, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(gameLayer, { autoAlpha: 0 });
+        gsap.set(gameGrid, { autoAlpha: 0, y: 12 });
+        gsap.set(gameLines, { autoAlpha: 0, scaleX: 0.74, transformOrigin: "50% 50%" });
+        gsap.set(gameNodes, { autoAlpha: 0.28, scale: 0.78, backgroundColor: "#07152F" });
+        gsap.set(gameScan, { autoAlpha: 0 });
+        gsap.set(gameProgressFill, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(portal, { filter: "blur(7px)" });
+        gsap.set(portalScan, { autoAlpha: 0, yPercent: -120 });
+        gsap.set(portalProgress, { scaleX: 0, transformOrigin: "0% 50%" });
         gsap.set(serviceCards, {
           xPercent: -50,
           yPercent: -50,
@@ -811,14 +836,22 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(fieldPlanes, { autoAlpha: 1, y: 0, scale: 1, duration: 0.62, stagger: 0.06, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.44, stagger: 0.045 }, 0.38)
           .to(showcase, { autoAlpha: 1, y: 0, duration: 0.52, ease: "expo.out" }, 0.48)
-          .to(portal, { autoAlpha: 1, y: 0, scale: 1, duration: 0.46 }, 0.62)
+          .to(portal, { autoAlpha: 1, x: 155, yPercent: 0, y: 0, scale: 1, duration: 0.46 }, 0.62)
           .to(portalKicker, { autoAlpha: 1, x: 0, duration: 0.34 }, 0.72)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.42, ease: "expo.out" }, 0.82)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.24, ease: "power2.out" }, 0.92)
           .to(scrollInvite, { autoAlpha: 1, y: 0, duration: 0.36 }, 0.94)
           .to(cardHint, { autoAlpha: 1, y: 0, duration: 0.32 }, 1.02)
           .to(collection, { autoAlpha: 1, y: 0, duration: 0.42 }, 0.86)
-          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.5 }, 0.8);
+          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.5 }, 0.8)
+          .to(gameLayer, { autoAlpha: 1, duration: 0.46 }, 0.22)
+          .to(gameGrid, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.28)
+          .to(gameLines, { autoAlpha: 0.7, scaleX: 1, duration: 0.42, stagger: 0.05 }, 0.5)
+          .to(gameNodes, { autoAlpha: 0.62, scale: 1, duration: 0.34, stagger: 0.06 }, 0.62)
+          .to(portal, { filter: "blur(0px)", duration: 0.42 }, 0.68)
+          .to(portalScan, { autoAlpha: 0.9, yPercent: 150, duration: 0.58, ease: "power2.inOut" }, 0.82)
+          .to(portalScan, { autoAlpha: 0, duration: 0.18 }, 1.34)
+          .to(portalProgress, { scaleX: 0.34, duration: 0.44, ease: "power2.out" }, 0.98);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -843,10 +876,15 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to([kicker, body], { y: -10, autoAlpha: 0.68, duration: 0.58 }, 0)
           .to(actions, { y: -6, autoAlpha: 0.94, duration: 0.5 }, 0)
           .to(title, { y: -16, autoAlpha: 0.62, duration: 0.62 }, 0.12)
-          .to(portal, { y: -18, scale: 0.94, autoAlpha: 0, duration: 0.38, ease: "power1.inOut" }, 0.12)
+          .to(portal, { x: 135, y: -18, scale: 0.94, autoAlpha: 0, duration: 0.38, ease: "power1.inOut" }, 0.12)
           .to(showcase, { y: -46, duration: 0.9, ease: "power1.inOut" }, 0.12)
           .to(collection, { y: -2, duration: 5.45 }, 0)
-          .to(fieldPlanes, { y: -22, scale: 1.07, duration: 5.45 }, 0);
+          .to(fieldPlanes, { y: -22, scale: 1.07, duration: 5.45 }, 0)
+          .to(gameProgressFill, { scaleX: 1, duration: 5.45 }, 0)
+          .to(portalProgress, { scaleX: 1, duration: 0.62 }, 0)
+          .to(gameGrid, { y: -14, autoAlpha: 0.72, duration: 5.45 }, 0)
+          .to(gameLines, { y: -10, autoAlpha: 0.52, duration: 5.45 }, 0)
+          .to(gameScan, { autoAlpha: 0.18, y: 26, duration: 5.45 }, 0);
 
         serviceCards.forEach((card, index) => {
           const start = 0.12 + index * 1.18;
@@ -879,6 +917,12 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
             .to(card, { scale: 1.025, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.6)
             .to(trackSegments[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.58)
             .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.18 }, start + 0.64)
+            .to(gameNodes[index % gameNodes.length], {
+              autoAlpha: 1,
+              scale: 1.18,
+              backgroundColor: palette.color,
+              duration: 0.18,
+            }, start + 0.64)
             .to(collectionSlots[index], {
               autoAlpha: 1,
               scale: 1.04,
@@ -949,7 +993,7 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(titleLines, { yPercent: 112 });
         gsap.set([kicker, body, actions], { autoAlpha: 0, y: 18 });
         gsap.set(showcase, { autoAlpha: 0, y: 34, scale: 0.98, transformOrigin: "50% 50%" });
-        gsap.set(portal, { autoAlpha: 0, x: -18, scale: 0.96, transformOrigin: "50% 50%" });
+        gsap.set(portal, { autoAlpha: 0, x: 180, scale: 0.96, transformOrigin: "50% 50%" });
         gsap.set(portalKicker, { autoAlpha: 0, x: -12 });
         gsap.set(cardTitleText, { autoAlpha: 0, yPercent: 112 });
         gsap.set(cardCursor, { autoAlpha: 0, scaleY: 0.35, transformOrigin: "50% 50%" });
@@ -962,6 +1006,15 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
         gsap.set(trackNodes, { scale: 0.72, backgroundColor: "#07152F" });
         gsap.set(fieldPlanes, { autoAlpha: 0, y: 32, scale: 0.9 });
         gsap.set(fieldSignal, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(gameLayer, { autoAlpha: 0 });
+        gsap.set(gameGrid, { autoAlpha: 0, y: 18 });
+        gsap.set(gameLines, { autoAlpha: 0, scaleX: 0.72, transformOrigin: "50% 50%" });
+        gsap.set(gameNodes, { autoAlpha: 0.24, scale: 0.72, backgroundColor: "#07152F" });
+        gsap.set(gameScan, { autoAlpha: 0 });
+        gsap.set(gameProgressFill, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(portal, { filter: "blur(8px)" });
+        gsap.set(portalScan, { autoAlpha: 0, yPercent: -120 });
+        gsap.set(portalProgress, { scaleX: 0, transformOrigin: "0% 50%" });
         gsap.set(serviceCards, {
           xPercent: -50,
           yPercent: -50,
@@ -992,14 +1045,22 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to(fieldPlanes, { autoAlpha: 1, y: 0, scale: 1, duration: 0.72, stagger: 0.06, ease: "expo.out" }, 0.12)
           .to([kicker, body, actions], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.055 }, 0.38)
           .to(showcase, { autoAlpha: 1, y: 0, scale: 1, duration: 0.68, ease: "expo.out" }, 0.5)
-          .to(portal, { autoAlpha: 1, x: 0, scale: 1, duration: 0.5 }, 0.68)
+          .to(portal, { autoAlpha: 1, x: 200, scale: 1, duration: 0.5 }, 0.68)
           .to(portalKicker, { autoAlpha: 1, x: 0, duration: 0.34 }, 0.78)
           .to(cardTitleText, { autoAlpha: 1, yPercent: 0, duration: 0.46, ease: "expo.out" }, 0.88)
           .to(cardCursor, { autoAlpha: 1, scaleY: 1, duration: 0.26, ease: "power2.out" }, 1)
           .to(scrollInvite, { autoAlpha: 1, y: 0, duration: 0.38 }, 1)
           .to(cardHint, { autoAlpha: 1, y: 0, duration: 0.34 }, 1.08)
           .to(collection, { autoAlpha: 1, x: 0, duration: 0.46 }, 0.86)
-          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.54 }, 0.82);
+          .to(fieldSignal, { autoAlpha: 1, scaleX: 1, duration: 0.54 }, 0.82)
+          .to(gameLayer, { autoAlpha: 1, duration: 0.5 }, 0.18)
+          .to(gameGrid, { autoAlpha: 1, y: 0, duration: 0.58 }, 0.24)
+          .to(gameLines, { autoAlpha: 0.76, scaleX: 1, duration: 0.48, stagger: 0.06 }, 0.48)
+          .to(gameNodes, { autoAlpha: 0.64, scale: 1, duration: 0.36, stagger: 0.06 }, 0.62)
+          .to(portal, { filter: "blur(0px)", duration: 0.46 }, 0.68)
+          .to(portalScan, { autoAlpha: 0.88, yPercent: 150, duration: 0.62, ease: "power2.inOut" }, 0.84)
+          .to(portalScan, { autoAlpha: 0, duration: 0.18 }, 1.4)
+          .to(portalProgress, { scaleX: 0.34, duration: 0.46, ease: "power2.out" }, 1);
 
         const scrollTl = gsap.timeline({
           defaults: { ease: "none" },
@@ -1024,9 +1085,14 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
           .to([kicker, body], { y: -16, autoAlpha: 0.64, duration: 0.68 }, 0.08)
           .to(title, { y: -22, autoAlpha: 0.56, duration: 0.76 }, 0.12)
           .to(actions, { y: -7, autoAlpha: 0.94, duration: 0.58 }, 0.08)
-          .to(portal, { x: -38, scale: 0.93, autoAlpha: 0, duration: 0.4, ease: "power1.inOut" }, 0.14)
+          .to(portal, { x: 160, scale: 0.93, autoAlpha: 0, duration: 0.4, ease: "power1.inOut" }, 0.14)
           .to(showcase, { y: -8, duration: 5.55 }, 0)
-          .to(fieldPlanes, { y: -28, scale: 1.08, duration: 5.55 }, 0);
+          .to(fieldPlanes, { y: -28, scale: 1.08, duration: 5.55 }, 0)
+          .to(gameProgressFill, { scaleX: 1, duration: 5.55 }, 0)
+          .to(portalProgress, { scaleX: 1, duration: 0.68 }, 0)
+          .to(gameGrid, { y: -22, autoAlpha: 0.74, duration: 5.55 }, 0)
+          .to(gameLines, { y: -16, autoAlpha: 0.56, duration: 5.55 }, 0)
+          .to(gameScan, { autoAlpha: 0.22, y: 34, duration: 5.55 }, 0);
 
         serviceCards.forEach((card, index) => {
           const start = 0.14 + index * 1.2;
@@ -1059,6 +1125,12 @@ function initHero(addCleanup: (cleanup: () => void) => void) {
             .to(card, { scale: 1.025, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, start + 0.62)
             .to(trackSegments[index], { scaleX: 1, duration: 0.24, ease: "power2.out" }, start + 0.6)
             .to(trackNodes[index], { scale: 1, backgroundColor: palette.color, duration: 0.18 }, start + 0.66)
+            .to(gameNodes[index % gameNodes.length], {
+              autoAlpha: 1,
+              scale: 1.2,
+              backgroundColor: palette.color,
+              duration: 0.18,
+            }, start + 0.66)
             .to(collectionSlots[index], {
               autoAlpha: 1,
               scale: 1.04,
@@ -1848,6 +1920,60 @@ function initLanguage(
   });
 }
 
+function initGlobalBackground(addCleanup: (cleanup: () => void) => void) {
+  const root = document.querySelector<HTMLElement>(".linka-global-background-v3");
+  if (!root) return;
+
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced) {
+    root.classList.add("is-parallax-reduced");
+    addCleanup(() => root.classList.remove("is-parallax-reduced"));
+    return;
+  }
+
+  const isMobile = window.matchMedia("(max-width: 820px)").matches;
+  const intensity = isMobile ? 0.38 : 1;
+  const layers: Array<{ selector: string; x: number; y: number }> = [
+    { selector: ".lgb3-blue-panel", x: -22, y: 76 },
+    { selector: ".lgb3-lime-pill", x: 16, y: -58 },
+    { selector: ".lgb3-cyan-frame", x: -12, y: 46 },
+    { selector: ".lgb3-violet-arc", x: 18, y: -82 },
+    { selector: ".lgb3-orange-bar", x: -8, y: 34 },
+    { selector: ".lgb3-blue-panel-secondary", x: 20, y: -64 },
+    { selector: ".lgb3-detail-a", x: -10, y: 26 },
+    { selector: ".lgb3-detail-b", x: 12, y: -34 },
+    { selector: ".lgb3-detail-c", x: -12, y: 38 },
+  ];
+
+  const context = gsap.context(() => {
+    root.classList.add("is-parallax-ready");
+
+    layers.forEach(({ selector, x, y }) => {
+      const layer = root.querySelector<HTMLElement>(selector);
+      if (!layer || window.getComputedStyle(layer).display === "none") return;
+
+      gsap.to(layer, {
+        x: x * intensity,
+        y: y * intensity,
+        ease: "none",
+        force3D: true,
+        scrollTrigger: {
+          trigger: document.documentElement,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: isMobile ? 1.8 : 1.35,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
+  }, root);
+
+  addCleanup(() => {
+    context.revert();
+    root.classList.remove("is-parallax-ready");
+  });
+}
+
 export default function LinkaSiteEffects() {
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1866,6 +1992,7 @@ export default function LinkaSiteEffects() {
       timers.push(timer);
     };
 
+    initGlobalBackground(addCleanup);
     initHeader(addCleanup);
     initHero(addCleanup);
     initPortfolioIntro(addCleanup);

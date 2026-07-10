@@ -18,6 +18,19 @@ export default function Hero() {
           <span className="lhx-field-signal" />
         </div>
 
+        <div className="lhx-game-layer" aria-hidden="true">
+          <span className="lhx-game-grid" />
+          <span className="lhx-game-line lhx-game-line-a" />
+          <span className="lhx-game-line lhx-game-line-b" />
+          <span className="lhx-game-node lhx-game-node-a" />
+          <span className="lhx-game-node lhx-game-node-b" />
+          <span className="lhx-game-node lhx-game-node-c" />
+          <span className="lhx-game-scan" />
+          <span className="lhx-game-progress">
+            <i className="lhx-game-progress-fill" />
+          </span>
+        </div>
+
         <div className="lhx-copy">
           <p className="lhx-kicker">DESIGN · ESTRATÉGIA · TECNOLOGIA</p>
 
@@ -55,6 +68,7 @@ export default function Hero() {
 
         <div className="lhx-showcase" aria-label="Serviços digitais da Linka">
           <div className="lhx-portal">
+            <span className="lhx-portal-scan" aria-hidden="true" />
             <span className="lhx-portal-kicker" aria-hidden="true">UNLOCK THE STACK</span>
             <p className="lhx-card-title">
               <span className="lhx-card-title-mask">
@@ -71,6 +85,9 @@ export default function Hero() {
                 <i className="lhx-scroll-chevron lhx-scroll-chevron-b" />
               </span>
             </div>
+            <span className="lhx-portal-progress" aria-hidden="true">
+              <i />
+            </span>
           </div>
 
           <div className="lhx-collection" aria-hidden="true">
