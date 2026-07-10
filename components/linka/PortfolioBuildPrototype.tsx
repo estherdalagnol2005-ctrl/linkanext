@@ -7,50 +7,61 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { flushSync } from "react-dom";
 
 type PortfolioLanguage = "pt" | "en" | "es";
+type PortfolioTitle = Record<PortfolioLanguage, string>;
 
 const projects = [
   {
     id: "marcenaria",
     name: "Marcenaria",
-    displayTitle: "Site de Captação — Baptista",
-    titleType: "Site de Captação",
-    titleBrand: "Baptista",
+    displayTitle: {
+      pt: "Site de Captação — Baptista",
+      en: "Lead Generation Website — Baptista",
+      es: "Sitio de Captación — Baptista",
+    },
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenariadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/marcenaria.mp4",
   },
   {
     id: "nutricionista",
     name: "Nutricionista",
-    displayTitle: "Landing Page de Conversão — Nutrição",
-    titleType: "Landing Page de Conversão",
-    titleBrand: "Manoella Santos",
+    displayTitle: {
+      pt: "Landing Page de Conversão — Nutrição",
+      en: "Conversion Landing Page — Nutrition",
+      es: "Landing Page de Conversión — Nutrición",
+    },
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionistadesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/nutricionista.mp4",
   },
   {
     id: "casa-sea",
     name: "Casa Sea",
-    displayTitle: "Landing Page — Casa Sea",
-    titleType: "Landing Page",
-    titleBrand: "Casa Sea",
+    displayTitle: {
+      pt: "Landing Page — Casa Sea",
+      en: "Landing Page — Casa Sea",
+      es: "Landing Page — Casa Sea",
+    },
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casaseadesktop.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/casasea.mp4",
   },
   {
     id: "barbearia",
     name: "Barbearia",
-    displayTitle: "Site de Conversão — Escobar",
-    titleType: "Site de Conversão",
-    titleBrand: "Escobar",
+    displayTitle: {
+      pt: "Site de Conversão — Escobar",
+      en: "Conversion Website — Escobar",
+      es: "Sitio de Conversión — Escobar",
+    },
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbeariadesktop-1.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/barbearia.mp4",
   },
   {
     id: "quatorze",
     name: "Quatorze",
-    displayTitle: "Landing Page — Quatorze",
-    titleType: "Landing Page",
-    titleBrand: "Quatorze Hair Spa",
+    displayTitle: {
+      pt: "Landing Page — Quatorze",
+      en: "Landing Page — Quatorze",
+      es: "Landing Page — Quatorze",
+    },
     desktopVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorzedesktopmp4.mp4",
     mobileVideo: "https://linkadigital.online/wp-content/uploads/2026/06/quatorze.mp4",
   },
@@ -100,8 +111,9 @@ function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
 }
 
-function getDisplayTitleParts(displayTitle: string) {
-  const [titleType, ...brandParts] = displayTitle.split(" — ");
+function getDisplayTitleParts(displayTitle: PortfolioTitle, language: PortfolioLanguage) {
+  const localizedTitle = displayTitle[language];
+  const [titleType, ...brandParts] = localizedTitle.split(" — ");
 
   return {
     titleType,
@@ -162,7 +174,7 @@ export default function PortfolioBuildPrototype() {
   const [viewportMode, setViewportMode] = useState<ViewportMode>("desktop");
   const [language, setLanguage] = useState<PortfolioLanguage>("en");
   const titleProject = projects[titleIndex];
-  const displayTitleParts = getDisplayTitleParts(titleProject.displayTitle);
+  const displayTitleParts = getDisplayTitleParts(titleProject.displayTitle, language);
 
   function playVideo(video: HTMLVideoElement) {
     video.muted = true;
