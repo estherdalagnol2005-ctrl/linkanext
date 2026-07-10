@@ -7,10 +7,6 @@ export default function GlobalBackground() {
       <span className="lgb3-shape lgb3-violet-arc" />
       <span className="lgb3-shape lgb3-orange-bar" />
       <span className="lgb3-shape lgb3-blue-panel-secondary" />
-
-      <span className="lgb3-detail lgb3-detail-a" />
-      <span className="lgb3-detail lgb3-detail-b" />
-      <span className="lgb3-detail lgb3-detail-c" />
     </div>
   );
 }
