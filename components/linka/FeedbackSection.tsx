@@ -10,6 +10,7 @@ type FeedbackItem = {
   projectName: string;
   projectType: string;
   quote: string;
+  preview: string;
 };
 
 type FeedbackCopy = {
@@ -32,37 +33,44 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
     kicker: "DEPOIMENTOS",
     title: "Palavras gentis de clientes satisfeitos",
     subtitle: "Comentários reais de marcas que confiaram na Linka.",
-    orbitLabel: "Gire a orbita de depoimentos",
+    orbitLabel: "Gire a órbita de depoimentos",
     previousLabel: "Depoimento anterior",
-    nextLabel: "Proximo depoimento",
+    nextLabel: "Próximo depoimento",
     cards: [
       {
-        id: "baptista",
-        clientName: "Cliente Linka",
-        projectName: "Baptista",
-        projectType: "Site de captacao",
-        quote: "A presenca digital ficou mais clara, profissional e alinhada com o nivel da marca.",
+        id: "quatorze",
+        clientName: "Quatorze Hair Spa",
+        projectName: "Quatorze",
+        projectType: "Landing page",
+        quote:
+          "Ficou bonito, moderno e muito organizado. É fácil de navegar e tem todas as informações que uma pessoa procura quando está conhecendo um salão. Acho que o site passa exatamente a imagem que queremos do Quatorze: profissional, acolhedor e de qualidade. Dá para ver o cuidado em cada detalhe. Fiquei muito feliz com o resultado. Parabéns!",
+        preview: "Bonito, moderno e organizado.",
       },
       {
-        id: "nutricao",
-        clientName: "Cliente Linka",
-        projectName: "Nutricao",
-        projectType: "Landing page de conversao",
-        quote: "A pagina ficou objetiva, elegante e muito mais preparada para transformar visitas em contatos.",
+        id: "luis-paulo-curty",
+        clientName: "Luís Paulo Curty",
+        projectName: "Luís Paulo Curty",
+        projectType: "Site",
+        quote:
+          "O site ficou incrível. Todos para quem eu enviei amaram, e vocês me ouviram até ficar exatamente da maneira que eu queria.",
+        preview: "Exatamente do jeito que eu queria.",
       },
       {
         id: "casa-sea",
-        clientName: "Cliente Linka",
+        clientName: "Casa Sea",
         projectName: "Casa Sea",
         projectType: "Landing page",
-        quote: "A experiencia visual ficou mais memoravel e transmitiu melhor a proposta do negocio.",
+        quote: "Eu gostei muito do resultado. O site transmitiu a essência da Casa Sea e ficou muito elegante!",
+        preview: "Transmitiu a essência da Casa Sea.",
       },
       {
-        id: "escobar",
-        clientName: "Cliente Linka",
-        projectName: "Escobar",
-        projectType: "Site de conversao",
-        quote: "A apresentacao da marca ficou mais solida, refinada e convincente para o publico certo.",
+        id: "nutri",
+        clientName: "Nutrição",
+        projectName: "Nutrição",
+        projectType: "Landing page",
+        quote:
+          "O site ficou maravilhoso. Vocês foram atenciosos em cada detalhe, e fiquei muito satisfeita com o resultado!",
+        preview: "Atenciosos em cada detalhe.",
       },
     ],
   },
@@ -76,32 +84,39 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
     nextLabel: "Next testimonial",
     cards: [
       {
-        id: "baptista",
-        clientName: "Linka client",
-        projectName: "Baptista",
-        projectType: "Lead generation website",
-        quote: "The digital presence became clearer, more professional, and aligned with the level of the brand.",
+        id: "quatorze",
+        clientName: "Quatorze Hair Spa",
+        projectName: "Quatorze",
+        projectType: "Landing page",
+        quote:
+          "It turned out beautiful, modern, and very organized. It is easy to navigate and has all the information someone looks for when getting to know a salon. I think the website communicates exactly the image we want for Quatorze: professional, welcoming, and high-quality. You can see the care in every detail. I was very happy with the result. Congratulations!",
+        preview: "Beautiful, modern, and organized.",
       },
       {
-        id: "nutricao",
-        clientName: "Linka client",
-        projectName: "Nutrition",
-        projectType: "Conversion landing page",
-        quote: "The page became objective, elegant, and much better prepared to turn visits into contacts.",
+        id: "luis-paulo-curty",
+        clientName: "Luís Paulo Curty",
+        projectName: "Luís Paulo Curty",
+        projectType: "Website",
+        quote:
+          "The website turned out amazing. Everyone I sent it to loved it, and you listened to me until it was exactly the way I wanted.",
+        preview: "Exactly the way I wanted.",
       },
       {
         id: "casa-sea",
-        clientName: "Linka client",
+        clientName: "Casa Sea",
         projectName: "Casa Sea",
         projectType: "Landing page",
-        quote: "The visual experience became more memorable and communicated the business proposal more clearly.",
+        quote: "I really liked the result. The website captured the essence of Casa Sea and turned out very elegant!",
+        preview: "Captured the essence of Casa Sea.",
       },
       {
-        id: "escobar",
-        clientName: "Linka client",
-        projectName: "Escobar",
-        projectType: "Conversion website",
-        quote: "The brand presentation became more solid, refined, and convincing for the right audience.",
+        id: "nutri",
+        clientName: "Nutrition",
+        projectName: "Nutrition",
+        projectType: "Landing page",
+        quote:
+          "The website turned out wonderful. You were attentive to every detail, and I was very satisfied with the result!",
+        preview: "Attentive to every detail.",
       },
     ],
   },
@@ -110,37 +125,44 @@ const FEEDBACK_COPY: Record<FeedbackLanguage, FeedbackCopy> = {
     kicker: "TESTIMONIOS",
     title: "Palabras de clientes satisfechos",
     subtitle: "Comentarios reales de marcas que confiaron en Linka.",
-    orbitLabel: "Gira la orbita de testimonios",
+    orbitLabel: "Gira la órbita de testimonios",
     previousLabel: "Testimonio anterior",
     nextLabel: "Siguiente testimonio",
     cards: [
       {
-        id: "baptista",
-        clientName: "Cliente Linka",
-        projectName: "Baptista",
-        projectType: "Sitio de captacion",
-        quote: "La presencia digital quedo mas clara, profesional y alineada con el nivel de la marca.",
+        id: "quatorze",
+        clientName: "Quatorze Hair Spa",
+        projectName: "Quatorze",
+        projectType: "Landing page",
+        quote:
+          "Quedó bonito, moderno y muy organizado. Es fácil de navegar y tiene toda la información que una persona busca cuando está conociendo un salón. Creo que el sitio transmite exactamente la imagen que queremos para Quatorze: profesional, acogedora y de calidad. Se nota el cuidado en cada detalle. Quedé muy feliz con el resultado. ¡Felicitaciones!",
+        preview: "Bonito, moderno y organizado.",
       },
       {
-        id: "nutricao",
-        clientName: "Cliente Linka",
-        projectName: "Nutricion",
-        projectType: "Landing page de conversion",
-        quote: "La pagina quedo objetiva, elegante y mucho mas preparada para convertir visitas en contactos.",
+        id: "luis-paulo-curty",
+        clientName: "Luís Paulo Curty",
+        projectName: "Luís Paulo Curty",
+        projectType: "Sitio",
+        quote:
+          "El sitio quedó increíble. A todas las personas a quienes se lo envié les encantó, y ustedes me escucharon hasta que quedó exactamente como yo quería.",
+        preview: "Exactamente como yo quería.",
       },
       {
         id: "casa-sea",
-        clientName: "Cliente Linka",
+        clientName: "Casa Sea",
         projectName: "Casa Sea",
         projectType: "Landing page",
-        quote: "La experiencia visual quedo mas memorable y transmitio mejor la propuesta del negocio.",
+        quote: "Me gustó mucho el resultado. El sitio transmitió la esencia de Casa Sea y quedó muy elegante.",
+        preview: "Transmitió la esencia de Casa Sea.",
       },
       {
-        id: "escobar",
-        clientName: "Cliente Linka",
-        projectName: "Escobar",
-        projectType: "Sitio de conversion",
-        quote: "La presentacion de la marca quedo mas solida, refinada y convincente para el publico correcto.",
+        id: "nutri",
+        clientName: "Nutrición",
+        projectName: "Nutrición",
+        projectType: "Landing page",
+        quote:
+          "El sitio quedó maravilloso. Fueron atentos en cada detalle y quedé muy satisfecha con el resultado.",
+        preview: "Atentos en cada detalle.",
       },
     ],
   },
@@ -317,6 +339,7 @@ export default function FeedbackSection() {
             {copy.cards.map((feedback, index) => {
               const slot = wrapIndex(index - activeIndex, copy.cards.length);
               const isActive = slot === 0;
+              const displayedQuote = isActive ? feedback.quote : feedback.preview;
 
               return (
                 <button
@@ -334,7 +357,7 @@ export default function FeedbackSection() {
                   <span aria-hidden="true" className="lfb-testimonial-mark">
                     "
                   </span>
-                  <p>{feedback.quote}</p>
+                  <p>{displayedQuote}</p>
                   <footer>
                     <strong>{feedback.clientName}</strong>
                     <span>
