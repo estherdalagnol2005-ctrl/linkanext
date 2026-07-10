@@ -6,6 +6,8 @@ import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
+type PortfolioLanguage = "pt" | "en" | "es";
+
 const projects = [
   {
     id: "marcenaria",
@@ -62,8 +64,37 @@ const VIDEO_TRANSITION_DURATION = 0.22;
 const VIDEO_START_TIME = 0.8;
 const VIDEO_LOOP_THRESHOLD = 0.18;
 const TOUCH_CLICK_SUPPRESSION_MS = 520;
+const LANGUAGE_STORAGE_KEY = "linka-language-v2";
+const DRAG_HINT_COPY: Record<PortfolioLanguage, string> = {
+  pt: "ARRASTE PARA EXPLORAR",
+  en: "DRAG TO EXPLORE",
+  es: "DESLIZA PARA EXPLORAR",
+};
 
 gsap.registerPlugin(ScrollTrigger);
+
+function normalizeLanguage(value: string | null | undefined): PortfolioLanguage {
+  const next = value?.toLowerCase() ?? "";
+  if (next.startsWith("pt")) return "pt";
+  if (next.startsWith("es")) return "es";
+  return "en";
+}
+
+function currentLanguage(): PortfolioLanguage {
+  if (typeof window === "undefined") return "en";
+
+  const currentFromApi = window.LINKA_I18N?.current?.();
+  if (currentFromApi) return normalizeLanguage(currentFromApi);
+
+  try {
+    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (stored) return normalizeLanguage(stored);
+  } catch {
+    // Ignore storage access errors and fall back to the document language.
+  }
+
+  return normalizeLanguage(document.documentElement.lang);
+}
 
 function wrapIndex(index: number) {
   return (index + projects.length) % projects.length;
@@ -129,6 +160,7 @@ export default function PortfolioBuildPrototype() {
   const [transitionRequest, setTransitionRequest] = useState<TransitionRequest | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [viewportMode, setViewportMode] = useState<ViewportMode>("desktop");
+  const [language, setLanguage] = useState<PortfolioLanguage>("en");
   const titleProject = projects[titleIndex];
   const displayTitleParts = getDisplayTitleParts(titleProject.displayTitle);
 
@@ -988,6 +1020,27 @@ export default function PortfolioBuildPrototype() {
   }, [changeProject]);
 
   useEffect(() => {
+    function syncLanguage() {
+      setLanguage(currentLanguage());
+    }
+
+    syncLanguage();
+
+    const observer = new MutationObserver(syncLanguage);
+    observer.observe(document.documentElement, { attributeFilter: ["lang"], attributes: true });
+
+    const switcher = document.querySelector<HTMLElement>(".linka-language-switch");
+    switcher?.addEventListener("click", syncLanguage);
+    window.addEventListener("storage", syncLanguage);
+
+    return () => {
+      observer.disconnect();
+      switcher?.removeEventListener("click", syncLanguage);
+      window.removeEventListener("storage", syncLanguage);
+    };
+  }, []);
+
+  useEffect(() => {
     return () => {
       clearPendingVideoWaits();
       transitionTimelineRef.current?.kill();
@@ -1003,7 +1056,7 @@ export default function PortfolioBuildPrototype() {
   return (
     <section className="lpb-section" aria-label="Portfolio visual de projetos" ref={sectionRef} tabIndex={0}>
       <div className="lpb-shell">
-        <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>ARRASTE PARA EXPLORAR</div>
+        <div className={hasInteracted ? "lpb-drag-hint is-muted" : "lpb-drag-hint"}>{DRAG_HINT_COPY[language]}</div>
 
         <div
           className="lpb-gallery"
