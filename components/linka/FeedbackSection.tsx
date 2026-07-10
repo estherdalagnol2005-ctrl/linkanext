@@ -288,7 +288,6 @@ export default function FeedbackSection() {
   return (
     <section aria-label={copy.ariaLabel} className="linka-feedbacks">
       <div aria-hidden="true" className="lfb-orbit-line" />
-      <div aria-hidden="true" className="lfb-scanline" />
 
       <div className="lfb-shell">
         <div className="lfb-head">

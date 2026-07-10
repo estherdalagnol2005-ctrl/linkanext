@@ -3455,22 +3455,6 @@ html,body{max-width:100%!important;overflow-x:clip!important}
   pointer-events:none;
 }
 
-.lfb-scanline{
-  position:absolute;
-  left:62%;
-  top:52%;
-  z-index:-1;
-  width:min(880px,86vw);
-  height:min(410px,42vw);
-  transform:translate3d(-50%,-50%,0);
-  border-radius:50%;
-  background:
-    repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 42px),
-    repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 38px);
-  mask-image:radial-gradient(ellipse at center,#000 0 48%,transparent 76%);
-  opacity:.32;
-  pointer-events:none;
-}
 
 .lfb-shell{
   width:min(1180px,100%);
@@ -3994,12 +3978,6 @@ html,body{max-width:100%!important;overflow-x:clip!important}
     opacity:.34;
   }
 
-  .lfb-scanline{
-    top:60%;
-    width:100%;
-    height:360px;
-    opacity:.16;
-  }
 
   .lfb-kicker{
     margin-bottom:8px;
