@@ -367,6 +367,34 @@ export default function PortfolioBuildPrototype() {
     gsap.set(titleRef.current, { autoAlpha: 1, y: 0 });
   }, []);
 
+  const syncVisibleProjectVideos = useCallback((projectIndex: number) => {
+    const nextIndex = wrapIndex(projectIndex);
+    const project = projects[nextIndex];
+
+    ([
+      [desktopVideoSlotsRef, activeDesktopSlotRef.current, desktopSlotSourcesRef, project.desktopVideo, "notebook"],
+      [mobileVideoSlotsRef, activeMobileSlotRef.current, mobileSlotSourcesRef, project.mobileVideo, "celular"],
+    ] as const).forEach(([slotsRef, activeSlot, sourcesRef, src, label]) => {
+      const activeVideo = slotsRef.current[activeSlot];
+      if (!activeVideo) return;
+
+      activeVideo.muted = true;
+      activeVideo.defaultMuted = true;
+      activeVideo.playsInline = true;
+      activeVideo.setAttribute("playsinline", "");
+      activeVideo.setAttribute("webkit-playsinline", "");
+      activeVideo.setAttribute("aria-label", `Projeto ${project.name} no ${label}`);
+
+      if (sourcesRef.current[activeSlot] !== src || activeVideo.getAttribute("src") !== src) {
+        sourcesRef.current[activeSlot] = src;
+        activeVideo.src = src;
+        activeVideo.load();
+      }
+
+      void activeVideo.play().catch(() => undefined);
+    });
+  }, []);
+
   const commitMobileProject = useCallback((projectIndex: number) => {
     const nextIndex = wrapIndex(projectIndex);
     const project = projects[nextIndex];
@@ -429,8 +457,9 @@ export default function PortfolioBuildPrototype() {
       setTitleIndex(nextIndex);
     });
 
+    syncVisibleProjectVideos(nextIndex);
     preloadProjectNeighbors(nextIndex);
-  }, [preloadProjectNeighbors]);
+  }, [preloadProjectNeighbors, syncVisibleProjectVideos]);
 
   const requestProject = useCallback((projectIndex: number, direction: TransitionDirection) => {
     const nextIndex = wrapIndex(projectIndex);
@@ -649,6 +678,8 @@ export default function PortfolioBuildPrototype() {
         setSelectedIndex(index);
         setTitleIndex(index);
       });
+
+      syncVisibleProjectVideos(index);
     };
 
     const restoreChannel = (channel: PreparedVideoChannel | null) => {
@@ -798,7 +829,7 @@ export default function PortfolioBuildPrototype() {
     return () => {
       disposed = true;
     };
-  }, [prepareVideoSlot, preloadProjectNeighbors, setActiveSlotRef, transitionRequest, viewportMode]);
+  }, [prepareVideoSlot, preloadProjectNeighbors, setActiveSlotRef, syncVisibleProjectVideos, transitionRequest, viewportMode]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -827,6 +858,8 @@ export default function PortfolioBuildPrototype() {
       const projectIndex = displayedIndexRef.current;
       const project = projects[projectIndex];
       const desiredSrc = isDesktop ? project.desktopVideo : project.mobileVideo;
+
+      syncVisibleProjectVideos(projectIndex);
 
       if (!currentVideo || !incomingVideo || sourcesRef.current[activeSlot] === desiredSrc) {
         if (currentVideo) void playVideo(currentVideo);
@@ -864,7 +897,7 @@ export default function PortfolioBuildPrototype() {
     return () => {
       cancelled = true;
     };
-  }, [prepareVideoSlot, setActiveSlotRef, transitionRequest, viewportMode]);
+  }, [prepareVideoSlot, setActiveSlotRef, syncVisibleProjectVideos, transitionRequest, viewportMode]);
 
   useLayoutEffect(() => {
     const desktopActive = desktopVideoSlotsRef.current[0];
