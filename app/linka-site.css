@@ -801,28 +801,35 @@ body {
 }
 
 .lhx-field-plane-blue{
-  right:4%!important;
-  top:18%!important;
-  width:min(650px,48vw)!important;
-  height:min(500px,58svh)!important;
+  right:-2%!important;
+  top:15%!important;
+  width:min(780px,56vw)!important;
+  height:min(560px,62svh)!important;
+  border-radius:34% 66% 42% 58% / 52% 38% 62% 48%!important;
   background:
-    radial-gradient(circle at 58% 38%,rgba(52,120,255,.40),transparent 38%),
-    radial-gradient(circle at 42% 60%,rgba(100,199,255,.18),transparent 46%)!important;
-  filter:blur(4px)!important;
+    radial-gradient(circle at 58% 38%,rgba(100,199,255,.34),transparent 36%),
+    radial-gradient(circle at 34% 62%,rgba(132,88,255,.22),transparent 46%),
+    linear-gradient(135deg,rgba(52,120,255,.54),rgba(8,42,135,.44) 58%,rgba(100,199,255,.22))!important;
+  filter:blur(2px)!important;
+  opacity:.98!important;
+  box-shadow:
+    0 0 90px rgba(52,120,255,.22),
+    0 0 140px rgba(100,199,255,.10)!important;
 }
 
 .lhx-field-plane-violet{
-  right:11%!important;
-  top:31%!important;
-  width:min(520px,42vw)!important;
-  height:min(360px,42svh)!important;
+  right:7%!important;
+  top:28%!important;
+  width:min(600px,46vw)!important;
+  height:min(390px,44svh)!important;
   border:1px solid rgba(132,88,255,.26)!important;
-  border-radius:42px 18px 54px 22px!important;
+  border-radius:58px 22px 76px 30px!important;
   background:
-    linear-gradient(135deg,rgba(132,88,255,.16),transparent 62%),
-    linear-gradient(90deg,transparent,rgba(100,199,255,.10),transparent)!important;
+    linear-gradient(135deg,rgba(132,88,255,.28),transparent 62%),
+    linear-gradient(90deg,transparent,rgba(100,199,255,.16),transparent)!important;
   clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)!important;
   transform:rotate(4deg) skewX(-4deg)!important;
+  opacity:.86!important;
 }
 
 .lhx-field-signal{
@@ -1373,11 +1380,19 @@ body {
   left:50%!important;
   top:50%!important;
   z-index:-1!important;
-  width:78%!important;
-  height:42%!important;
-  border:1px solid rgba(100,199,255,.14)!important;
-  border-radius:34px 12px 42px 18px!important;
+  width:88%!important;
+  height:56%!important;
+  border:1px solid rgba(125,211,252,.28)!important;
+  border-radius:52px 18px 70px 28px!important;
   clip-path:polygon(7% 0,100% 0,92% 100%,0 100%)!important;
+  background:
+    radial-gradient(circle at 24% 18%,rgba(139,255,79,.12),transparent 28%),
+    radial-gradient(circle at 78% 20%,rgba(100,199,255,.28),transparent 34%),
+    linear-gradient(135deg,rgba(52,120,255,.46),rgba(18,45,132,.34) 58%,rgba(132,88,255,.22))!important;
+  box-shadow:
+    0 34px 110px rgba(0,0,0,.34),
+    0 0 74px rgba(52,120,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
   transform:translate3d(-50%,-50%,0) rotate(-3deg)!important;
 }
 
