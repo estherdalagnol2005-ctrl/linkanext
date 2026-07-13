@@ -366,7 +366,7 @@ function applyLanguage(nextLang: Language) {
   setText(".lv10-cta-label", copy.heroCta);
 
   const heroCta = document.querySelector<HTMLAnchorElement>(".lv10-cta");
-  if (heroCta) heroCta.href = whatsappUrl("project", lang);
+  if (heroCta) heroCta.href = "#lead-form";
   setText(".lv10-link", copy.heroMagic);
 
   setHtml(".lov64-kicker", copy.expKicker);

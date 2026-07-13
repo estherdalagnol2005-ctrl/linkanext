@@ -10,9 +10,11 @@
   "dependencies": {
     "gsap": "latest",
     "lenis": "latest",
+    "libphonenumber-js": "^1.13.7",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-phone-number-input": "^3.4.17"
   },
   "devDependencies": {
     "@types/node": "latest",

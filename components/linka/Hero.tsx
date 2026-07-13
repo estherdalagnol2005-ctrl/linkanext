@@ -1,8 +1,5 @@
 import { LINKA_LOGO_URL } from "./constants";
 
-const HERO_WHATSAPP_URL =
-  "https://wa.me/5554996443484?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Linka%20e%20quero%20agendar%20uma%20reuni%C3%A3o%20para%20conversar%20sobre%20meu%20projeto.";
-
 export default function Hero() {
   return (
     <section className="linka-v10-hero" data-linka-hero="" id="home">
@@ -81,7 +78,7 @@ export default function Hero() {
             estilo, conectar com mais clareza e transformar visitantes em clientes.
           </p>
           <div className="lv10-actions">
-            <a className="lv10-cta" href={HERO_WHATSAPP_URL} rel="noopener" target="_blank">
+            <a className="lv10-cta" href="#lead-form">
               <span className="lv10-cta-label">{"Agendar minha reuni\u00e3o"}</span>
             </a>
           </div>
