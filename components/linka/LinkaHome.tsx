@@ -3,6 +3,7 @@ import FeedbackSection from "./FeedbackSection";
 import GlobalBackground from "./GlobalBackground";
 import Header from "./Header";
 import Hero from "./Hero";
+import LeadFormBridge from "./LeadFormBridge";
 import LinkaSiteEffects from "./LinkaSiteEffects";
 import PortfolioSection from "./PortfolioSection";
 import Preloader from "./Preloader";
@@ -26,6 +27,7 @@ export default function LinkaHome() {
       </main>
       <Footer />
       <LinkaSiteEffects />
+      <LeadFormBridge />
     </div>
   );
 }
