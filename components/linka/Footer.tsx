@@ -10,8 +10,10 @@ export default function Footer() {
               alt="Linka"
               className="lf4-logo"
               decoding="async"
+              height={683}
               loading="lazy"
               src={LINKA_LOGO_URL}
+              width={1024}
             />
             <p>
               Quebre o padrão. Construa uma presença digital com sofisticação e estilo junto com a

@@ -18,7 +18,14 @@ export default function TransitionCta() {
           <span className="lnt3-spark spark-c">✦</span>
           <picture style={{ display: "contents" }}>
             <source media="(min-width: 521px)" srcSet={LINKA_PRELOADER_LOGO_URL} />
-            <img alt="Linka" decoding="async" loading="lazy" src={LINKA_TRANSITION_LOGO_URL} />
+            <img
+              alt="Linka"
+              decoding="async"
+              height={683}
+              loading="lazy"
+              src={LINKA_TRANSITION_LOGO_URL}
+              width={1024}
+            />
           </picture>
         </div>
         <p>Ser igual aos outros não é nossa ideologia. Faça sua marca ser lembrada com as criações da Linka.</p>

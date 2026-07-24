@@ -28,7 +28,9 @@ export default function Hero() {
                 className="lv10-logo"
                 decoding="async"
                 fetchPriority="high"
+                height={683}
                 src={LINKA_LOGO_URL}
+                width={1024}
               />
             </div>
 
@@ -41,25 +43,37 @@ export default function Hero() {
               alt="Sites Linka"
               className="lv10-img img-sites"
               decoding="async"
-              src="https://linkadigital.online/wp-content/uploads/2026/06/web1.webp"
+              height={341}
+              loading="eager"
+              src="/images/hero-web1.webp"
+              width={512}
             />
             <img
               alt="Landing Page Linka"
               className="lv10-img img-clientes"
               decoding="async"
-              src="https://linkadigital.online/wp-content/uploads/2026/06/web2.webp"
+              height={341}
+              loading="eager"
+              src="/images/hero-web2.webp"
+              width={512}
             />
             <img
               alt="Experiência Linka"
               className="lv10-img img-exp"
               decoding="async"
-              src="https://linkadigital.online/wp-content/uploads/2026/06/web3-1.webp"
+              height={341}
+              loading="eager"
+              src="/images/hero-web3.webp"
+              width={512}
             />
             <img
               alt="Sua Marca Linka"
               className="lv10-img img-sua"
               decoding="async"
-              src="https://linkadigital.online/wp-content/uploads/2026/06/web4.webp"
+              height={341}
+              loading="eager"
+              src="/images/hero-web4.webp"
+              width={512}
             />
           </div>
         </div>

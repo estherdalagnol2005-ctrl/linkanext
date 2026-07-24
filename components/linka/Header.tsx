@@ -11,7 +11,7 @@ export default function Header() {
           <span className="lh11-logo-dot" />
           <span className="lh11-logo-star star-a">✦</span>
           <span className="lh11-logo-star star-b">✧</span>
-          <img alt="Linka" src={LINKA_LOGO_URL} />
+          <img alt="Linka" decoding="async" fetchPriority="high" src={LINKA_LOGO_URL} />
         </a>
 
         <LanguageSwitch />

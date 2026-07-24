@@ -323,9 +323,9 @@ export default function Preloader() {
             className="linka-preloader-logo"
             decoding="async"
             fetchPriority="high"
-            height={1024}
+            height={683}
             src={LINKA_PRELOADER_LOGO_URL}
-            width={1536}
+            width={1024}
           />
         </div>
         <div className="linka-preloader-progress" aria-hidden="true">
