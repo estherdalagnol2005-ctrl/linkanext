@@ -4736,7 +4736,8 @@ body.linka-preload-lock{
 }
 
 body.linka-preload-lock .linka-page > :not(.linka-preloader){
-  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
 }
 
 .linka-preloader,

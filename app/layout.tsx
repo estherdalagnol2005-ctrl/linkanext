@@ -19,6 +19,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <meta name="theme-color" content="#050609" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://linkadigital.online" />
+        <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link
           href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800;900&display=swap"
           rel="stylesheet"

@@ -25,7 +25,7 @@ export default function TransitionCta() {
         <a className="lnt3-cta" href={WHATSAPP_IDENTITY_URL} rel="noopener" target="_blank">
           <span>WhatsApp da Linka</span>
           <i aria-hidden="true" className="lnt3-whats-icon">
-            <img alt="" src={WHATSAPP_ICON_URL} />
+            <img alt="" decoding="async" loading="lazy" src={WHATSAPP_ICON_URL} />
           </i>
         </a>
       </div>

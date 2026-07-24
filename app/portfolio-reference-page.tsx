@@ -223,7 +223,9 @@ function adaptPortfolioBehavior(source: string) {
       }
 
       function startActiveCardVideos() {
-        if (isDisposed || document.hidden || !activeCardVideos.length) return Promise.resolve(false);
+        if (isDisposed || document.hidden || !heroIsVisible || !activeCardVideos.length) {
+          return Promise.resolve(false);
+        }
         return Promise.all(activeCardVideos.map(function (video) { return playVideo(video); }));
       }
 

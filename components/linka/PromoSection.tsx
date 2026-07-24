@@ -24,6 +24,7 @@ export default function PromoSection() {
                 alt="Linka Aqui"
                 className="lp8-logo"
                 decoding="async"
+                loading="lazy"
                 src={LINKA_PROMO_LOGO_URL}
               />
               <button aria-label="Ativar núcleo Linka" className="lp8-core-btn" type="button" />
@@ -87,7 +88,7 @@ export default function PromoSection() {
           <a className="lp8-main-cta" href={WHATSAPP_PROMO_URL} rel="noopener" target="_blank">
             <span>Quero minha Linka</span>
             <i>
-              <img alt="" src={WHATSAPP_ICON_URL} />
+              <img alt="" decoding="async" loading="lazy" src={WHATSAPP_ICON_URL} />
             </i>
           </a>
         </div>

@@ -32,7 +32,7 @@ function TechItem({
   return (
     <div className="lkss3-item">
       {src ? (
-        <img alt={alt} draggable={false} src={src} />
+        <img alt={alt} decoding="async" draggable={false} loading="lazy" src={src} />
       ) : (
         <span aria-hidden="true" className="lkss3-openai-logo">
           <i>AI</i>

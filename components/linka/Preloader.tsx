@@ -12,8 +12,10 @@ declare global {
   }
 }
 
-const MIN_DURATION = 1200;
-const MAX_DURATION = 6000;
+const MIN_DURATION = 800;
+const MAX_DURATION = 3000;
+const REVEAL_DEADLINE = 2350;
+const PROGRESS_SETTLE_DURATION = 160;
 const PRELOADER_DONE_EVENT = "linka:preloader:done";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -79,44 +81,6 @@ function decodeHeroImages(signal?: AbortSignal) {
   );
 
   return Promise.all(images.map((image) => decodeImage(image, signal))).then(() => undefined);
-}
-
-function waitForInitialVideoFrame(signal?: AbortSignal) {
-  const video = document.querySelector<HTMLVideoElement>(".linka-main-video");
-  if (!video || video.readyState >= 2) return Promise.resolve();
-
-  const source = video.currentSrc || video.getAttribute("src") || video.getAttribute("data-src");
-  if (!source) return Promise.resolve();
-
-  video.preload = "auto";
-  video.setAttribute("preload", "auto");
-  if (!video.getAttribute("src")) video.setAttribute("src", source);
-
-  return new Promise<void>((resolve) => {
-    if (signal?.aborted) {
-      resolve();
-      return;
-    }
-
-    let settled = false;
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      video.removeEventListener("loadeddata", finish);
-      video.removeEventListener("canplay", finish);
-      video.removeEventListener("error", finish);
-      signal?.removeEventListener("abort", finish);
-      window.clearTimeout(timer);
-      resolve();
-    };
-    const timer = window.setTimeout(finish, 4200);
-
-    video.addEventListener("loadeddata", finish);
-    video.addEventListener("canplay", finish);
-    video.addEventListener("error", finish);
-    signal?.addEventListener("abort", finish, { once: true });
-    video.load();
-  });
 }
 
 function waitForMainScripts(signal?: AbortSignal) {
@@ -269,11 +233,11 @@ export default function Preloader() {
           resolve();
         };
 
-        revealFallbackTimer = window.setTimeout(finishAnimation, 1800);
+        revealFallbackTimer = window.setTimeout(finishAnimation, 520);
 
         gsap.to(root, {
           opacity: 0,
-          duration: reducedMotion ? 0.16 : 0.42,
+          duration: reducedMotion ? 0.12 : 0.36,
           ease: reducedMotion ? "power1.out" : "power3.inOut",
           onComplete: finishAnimation,
         });
@@ -286,7 +250,6 @@ export default function Preloader() {
         waitForFonts(),
         decodeLogo(signal),
         decodeHeroImages(signal),
-        waitForInitialVideoFrame(signal),
         waitForMainScripts(signal),
         wait(MIN_DURATION, signal),
       ];
@@ -300,17 +263,18 @@ export default function Preloader() {
           });
 
       const allCriticalResources = Promise.all(resources.map(track));
-      await Promise.race([allCriticalResources, wait(MAX_DURATION, signal)]);
+      await Promise.race([allCriticalResources, wait(REVEAL_DEADLINE, signal)]);
 
       if (cancelled) return;
 
       progressTargetRef.current = 100;
-      await waitForDisplayedProgress();
+      await Promise.race([waitForDisplayedProgress(), wait(PROGRESS_SETTLE_DURATION, signal)]);
       if (!cancelled) await revealPage();
     };
 
     finishTimer = window.setTimeout(() => {
-      progressTargetRef.current = 100;
+      abortController.abort();
+      finishReveal();
     }, MAX_DURATION);
 
     run();

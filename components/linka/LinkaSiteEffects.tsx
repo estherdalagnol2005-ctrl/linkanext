@@ -1115,10 +1115,12 @@ function initMarquee(addCleanup: (cleanup: () => void) => void) {
 function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
   const allVideos = Array.from(document.querySelectorAll<HTMLVideoElement>("video"));
   const portfolioVideos = allVideos.filter((video) => video.closest(".linka-portfolio-mount"));
-  const firstPortfolioVideo = portfolioVideos[0];
-  const remainingPortfolioVideos = portfolioVideos.slice(1);
+  const mainPortfolioVideos = portfolioVideos.filter((video) => video.classList.contains("linka-main-video"));
+  const useMobilePortfolio = window.matchMedia("(max-width: 760px)").matches;
+  const firstPortfolioVideo =
+    mainPortfolioVideos.find((video) => video.classList.contains("linka-main-video-mobile") === useMobilePortfolio) ??
+    mainPortfolioVideos[0];
   const managedVideos = allVideos.filter((video) => !video.closest(".linka-portfolio-mount"));
-  const portfolioMount = document.querySelector<HTMLElement>(".linka-portfolio-mount");
   const pausedVideos = new WeakSet<HTMLVideoElement>();
   let preloaderDoneFrame: number | undefined;
 
@@ -1152,11 +1154,10 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
     managedVideos.forEach((video) => videoObserver?.observe(video));
   }
 
-  let portfolioPreloadObserver: IntersectionObserver | undefined;
   function preloadPortfolioVideo(video: HTMLVideoElement | undefined) {
     if (!video) return;
-    video.preload = "auto";
-    video.setAttribute("preload", "auto");
+    video.preload = "metadata";
+    video.setAttribute("preload", "metadata");
     if (video.readyState === 0) video.load();
   }
 
@@ -1164,31 +1165,11 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
     preloadPortfolioVideo(firstPortfolioVideo);
   }
 
-  function preloadRemainingPortfolioVideos() {
-    remainingPortfolioVideos.forEach(preloadPortfolioVideo);
-    portfolioPreloadObserver?.disconnect();
-    portfolioPreloadObserver = undefined;
-  }
-
   if (firstPortfolioVideo) {
     if (window.__LINKA_PRELOADER_DONE__) {
       preloaderDoneFrame = window.requestAnimationFrame(preloadFirstPortfolioVideo);
     } else {
       window.addEventListener("linka:preloader:done", preloadFirstPortfolioVideo, { once: true });
-    }
-  }
-
-  if (portfolioMount && remainingPortfolioVideos.length) {
-    if ("IntersectionObserver" in window) {
-      portfolioPreloadObserver = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) preloadRemainingPortfolioVideos();
-        },
-        { root: null, rootMargin: "3000px 0px", threshold: 0 },
-      );
-      portfolioPreloadObserver.observe(portfolioMount);
-    } else {
-      preloadRemainingPortfolioVideos();
     }
   }
 
@@ -1249,7 +1230,6 @@ function initViewportPerformance(addCleanup: (cleanup: () => void) => void) {
 
   addCleanup(() => {
     videoObserver?.disconnect();
-    portfolioPreloadObserver?.disconnect();
     window.removeEventListener("linka:preloader:done", preloadFirstPortfolioVideo);
     if (preloaderDoneFrame) window.cancelAnimationFrame(preloaderDoneFrame);
     rootObserver?.disconnect();
