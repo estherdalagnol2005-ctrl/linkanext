@@ -237,7 +237,7 @@ declare global {
 
 type WhatsAppKind = "project" | "discount" | "identity" | "contact";
 const LANGUAGE_STORAGE_KEY = "linka-language-v2";
-const LANGUAGE_DEFAULT_EN_KEY = "linka-language-v2-default-en";
+const LANGUAGE_DEFAULT_PT_KEY = "linka-language-v2-default-pt";
 
 let scrollRefreshTimer: number | undefined;
 
@@ -259,20 +259,20 @@ function cancelScrollRefresh() {
 
 function normalizeLanguage(value: string | null | undefined): Language {
   if (value === "pt" || value === "es" || value === "en") return value;
-  return "en";
+  return "pt";
 }
 
 function storedLanguage(): Language {
   try {
-    if (window.localStorage.getItem(LANGUAGE_DEFAULT_EN_KEY) !== "true") {
-      window.localStorage.setItem(LANGUAGE_DEFAULT_EN_KEY, "true");
-      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, "en");
-      return "en";
+    if (window.localStorage.getItem(LANGUAGE_DEFAULT_PT_KEY) !== "true") {
+      window.localStorage.setItem(LANGUAGE_DEFAULT_PT_KEY, "true");
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, "pt");
+      return "pt";
     }
 
     return normalizeLanguage(window.localStorage.getItem(LANGUAGE_STORAGE_KEY));
   } catch {
-    return "en";
+    return "pt";
   }
 }
 
@@ -1261,8 +1261,8 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
     ].filter((item): item is HTMLElement => Boolean(item));
 
     fadeItems.forEach((item) => item.classList.add("lp8-fade"));
-    if (rewardCta) rewardCta.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
-    if (discount) discount.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "en");
+    if (rewardCta) rewardCta.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "pt");
+    if (discount) discount.href = whatsappUrl("discount", window.LINKA_I18N?.current() ?? "pt");
 
     let running = false;
     let unlocked = false;
@@ -1282,7 +1282,7 @@ function initPromo(addCleanup: (cleanup: () => void) => void, schedule: (callbac
       setProgress(25);
 
       if (mainCta) {
-        const currentLanguage = window.LINKA_I18N?.current() ?? "en";
+        const currentLanguage = window.LINKA_I18N?.current() ?? "pt";
         const label = COPY[currentLanguage].promoClaim;
         mainCta.href = whatsappUrl("discount", currentLanguage);
         mainCta.target = "_blank";

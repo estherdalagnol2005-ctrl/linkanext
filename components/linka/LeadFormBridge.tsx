@@ -31,7 +31,7 @@ function normalizeLeadFormLanguage(value: string | null | undefined): LeadFormLa
   if (normalizedValue?.startsWith("en")) return "en";
   if (normalizedValue?.startsWith("es")) return "es";
 
-  return "en";
+  return "pt";
 }
 
 function readCurrentLeadFormLanguage(): LeadFormLanguage {
@@ -51,7 +51,7 @@ function readCurrentLeadFormLanguage(): LeadFormLanguage {
 
 export default function LeadFormBridge() {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
-  const [leadFormLanguage, setLeadFormLanguage] = useState<LeadFormLanguage>("en");
+  const [leadFormLanguage, setLeadFormLanguage] = useState<LeadFormLanguage>("pt");
   const leadFormOpenerRef = useRef<HTMLElement | null>(null);
 
   const closeLeadForm = useCallback(() => {

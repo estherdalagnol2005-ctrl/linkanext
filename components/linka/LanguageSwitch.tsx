@@ -17,7 +17,7 @@ export default function LanguageSwitch() {
         <span aria-hidden="true" className="lls-globe">
           {"\u{1F310}"}
         </span>
-        <span className="lls-current">EN</span>
+        <span className="lls-current">PT</span>
         <span aria-hidden="true" className="lls-chevron">
           {"\u203A"}
         </span>
@@ -30,8 +30,8 @@ export default function LanguageSwitch() {
         role="menu"
       >
         <button
-          aria-checked="true"
-          className="lls-lang lls-en is-active"
+          aria-checked="false"
+          className="lls-lang lls-en"
           data-language="en"
           role="menuitemradio"
           type="button"
@@ -40,8 +40,8 @@ export default function LanguageSwitch() {
           <span className="lls-option-name">English</span>
         </button>
         <button
-          aria-checked="false"
-          className="lls-lang lls-pt"
+          aria-checked="true"
+          className="lls-lang lls-pt is-active"
           data-language="pt"
           role="menuitemradio"
           type="button"
